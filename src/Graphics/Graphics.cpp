@@ -125,7 +125,7 @@ namespace Graphics
         vbos.push_back(vbo);
         model_matrices.push_back(glm::mat4(1.0));
         model_matrices.push_back(glm::mat4(1.0));
-        model_matrices[0] = glm::scale(model_matrices[0], glm::vec3(5, 5, 5));
+        //model_matrices[0] = glm::scale(model_matrices[0], glm::vec3(5, 5, 5));
     }
 
     ///@brief Uses the shader program from .shader file
@@ -140,7 +140,7 @@ namespace Graphics
     void SetMVP(int model_index)
     {
         glm::vec3 look = glm::vec3(camera.looking_at.x, camera.looking_at.y, camera.looking_at.z);
-        glm::mat4 projection = glm::perspective(glm::radians(60.0f), 8.0f / 5.0f, 0.1f, 100.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(90.0f), 8.0f / 5.0f, 0.1f, 100.0f);
         glm::mat4 view = glm::lookAt(camera.position, look, glm::vec3(0, 1, 0));
         glm::mat4 model = model_matrices[model_index];
         mvp = projection * view * model;  

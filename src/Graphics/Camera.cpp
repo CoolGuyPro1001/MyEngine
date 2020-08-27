@@ -4,34 +4,24 @@ namespace Graphics
 {
     void Camera::MoveCameraForward(float dis)
     {
-        float z_dis = looking_at.z - position.z;
-        float x_dis = looking_at.x - position.x;
+        position.x += glm::cos(orientation.y) * dis;
+        position.z += glm::sin(orientation.y) * dis;
+        position.y += glm::sin(orientation.p) * dis;
 
-        float a = glm::atan(z_dis / x_dis);
-        float c = glm::cos(a);
-        float s = glm::sin(a);
-
-        position.x += dis * c;
-        looking_at.x += dis * c;
-
-        position.z += dis * s;
-        looking_at.z += dis * s;
+        looking_at.x += glm::cos(orientation.y) * dis;
+        looking_at.z += glm::sin(orientation.y) * dis;
+        looking_at.y += glm::sin(orientation.p) * dis;
     }
 
     void Camera::MoveCameraSideways(float dis)
     {
-        float z_dis = looking_at.z - position.z;
-        float x_dis = looking_at.x - position.x;
+        constexpr float HALF = glm::pi<float>() / 2;
+        
+        position.x += glm::cos(orientation.y - HALF) * dis;
+        position.z += glm::sin(orientation.y - HALF) * dis;
 
-        float a = glm::pi<float>()/2 - glm::abs(glm::atan(z_dis / x_dis));
-        float c = glm::cos(a);
-        float s = glm::sin(a);
-
-        position.x += dis * c;
-        looking_at.x += dis * c;
-
-        position.z += dis * s;
-        looking_at.z += dis * s;
+        looking_at.x += glm::cos(orientation.y - HALF) * dis;
+        looking_at.z += glm::sin(orientation.y - HALF) * dis;
     }
 
     void Camera::MoveCameraUpwards(float dis)
@@ -39,6 +29,7 @@ namespace Graphics
         position.y += dis;
         looking_at.y += dis;
     }
+
 
     void Camera::TurnCameraP(float deg)
     {
@@ -54,8 +45,6 @@ namespace Graphics
         looking_at.x = glm::cos(orientation.y) * focal_distance + position.x;
         looking_at.z = glm::sin(orientation.y) * focal_distance + position.z;
     }
-
-    
 
     void Camera::TurnCameraR(float deg)
     {
