@@ -1,3 +1,7 @@
+# Dolphin Coding Style & Licensing
+
+blah blah blahdsafdasfasfasdfdasfasfasdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+
 Variables
 ``int some_variable = 420;``
 
