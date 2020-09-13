@@ -32,13 +32,13 @@ MyClass
 
 Single lines should go in new line
 
-**Good**
+**Yay**
 ```cpp
 if(condition)
     code
 ```
 
-**Bad**
+**Boo**
 ```cpp
 if(condition) code
 ```
@@ -48,7 +48,7 @@ The only except to to this rule is ternary operators
 
 There must all have brackets or all have no brackets
 
-**Good**
+**Yay**
 ```cpp
 if(condition)
 {
@@ -60,7 +60,7 @@ else
 }
 ```
 
-**Bad**
+**Boo**
 ```cpp
 if(condition)
 {
@@ -83,8 +83,13 @@ For nested loops, follow the patern for iterator variable
 
 **Don't use goto**
 
+For infinite loops use
+```cpp
+while(true)
+```
 
 
+## Other Styles
 Identation is **four** spaces
 
 New and delete are acceptable
