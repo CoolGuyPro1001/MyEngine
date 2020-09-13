@@ -1,5 +1,3 @@
-Coding style
-
 Variables
 ``int some_variable = 420;``
 
@@ -38,7 +36,7 @@ if(condition)
 }
 else
 {
-   code
+   cod
 }
 ```
 
