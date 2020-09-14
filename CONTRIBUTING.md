@@ -80,6 +80,8 @@ For nested loops, follow the patern for iterator variable
 * 2nd: i1
 * 3rd: i2
 ...
+**Unless the nested loop has to do with coordinates, etc.**
+**Just use the patern for nested loops where iterator has not meaning**
 
 **Don't use goto**
 
