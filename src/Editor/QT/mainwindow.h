@@ -1,8 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "Graphics/Graphics.h"
-#include "Graphics/Camera.h"
+#include "Engine/Graphics/Graphics.h"
+#include "Engine/Graphics/Camera.h"
 
 #include <QMainWindow>
 #include "openglwidget.h"

@@ -1,9 +1,9 @@
 #ifndef PARSE_H
 #define PARSE_H
 
-#include "Graphics/VertexBuffer.h"
-#include "Graphics/Units.h"
-#include "File.h"
+#include "Engine/Graphics/VertexBuffer.h"
+#include "Engine/Graphics/Units.h"
+#include "Engine/File.h"
 #include "Common/Hex.h"
 #include <memory>
 

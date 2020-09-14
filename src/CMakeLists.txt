@@ -9,43 +9,43 @@ set(PROJECT_SOURCES
     Main.cpp
     Common/Binary.cpp
     Common/Hex.cpp
-    Graphics/Graphics.cpp
-    Graphics/IndexBuffer.cpp
-    Graphics/VertexBuffer.cpp
-    Graphics/Shader.cpp
-    Graphics/GLDebug.cpp
-    Graphics/Camera.cpp
-    File.cpp
-    Model.cpp
-    Parse.cpp
-    Directory.cpp
-    QT/mainwindow.cpp
-    QT/openglwidget.cpp
+    Engine/Graphics/Graphics.cpp
+    Engine/Graphics/IndexBuffer.cpp
+    Engine/Graphics/VertexBuffer.cpp
+    Engine/Graphics/Shader.cpp
+    Engine/Graphics/GLDebug.cpp
+    Engine/Graphics/Camera.cpp
+    Engine/File.cpp
+    Engine/Model.cpp
+    Editor/Parse.cpp
+    Editor/Directory.cpp
+    Editor/QT/mainwindow.cpp
+    Editor/QT/openglwidget.cpp
 )
 
 set(PROJECT_HEADERS
     Common/Binary.h
     Common/Hex.h
-    Graphics/Graphics.h
-    Graphics/IndexBuffer.h
-    Graphics/VertexBuffer.h
-    Graphics/Shader.h
-    Graphics/Units.h
-    Graphics/GLDebug.h
-    Graphics/Camera.cpp
-    File.h
-    Directory.h
-    Model.h
-    Actor.h
-    Course.h
-    Parse.h
-    QT/mainwindow.h
-    QT/openglwidget.h
+    Engine/Graphics/Graphics.h
+    Engine/Graphics/IndexBuffer.h
+    Engine/Graphics/VertexBuffer.h
+    Engine/Graphics/Shader.h
+    Engine/Graphics/Units.h
+    Engine/Graphics/GLDebug.h
+    Engine/Graphics/Camera.cpp
+    Engine/File.h
+    Editor/Directory.h
+    Engine/Model.h
+    Engine/Actor.h
+    Engine/Course.h
+    Editor/Parse.h
+    Editor/QT/mainwindow.h
+    Editor/QT/openglwidget.h
 )
 
 set(PROJECT_UI
-    QT/mainwindow.ui
-    QT/openglwidget.ui)
+    Editor/QT/mainwindow.ui
+    Editor/QT/openglwidget.ui)
 
 qt5_wrap_ui(UI_WRAP ${PROJECT_UI})
 qt5_wrap_cpp(MOC_SOURCES ${PROJECT_HEADERS})

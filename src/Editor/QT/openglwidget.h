@@ -1,7 +1,7 @@
 #ifndef OPENGLWIDGET_H
 #define OPENGLWIDGET_H
 
-#include "Graphics/Graphics.h"
+#include "Engine/Graphics/Graphics.h"
 #include <QOpenGLWidget>
 #include <QKeyEvent>
 #include <iostream>

@@ -1,20 +1,20 @@
 //define GL headers before QT
 
-#include "Graphics/Graphics.h"
+#include "Engine/Graphics/Graphics.h"
 
 #include <QApplication>
-#include "QT/mainwindow.h"
+#include "Editor/QT/mainwindow.h"
 
-#include "Graphics/Units.h"
-#include "Graphics/IndexBuffer.h"
+#include "Engine/Graphics/Units.h"
+#include "Engine/Graphics/IndexBuffer.h"
 
 
 #include <memory>
 #include <vector>
 #include <iostream>
 
-#include "Parse.h"
-#include "Directory.h"
+#include "Editor/Parse.h"
+#include "Editor/Directory.h"
 
 int main(int argc, char* args[])
 {

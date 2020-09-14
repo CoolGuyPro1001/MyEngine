@@ -19,7 +19,7 @@ namespace Graphics
         void TurnCameraR(float deg);
 
         glm::mat3 RotationMatrixX(float deg);
-        glm::mat3 RotationMatrixY(float deg);
+        glm::mat3 RotationMatrixY(float deg); 
         glm::mat3 RotationMatrixZ(float deg);
         
         glm::vec3 position = glm::vec3(0, 0, 0);
