@@ -25,7 +25,7 @@ int main(int argc, char* args[])
     Ui::MainWindow mainwindow;
 
     mainwindow.show();
-    //Graphics::UseShader("res/BaseShader.shader");
+    Graphics::UseShader("res/BaseShader.shader");
     Graphics::InitMVP();
     std::shared_ptr<Graphics::VertexBuffer> vbo = Parse::FileToVbo("res/model.c");
     Graphics::AddBuffer(vbo.get());
