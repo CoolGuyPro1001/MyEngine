@@ -23,6 +23,8 @@ namespace Graphics
         void RefreshData();
         void Bind();
         void UnBind();
+
+        VertexBuffer operator+=(VertexBuffer x);
     };
 }
 

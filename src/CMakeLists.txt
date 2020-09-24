@@ -21,6 +21,7 @@ set(PROJECT_SOURCES
     Editor/Directory.cpp
     Editor/QT/mainwindow.cpp
     Editor/QT/openglwidget.cpp
+    Engine/Core/Enviroment.cpp
 )
 
 set(PROJECT_HEADERS
@@ -41,6 +42,7 @@ set(PROJECT_HEADERS
     Editor/Parse.h
     Editor/QT/mainwindow.h
     Editor/QT/openglwidget.h
+    Engine/Core/Enviroment.h
 )
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../res DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

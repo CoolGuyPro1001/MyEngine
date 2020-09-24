@@ -7,20 +7,22 @@
 #include <memory>
 #include <vector>
 
+#include "../Defines.h"
+
 class Model
 {
 public:
-    std::vector<std::shared_ptr<Graphics::VertexBuffer>> vertex_buffers;
-    std::shared_ptr<Graphics::IndexBuffer> indices;
+    std::vector<Shared<Graphics::VertexBuffer>> vertex_buffers;
+    //std::shared_ptr<Graphics::IndexBuffer> indices;
 
     unsigned int vertex_name;
-    unsigned int index_name;
-    
+    //unsigned int index_name;
+     
     Graphics::Vector3 position;
     Graphics::Vector3 scale;
     Graphics::Vector3 rotation;
     
-    Model(std::vector<std::shared_ptr<Graphics::VertexBuffer>> vertex_buffers, std::shared_ptr<Graphics::IndexBuffer> indices);
+    Model(std::vector<Shared<Graphics::VertexBuffer>> vertex_buffers, Shared<Graphics::IndexBuffer> indices);
     void Render();
 };
 

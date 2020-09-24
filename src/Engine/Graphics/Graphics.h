@@ -15,6 +15,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Camera.h"
+#include "../../Defines.h"
 
 namespace Graphics
 {
@@ -35,12 +36,8 @@ namespace Graphics
     void UseShader(const std::string shader_file_path);
 
     void AddBuffers(std::vector<VertexBuffer*>);
-    void AddBuffer(VertexBuffer*);
+    void AddBuffer(VertexBuffer buffer, Shared<VertexBuffer> vbo);
 
-    void MoveCameraX(float dis);
-    void MoveCameraY(float dis);
-    void MoveCameraZ(float dis);
-    void PrintCameraLocation();
     void SetMVP(int model_matrix_index);
     void InitMVP();
 }

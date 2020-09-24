@@ -27,6 +27,8 @@ namespace Ui
         explicit MainWindow(QWidget *parent = nullptr);
         ~MainWindow();
 
+        void UpdateView();
+
     protected:
         void keyPressEvent(QKeyEvent* e);
         void mousePressEvent(QMouseEvent* e);

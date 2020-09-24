@@ -147,6 +147,11 @@ namespace Ui
         mouse_x = e->x();
         mouse_y = e->y();
 
+        UpdateView();
+    }
+
+    void UpdateView()
+    {
         open_gl->update();
     }
 }

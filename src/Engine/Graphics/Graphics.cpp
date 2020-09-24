@@ -120,11 +120,11 @@ namespace Graphics
         //index_buffers.push_back(indices);
     }
 
-    void AddBuffer(VertexBuffer* vbo)
+    void AddBuffer(VertexBuffer buffer, Shared<VertexBuffer> vbo)
     {
-        vbos.push_back(vbo);
-        model_matrices.push_back(glm::mat4(1.0));
-        model_matrices.push_back(glm::mat4(1.0));
+        vbo.push_back(vbo);
+        //model_matrices.push_back(glm::mat4(1.0));
+        //model_matrices.push_back(glm::mat4(1.0));
         //model_matrices[0] = glm::scale(model_matrices[0], glm::vec3(5, 5, 5));
     }
 
@@ -147,7 +147,7 @@ namespace Graphics
     }
 
     ///@brief Draws To Screen
-    void Draw()
+    void Draw(Shared<VertexBuffer> vbo)
     {
         if(!initialized || shader_program == NULL_ID)
         {
