@@ -60,11 +60,11 @@ float Parse::Normalize(int num, int low, int high)
 ///@brief Parses model file to a VertexBuffer
 ///@param file_path The file path to the model file
 ///@return A pointer to VertexBuffer object
-std::shared_ptr<Graphics::VertexBuffer> Parse::FileToVbo(std::string file_path)
+Shared<Model> Parse::FileToModel(std::string file_path)
 {
     //{{x, y, z}, {r, g, b, a}},
 
-    std::vector<Graphics::Vertex> vertices = std::vector<Graphics::Vertex>();
+    std::vector<Vertex> vertices = std::vector<Vertex>();
     std::string file_contents = File::ReadFile(file_path);
 
     size_t i = FindNumber<size_t>(file_contents, 0); //find closest single digit
@@ -86,8 +86,8 @@ std::shared_ptr<Graphics::VertexBuffer> Parse::FileToVbo(std::string file_path)
         DECIMAL, HEX, BINARY, OCTAL
     };
 
-    Graphics::Vector3 vec3 = Graphics::Vector3();
-    Graphics::Color color = Graphics::Color();
+    Vector3 vec3 = Vector3();
+    Color color = Color();
     Attributes current_attribute = X;
 
 
@@ -154,7 +154,7 @@ std::shared_ptr<Graphics::VertexBuffer> Parse::FileToVbo(std::string file_path)
                     break;
                 case A:
                     color.a = num;
-                    vertices.push_back(Graphics::Vertex(vec3, color));
+                    vertices.push_back(Vertex(vec3, color));
 
                     //Reset vec3 and color for next vertex
                     vec3.x = 0;
@@ -173,6 +173,7 @@ std::shared_ptr<Graphics::VertexBuffer> Parse::FileToVbo(std::string file_path)
             //Finds next number
             size_t next_decimal = FindNumber<size_t>(file_contents, i);
             size_t next_hex = FindNumber<Numbers::Hex>(file_contents, i);
+
             if(next_decimal < next_hex)
             {
                 i = next_decimal;
@@ -202,6 +203,5 @@ std::shared_ptr<Graphics::VertexBuffer> Parse::FileToVbo(std::string file_path)
         i++;
     }
 
-    std::shared_ptr<Graphics::VertexBuffer> vbo = std::make_shared<Graphics::VertexBuffer>(vertices);
-    return vbo;
+    return CreateShared<Model>(vertices);
 }

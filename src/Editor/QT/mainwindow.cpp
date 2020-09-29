@@ -150,7 +150,7 @@ namespace Ui
         UpdateView();
     }
 
-    void UpdateView()
+    void MainWindow::UpdateView()
     {
         open_gl->update();
     }

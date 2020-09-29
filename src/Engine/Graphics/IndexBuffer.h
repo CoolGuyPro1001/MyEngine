@@ -1,11 +1,9 @@
 #ifndef INDEXBUFFER_H
 #define INDEXBUFFER_H
 
-#include "Units.h"
+#include "../../Common/Units.h"
 #include <GL/glew.h>
 
-#include <vector>
-#include <memory>
 
 namespace Graphics
 {

@@ -2,9 +2,6 @@
 #define SHADER_H
 
 #include <GL/glew.h>
-#include <string>
-#include <memory>
-#include <iostream>
 
 namespace Graphics
 {

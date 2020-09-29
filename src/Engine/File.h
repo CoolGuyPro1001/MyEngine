@@ -2,7 +2,6 @@
 #define FILE_H
 
 #include <fstream>
-#include <string>
 
 namespace File
 {

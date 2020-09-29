@@ -8,7 +8,7 @@ OpenGLWidget::~OpenGLWidget() {}
 
 void OpenGLWidget::paintGL()
 {
-    Graphics::Draw();
+    Graphics::Draw(buffer_id);
 }
 
 void OpenGLWidget::initializeGL()

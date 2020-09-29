@@ -14,9 +14,10 @@ class OpenGLWidget : public QOpenGLWidget
 public:
     explicit OpenGLWidget(QWidget *parent = nullptr);
     ~OpenGLWidget();
+     uint buffer_id;
      
 private:
-    
+
 protected:
     void paintGL() override;
     void initializeGL() override;

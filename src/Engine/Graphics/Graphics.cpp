@@ -12,7 +12,6 @@ namespace Graphics
     ///@param file_path The full file path to the shader file
     ///@return Shader Object
 
-    std::vector<VertexBuffer*> vbos = std::vector<VertexBuffer*>();
     std::vector<glm::mat4> model_matrices = std::vector<glm::mat4>();
     unsigned int vertex_array_id;
     glm::mat4 mvp;
@@ -110,24 +109,6 @@ namespace Graphics
         matrix_id = glGetUniformLocation(shader_program, "MVP");
     }
 
-    void AddBuffers(std::vector<VertexBuffer*> vertices/*, IndexBuffer* indices*/)
-    {
-        for(int v = 0; v < vertices.size(); v++)
-        {
-            vbos.push_back(vertices[v]);
-        }
-
-        //index_buffers.push_back(indices);
-    }
-
-    void AddBuffer(VertexBuffer buffer, Shared<VertexBuffer> vbo)
-    {
-        vbo.push_back(vbo);
-        //model_matrices.push_back(glm::mat4(1.0));
-        //model_matrices.push_back(glm::mat4(1.0));
-        //model_matrices[0] = glm::scale(model_matrices[0], glm::vec3(5, 5, 5));
-    }
-
     ///@brief Uses the shader program from .shader file
     ///@param shader_file_path The full path to the shader file
     void UseShader(const std::string shader_file_path)
@@ -147,7 +128,7 @@ namespace Graphics
     }
 
     ///@brief Draws To Screen
-    void Draw(Shared<VertexBuffer> vbo)
+    void Draw(uint& buffer_id)
     {
         if(!initialized || shader_program == NULL_ID)
         {
@@ -159,9 +140,10 @@ namespace Graphics
 
         SetMVP(0);
         GLCall(glUniformMatrix4fv(matrix_id, 1, GL_FALSE, &mvp[0][0]));
-        vbos[0]->Bind();
-        GLCall(glDrawArrays(GL_TRIANGLES, 0, vbos[0]->ByteSize() / sizeof(Vertex)));
+        GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer_id));
 
-        vbos[0]->UnBind();  
+        int size;
+        GLCall(glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &size));
+        GLCall(glDrawArrays(GL_TRIANGLES, 0, size));
     }
 }

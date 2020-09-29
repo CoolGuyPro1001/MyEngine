@@ -5,7 +5,7 @@
 #include <QApplication>
 #include "Editor/QT/mainwindow.h"
 
-#include "Engine/Graphics/Units.h"
+#include "Common/Units.h"
 #include "Engine/Graphics/IndexBuffer.h"
 
 
@@ -17,10 +17,21 @@
 #include "Editor/Parse.h"
 #include "Editor/Directory.h"
 
-#include "Defines.h"
+#include "Engine/Level.h"
+#include "Engine/Actor.h"
+
+#include "pch.h"
 
 int main(int argc, char* args[])
 {
+    QCoreApplication::addLibraryPath("./");
+    QApplication app(argc, args);
+    Ui::MainWindow mainwindow;
+    mainwindow.show();
+
+    Graphics::UseShader("res/BaseShader.shader");
+    Graphics::InitMVP();
+    
     bool running = true;
     TIME last_time;
     while(running)
@@ -29,19 +40,7 @@ int main(int argc, char* args[])
         std::chrono::duration<double, std::milli> delay = current_time - last_time;
         last_time = current_time;
 
-        
     }
-
-    /*std::cout << &Graphics::camera << "\n";
-    QCoreApplication::addLibraryPath("./");
-    QApplication app(argc, args);
-
-    Ui::MainWindow mainwindow;
-
-    mainwindow.show();
-    Graphics::UseShader("res/BaseShader.shader");
-    Graphics::InitMVP();
-    std::shared_ptr<Graphics::VertexBuffer> vbo = Parse::FileToVbo("res/model.c");
-    Graphics::AddBuffer(vbo.get());
-    return app.exec();*/
+    
+    return app.exec();
 }

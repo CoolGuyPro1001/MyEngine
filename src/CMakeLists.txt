@@ -9,6 +9,8 @@ set(PROJECT_SOURCES
     Main.cpp
     Common/Binary.cpp
     Common/Hex.cpp
+    Common/Units.cpp
+
     Engine/Graphics/Graphics.cpp
     Engine/Graphics/IndexBuffer.cpp
     Engine/Graphics/VertexBuffer.cpp
@@ -16,33 +18,39 @@ set(PROJECT_SOURCES
     Engine/Graphics/GLDebug.cpp
     Engine/Graphics/Camera.cpp
     Engine/File.cpp
-    Engine/Model.cpp
+    Engine/Actor.cpp
+    Engine/Core/Enviroment.cpp
+    Engine/Core/Load.cpp
+    Engine/Level.cpp
+
     Editor/Parse.cpp
     Editor/Directory.cpp
     Editor/QT/mainwindow.cpp
     Editor/QT/openglwidget.cpp
-    Engine/Core/Enviroment.cpp
 )
 
 set(PROJECT_HEADERS
     Common/Binary.h
     Common/Hex.h
+    Common/Units.cpp
+
     Engine/Graphics/Graphics.h
     Engine/Graphics/IndexBuffer.h
     Engine/Graphics/VertexBuffer.h
     Engine/Graphics/Shader.h
-    Engine/Graphics/Units.h
     Engine/Graphics/GLDebug.h
     Engine/Graphics/Camera.cpp
     Engine/File.h
+    Engine/Core/Load.h
+    Engine/Core/Enviroment.h
+    Engine/Level.h
+
     Editor/Directory.h
-    Engine/Model.h
     Engine/Actor.h
     Engine/Course.h
     Editor/Parse.h
     Editor/QT/mainwindow.h
     Editor/QT/openglwidget.h
-    Engine/Core/Enviroment.h
 )
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../res DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
@@ -61,6 +69,12 @@ add_executable(${PROJECT_NAME}
     ${PROJECT_HEADERS}
     ${UI_WRAP}
     ${MOC_SOURCES}
+)
+
+target_precompile_headers(
+    ${PROJECT_NAME}
+    PUBLIC
+    pch.h
 )
 
 target_link_libraries(${PROJECT_NAME}

@@ -2,30 +2,15 @@
 #define VERTEXBUFFER_H
 
 #include <GL/glew.h>
-#include "Units.h"
-
-#include <memory>
-#include <vector>
+#include "../../Common/Units.h"
 
 namespace Graphics
 {
-    class VertexBuffer
-    {
-    private:
-        unsigned int name;
-        std::vector<Vertex> vertices;
-    public:
-        VertexBuffer(std::vector<Vertex> vertices);
-        VertexBuffer();
-
-        int ByteSize();
-        std::vector<Vertex> GetVertices();
-        void RefreshData();
-        void Bind();
-        void UnBind();
-
-        VertexBuffer operator+=(VertexBuffer x);
-    };
+    void DeleteBuffer(uint& id);
+    void InitVertexBuffer(uint& id);
+    void AddDataToBuffer(std::vector<Vertex>& vertices, uint& vao_id);
+    void FormatData(uint& vao_id, int starting_offset);
+    void ModifyData(uint& vao_id, std::vector<Vertex>& vertices);
 }
 
 #endif
