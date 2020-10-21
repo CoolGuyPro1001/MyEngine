@@ -8,14 +8,14 @@ struct Model
 {
     Model(std::vector<Vertex> vertices);
     std::vector<Vertex> vertices;
-    uint id;
+    uint off_set;
 };
 
 class Actor
 {
 public:
     Actor();
-    Actor(Model* model);
+    Actor(Shared<Model> model);
     //Tick()
 
     //AddSoundEffect(SoundEffect sound);
@@ -24,7 +24,7 @@ public:
 
     Destroy();
 
-    Model* model;
+    Shared<Model> model;
     Vector3 position;
     Vector3 rotation;
     Vector3 scale;

@@ -28,6 +28,8 @@ namespace Ui
         ~MainWindow();
 
         void UpdateView();
+        uint& GetGraphicsBuffer();
+        uint& GetGraphicsVao();
 
     protected:
         void keyPressEvent(QKeyEvent* e);

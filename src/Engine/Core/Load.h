@@ -3,9 +3,10 @@
 
 #include "../Level.h"
 #include "../Graphics/VertexBuffer.h"
+#include "../Graphics/Graphics.h"
 
 namespace Engine
 {
-    void LoadLevel(std::string level_file_path);
+    void LoadLevel(Level& level);
 }
 #endif

@@ -6,6 +6,10 @@
 #include "Engine/File.h"
 #include "Common/Hex.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 namespace Parse
 {
     Shared<Model> FileToModel(std::string file_path);

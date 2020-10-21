@@ -5,11 +5,11 @@ layout(location = 0) in vec3 position_model_space;
 layout(location = 1) in vec4 color_model_space;
 
 out vec4 fragment_color;
-uniform mat4 MVP;
+uniform mat4 mvp;
 
 void main()
 {
-   gl_Position = MVP * vec4(position_model_space, 1);
+   gl_Position = mvp * vec4(position_model_space, 1);
    fragment_color = color_model_space;
 }
 

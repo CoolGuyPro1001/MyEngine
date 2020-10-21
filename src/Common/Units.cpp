@@ -1,5 +1,37 @@
 #include "Units.h"
 
+Vector3::Vector2(float x, float y) : x(x), y(y)
+{
+
+}
+
+Vector3::Vector2()
+{
+
+}
+
+void Vector2::operator=(const Vector2& v)
+{
+    x = v.x;
+    y = v.y;
+}
+
+bool Vector2::operator==(Vector2& v)
+{
+    if(v.x == x && v.y == y)
+        return true;
+    else
+        return false;
+}
+
+bool Vector2::operator!=(Vector2& v)
+{
+    if(v.x != x || v.y != y)
+        return true;
+    else
+        return false;
+}
+
 Vector3::Vector3(float x, float y, float z) : x(x), y(y), z(z)
 {
 

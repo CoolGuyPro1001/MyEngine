@@ -142,7 +142,7 @@ namespace Ui
         Graphics::camera.TurnCameraY(sensitivity * (e->x() - mouse_x));
         Graphics::camera.TurnCameraP(-sensitivity * (e->y() - mouse_y));
 
-        Graphics::camera.PrintCameraLocation();
+        //Graphics::camera.PrintCameraLocation();
 
         mouse_x = e->x();
         mouse_y = e->y();

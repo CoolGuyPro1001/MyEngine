@@ -1,6 +1,18 @@
 #ifndef UNITS_H
 #define UNITS_H
 
+struct Vector2
+{
+    float x, y;
+
+    Vector2(float x, float y);
+    Vector2();
+
+    void operator =(const Vector2& v);
+    bool operator ==(Vector2& v);
+    bool operator !=(Vector2& v);
+};
+
 struct Vector3
 {
     float x, y, z;

@@ -2,6 +2,7 @@ find_package(Qt5 REQUIRED COMPONENTS Core Widgets Gui OpenGL)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(GLM REQUIRED)
+find_package(SDL2 REQUIRED)
 
 add_definitions(${QT_DEFINITIONS})
 
@@ -85,6 +86,7 @@ target_link_libraries(${PROJECT_NAME}
     Qt::OpenGL
     OpenGL::GL
     GLEW::GLEW
+    SDL::SDL
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -94,6 +96,7 @@ target_include_directories(${PROJECT_NAME}
     ${Qt5Gui_INCLUDE_DIRS}
     ${Qt5OpenGL_INCLUDE_DIRS}
     ${GLM_INCLUDE_DIRS}
+    ${SDL2-INCLUDE_DIRS}
 )
 
 if(WIN32)

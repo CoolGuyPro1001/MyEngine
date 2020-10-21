@@ -12,14 +12,37 @@ namespace Graphics
     ///@param file_path The full file path to the shader file
     ///@return Shader Object
 
-    std::vector<glm::mat4> model_matrices = std::vector<glm::mat4>();
-    unsigned int vertex_array_id;
-    glm::mat4 mvp;
-    unsigned int matrix_id;
-    unsigned int shader_program = NULL_ID;
+    uint transfrom_uniform_id = NULL_ID;
+    uint shader_program = NULL_ID;
     bool initialized = false;
     Camera camera = Camera();
+
+    uint buffer_id = NULL_ID;
+    uint vao_id = NULL_ID;
+    std::vector<uint> render_counts = std::vector<uint>();
+    std::vector<uint> object_sizes = std::vector<uint>();
+    std::vector<glm::mat4> model_matrices = std::vector<glm::mat4>();
     
+    uint* BufferId()
+    {
+        return &buffer_id;
+    }
+
+    uint* VaoId()
+    {
+        return &vao_id;
+    }
+
+    std::vector<uint>& RenderCounts()
+    {
+        return render_counts;
+    }
+
+    std::vector<uint>& ObjectSizes()
+    {
+        return object_sizes;
+    }
+
     Shader ParseShader(const std::string& file_path)
     {
         enum ShaderType
@@ -100,13 +123,13 @@ namespace Graphics
         return true;
     }
 
-    void InitMVP()
+    void InitTransformUniform()
     {
         if(shader_program == NULL_ID)
         {
             std::cout << "Shader not set\n";
         }
-        matrix_id = glGetUniformLocation(shader_program, "MVP");
+        GLCallAssign(glGetUniformLocation(shader_program, "mvp"), transfrom_uniform_id);
     }
 
     ///@brief Uses the shader program from .shader file
@@ -118,32 +141,52 @@ namespace Graphics
         GLCall(glUseProgram(shader_program));
     }
 
-    void SetMVP(int model_index)
+    void AddModelMatrix(Vector3* position, Vector3* rotation, Vector3* scale)
     {
-        glm::vec3 look = glm::vec3(camera.looking_at.x, camera.looking_at.y, camera.looking_at.z);
-        glm::mat4 projection = glm::perspective(glm::radians(90.0f), 8.0f / 5.0f, 0.1f, 100.0f);
-        glm::mat4 view = glm::lookAt(camera.position, look, glm::vec3(0, 1, 0));
-        glm::mat4 model = model_matrices[model_index];
-        mvp = projection * view * model;  
+        glm::mat4 rotation_matrix =    glm::rotate(rotation->x, glm::vec3(1.0f, 0.0f, 0.0f)) * 
+                                glm::rotate(rotation->y, glm::vec3(0.0f, 1.0f, 0.0f)) * 
+                                glm::rotate(rotation->z, glm::vec3(0.0f, 0.0f, 1.0f));
+        glm::mat4 translate_matrix = glm::translate(glm::vec3(position->x, position->y, position->z));
+        glm::mat4 scale_matrix = glm::scale(glm::vec3(scale->x, scale->y, scale->z));
+        
+        model_matrices.push_back(translate_matrix * scale_matrix * rotation_matrix);
     }
 
     ///@brief Draws To Screen
-    void Draw(uint& buffer_id)
+    void Draw(Camera camera)
+    
     {
-        if(!initialized || shader_program == NULL_ID)
+        if(!initialized || shader_program == NULL_ID || transfrom_uniform_id == NULL_ID)
         {
             return;
         }
 
         
+
         GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-        SetMVP(0);
-        GLCall(glUniformMatrix4fv(matrix_id, 1, GL_FALSE, &mvp[0][0]));
-        GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer_id));
+        //SetMVP(0);
 
-        int size;
-        GLCall(glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &size));
-        GLCall(glDrawArrays(GL_TRIANGLES, 0, size));
+
+        GLCall(glBindVertexArray(vao_id))
+        uint draw_pointer = 0;
+        size_t matrix_index = 0;
+        for(int i = 0; i < render_counts.size(); i++)
+        {
+            int i1 = 0;
+            while(i1 < render_counts[i])
+            {
+                glm::vec3 look = glm::vec3(camera.looking_at.x, camera.looking_at.y, camera.looking_at.z);
+                glm::mat4 projection = glm::perspective(glm::radians(90.0f), 8.0f / 5.0f, 0.1f, 100.0f);
+                glm::mat4 view = glm::lookAt(camera.position, look, glm::vec3(0, 1, 0));
+
+                glm::mat4 mvp = projection * view * model_matrices[matrix_index];
+                GLCall(glUniformMatrix4fv(transfrom_uniform_id, 1, GL_FALSE, &(mvp[0][0])));
+                GLCall(glDrawArrays(GL_TRIANGLES, draw_pointer, object_sizes[i]));
+                i1++;
+                matrix_index++;
+            }
+            draw_pointer += object_sizes[i];
+        }
     }
 }

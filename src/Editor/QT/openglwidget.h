@@ -2,6 +2,8 @@
 #define OPENGLWIDGET_H
 
 #include "Engine/Graphics/Graphics.h"
+#include "Engine/Graphics/Camera.h"
+
 #include <QOpenGLWidget>
 #include <QKeyEvent>
 #include <iostream>
@@ -14,10 +16,8 @@ class OpenGLWidget : public QOpenGLWidget
 public:
     explicit OpenGLWidget(QWidget *parent = nullptr);
     ~OpenGLWidget();
-     uint buffer_id;
-     
 private:
-
+    Camera camera;
 protected:
     void paintGL() override;
     void initializeGL() override;

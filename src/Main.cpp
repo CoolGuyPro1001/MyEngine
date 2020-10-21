@@ -9,9 +9,7 @@
 #include "Engine/Graphics/IndexBuffer.h"
 
 
-#include <memory>
-#include <vector>
-#include <iostream>
+#include <thread>
 #include <chrono>
 
 #include "Editor/Parse.h"
@@ -19,20 +17,12 @@
 
 #include "Engine/Level.h"
 #include "Engine/Actor.h"
+#include "Engine/Core/Load.h"
+#include "Engine/Core/Enviroment.h"
+#include "Engine/Graphics/Camera.h"
 
-#include "pch.h"
-
-int main(int argc, char* args[])
+void Run(bool& running, Ui::MainWindow& main_window)
 {
-    QCoreApplication::addLibraryPath("./");
-    QApplication app(argc, args);
-    Ui::MainWindow mainwindow;
-    mainwindow.show();
-
-    Graphics::UseShader("res/BaseShader.shader");
-    Graphics::InitMVP();
-    
-    bool running = true;
     TIME last_time;
     while(running)
     {
@@ -40,7 +30,52 @@ int main(int argc, char* args[])
         std::chrono::duration<double, std::milli> delay = current_time - last_time;
         last_time = current_time;
 
+        Engine::Tick(main_window);
     }
+}
+
+int main(int argc, char* args[])
+{
+    QCoreApplication::addLibraryPath("./");
+    QApplication app(argc, args);
+    Ui::MainWindow main_window;
+    main_window.show();
+
+    Graphics::UseShader("res/BaseShader.shader");
+    Graphics::InitTransformUniform();
     
-    return app.exec();
+    //Vertices For The Model
+    std::vector<Vertex> vertices = std::vector<Vertex>();
+    vertices.push_back(Vertex(Vector3(-0.5, -0.5, 0), Color(1, 0, 0, 1)));
+    vertices.push_back(Vertex(Vector3(0.5, -0.5, 0), Color(1, 0, 0, 1)));
+    vertices.push_back(Vertex(Vector3(0.5, 0.5, 0), Color(1, 0, 0, 1)));
+    vertices.push_back(Vertex(Vector3(-0.5, -0.5, 0), Color(1, 0, 0, 1)));
+    vertices.push_back(Vertex(Vector3(-0.5, 0.5, 0), Color(1, 0, 0, 1)));
+    vertices.push_back(Vertex(Vector3(0.5, 0.5, 0), Color(1, 0, 0, 1)));
+
+    //Model
+    Shared<Model> model = Parse::FileToModel("res/model.c");
+
+    //Actor
+    std::vector<Actor> actors = std::vector<Actor>();
+    actors.push_back(Actor(model));
+    actors[0].position = Vector3(0.0f, 0.0f, 0.0f);
+    actors[0].rotation = Vector3(0.0f, 0.0f, 0.0f);
+    actors[0].scale = Vector3(1.0f, 1.0f, 1.0f);
+
+    //Camera
+    Graphics::Camera camera = Graphics::Camera();
+    //Level 
+    Level lvl = Level(actors);
+    lvl.AddCamera(camera);
+
+    Engine::LoadLevel(lvl);
+    
+    bool running = true;
+    std::thread engine(Run, std::ref(running), std::ref(main_window));
+    int return_code = app.exec();
+
+    running = false;
+    engine.join();
+    return return_code;
 }

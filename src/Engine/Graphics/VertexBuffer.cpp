@@ -22,16 +22,15 @@ namespace Graphics
 
         //Backup data from vertex buffer. Changing the buffer data deletes everything!
         float stored_data[buffer_size / sizeof(float)];
-        GLCall(glGetBufferSubData(GL_ARRAY_BUFFER, 0, buffer_size * sizeof(Vertex), stored_data));
+        GLCall(glGetBufferSubData(GL_ARRAY_BUFFER, 0, buffer_size, stored_data));
 
-        //Add the dataf
+        //Add the data
         GLCall(glBufferData(GL_ARRAY_BUFFER, vertices_size + buffer_size, 0, GL_DYNAMIC_DRAW));
         GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, buffer_size, stored_data));
         GLCall(glBufferSubData(GL_ARRAY_BUFFER, buffer_size, vertices_size, &(vertices[0])));
 
+        //Setup VAO
         GLCall(glGenVertexArrays(1, &vao_id));
-
-        buffer_size += vertices_size;
     }
 
     void FormatData(uint& vao_id, int starting_offset)

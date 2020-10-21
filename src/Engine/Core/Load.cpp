@@ -2,34 +2,54 @@
 
 namespace Engine
 {
-    void LoadLevel(Level& level, uint& buffer_id)
+    void LoadLevel(Level& level)
     {
         //Delete Graphics Buffer
-        Graphics::DeleteBuffer(buffer_id);
+        Graphics::DeleteBuffer(*Graphics::BufferId());
         
         //Init A New Buffer
-        Graphics::InitVertexBuffer(buffer_id);
+        Graphics::InitVertexBuffer(*Graphics::BufferId());
 
         //A vector of pointers to models (pointer to a vector of Vertices objects)
-        std::vector<Model*> model_ptrs;
-        std::vector<uint> off_sets;
+        std::vector<Shared<Model>> model_ptrs;
         uint off_set_pointer = 0;
+        bool model_exists = false;
 
         for(int i = 0; i < level.actors.size(); i++)
         {
-            for(int i1 = 0; i1 < model_ptrs.size(); i1++)
+            int i1 = 0;
+            while(i1 < model_ptrs.size())
             {
-                if(&(level.actors[i].model) != &(model_ptrs[i1]))
+                if(&(level.actors[i].model) == &(model_ptrs[i1]))
                 {
-                    model_ptrs[i1] = level.actors[i].model;
+                    model_exists = true;
+
+                    //Increase render count for that model
+                    Graphics::RenderCounts()[i1]++;
                 }
-                else
-                {
-                    Graphics::AddDataToBuffer(model_ptrs[i1]->vertices, model_ptrs[i1]->id);
-                    off_sets.push_back(off_set_pointer);
-                    Graphics::FormatData(model_ptrs[i1]->id, off_sets[i1]);
-                }
+
+                i1++;
             }
+
+            if(model_exists)
+            {
+                model_exists = false;
+                break;
+            }
+
+            model_ptrs.push_back(level.actors[i].model);
+
+            Shared<Model> m = model_ptrs[i1];
+            m->off_set = off_set_pointer;
+            
+            Graphics::AddDataToBuffer(m->vertices, *Graphics::VaoId());
+            Graphics::FormatData(*Graphics::VaoId(), off_set_pointer);
+
+            Graphics::RenderCounts().push_back(1);
+            Graphics::AddModelMatrix(&level.actors[i].position, &level.actors[i].rotation, &level.actors[i].scale);
+            
+            off_set_pointer += m->vertices.size() * sizeof(Vertex);
+            Graphics::ObjectSizes().push_back(off_set_pointer);
         }
     }
 }

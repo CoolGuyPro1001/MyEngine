@@ -5,6 +5,6 @@
 
 namespace Engine
 {
-    void Tick(Ui::MainWindow window);
+    void Tick(Ui::MainWindow& window);
 }
 #endif

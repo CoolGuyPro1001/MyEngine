@@ -20,6 +20,8 @@ namespace Graphics
         glm::mat3 RotationMatrixX(float deg);
         glm::mat3 RotationMatrixY(float deg); 
         glm::mat3 RotationMatrixZ(float deg);
+
+        void OnMove()
         
         glm::vec3 position = glm::vec3(0, 0, 0);
         glm::vec4 looking_at = glm::vec4(10, 0, 0, 1);

@@ -62,145 +62,39 @@ float Parse::Normalize(int num, int low, int high)
 ///@return A pointer to VertexBuffer object
 Shared<Model> Parse::FileToModel(std::string file_path)
 {
-    //{{x, y, z}, {r, g, b, a}},
-
+    Vector3 vec3 = Vector3();
+    Color color = Color();
     std::vector<Vertex> vertices = std::vector<Vertex>();
-    std::string file_contents = File::ReadFile(file_path);
 
-    size_t i = FindNumber<size_t>(file_contents, 0); //find closest single digit
-    
-    //Return nullptr if no number is found
-    if(i == std::string::npos)
+    FILE* file;
+    file = fopen(file_path.c_str(), "r");
+    if(file == NULL)
     {
+        printf("Can't open file");
         return nullptr;
     }
 
-    enum Attributes
+    while(true)
     {
-        X, Y, Z,
-        R, G, B, A
-    };
+        char red[16];
+        char green[16];
+        char blue[16];
+        char alpha[16];
 
-    enum NumberBase
-    {
-        DECIMAL, HEX, BINARY, OCTAL
-    };
-
-    Vector3 vec3 = Vector3();
-    Color color = Color();
-    Attributes current_attribute = X;
-
-
-    size_t begin = i; //beginning of string for substr()
-
-    //Keep track of number being negative or not
-    bool num_is_neg = false;
-    if(file_contents[i - 1] == '-')
-    {
-        num_is_neg = true;
-    }
-
-    NumberBase base = DECIMAL;
-    while(i < file_contents.size() || i != std::string::npos)
-    {
-        if(file_contents[i] == ',' || file_contents[i] == '}')
+        int res = fscanf(file, "%f %f %f %s %s %s %s\n", 
+        &vec3.x, &vec3.y, &vec3.z, &red, &green, &blue, &alpha);
+        
+        if(res == EOF)
         {
-            if(num_is_neg)
-            {
-                begin--;
-            }
-
-            float num;
-
-            //Substring to number
-            switch(base)
-            {
-                case DECIMAL:
-                    num = std::stod(file_contents.substr(begin, i - begin));
-                    break;
-                case HEX:
-                    num = Normalize(Numbers::Hex(file_contents.substr(begin, i - begin)).ToDecimal(), 0, 255);
-                    break;
-                case BINARY:
-                    num = Normalize(Numbers::Binary(file_contents.substr(begin, i - begin)).ToDecimal(), 0, 255);
-                    break;
-            }
-
-            switch(current_attribute)
-            {
-                case X:
-                    vec3.x = num;
-                    current_attribute = Y;
-                    break;
-                case Y:
-                    vec3.y = num;
-                    current_attribute = Z;
-                    break;
-                case Z:
-                    vec3.z = num;
-                    current_attribute = R;
-                    break;
-                case R:
-                    color.r = num;
-                    current_attribute = G;
-                    break;
-                case G:
-                    color.g = num;
-                    current_attribute = B;
-                    break;
-                case B:
-                    color.b = num;
-                    current_attribute = A;
-                    break;
-                case A:
-                    color.a = num;
-                    vertices.push_back(Vertex(vec3, color));
-
-                    //Reset vec3 and color for next vertex
-                    vec3.x = 0;
-                    vec3.y = 0;
-                    vec3.z = 0;
-                    
-                    color.r = 0;
-                    color.g = 0;
-                    color.b = 0;
-                    color.a = 0;
-
-                    current_attribute = X;
-                    break;
-            }
-
-            //Finds next number
-            size_t next_decimal = FindNumber<size_t>(file_contents, i);
-            size_t next_hex = FindNumber<Numbers::Hex>(file_contents, i);
-
-            if(next_decimal < next_hex)
-            {
-                i = next_decimal;
-                base = DECIMAL;
-            }
-            else
-            {
-                i = next_hex;
-                base = HEX;
-            }
-
-            if(i == std::string::npos)
-            {
-                break;
-            }
-            begin = i;
-            
-            if(file_contents[i - 1] == '-')
-            {
-                num_is_neg = true;
-            }
-            else
-            {
-                num_is_neg = false;
-            }
+            break;
         }
-        i++;
+
+        color.r = Normalize(Numbers::Hex(std::string(red)).ToDecimal(), 0, 255);
+        color.g = Normalize(Numbers::Hex(std::string(green)).ToDecimal(), 0, 255);
+        color.b = Normalize(Numbers::Hex(std::string(blue)).ToDecimal(), 0, 255);
+        color.a = Normalize(Numbers::Hex(std::string(alpha)).ToDecimal(), 0, 255);
+
+        vertices.push_back(Vertex(vec3, color));
     }
 
     return CreateShared<Model>(vertices);
