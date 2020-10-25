@@ -2,8 +2,11 @@
 
 namespace Engine
 {
-    void Tick(Ui::MainWindow& window)
+    void Tick(std::vector<std::function<void()>> tick_functions)
     {
-        window.UpdateView();
+        for(std::function<void()> ticks : tick_functions)
+        {
+            ticks;
+        }
     }
 }

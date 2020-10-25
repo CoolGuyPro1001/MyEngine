@@ -5,6 +5,8 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <functional>
+#include <map>
 
 typedef unsigned char uchar;
 typedef unsigned int uint;

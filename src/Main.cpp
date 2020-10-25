@@ -7,7 +7,7 @@
 
 #include "Common/Units.h"
 #include "Engine/Graphics/IndexBuffer.h"
-
+#include "Engine/Controller.h"
 
 #include <thread>
 #include <chrono>
@@ -30,7 +30,9 @@ void Run(bool& running, Ui::MainWindow& main_window)
         std::chrono::duration<double, std::milli> delay = current_time - last_time;
         last_time = current_time;
 
-        Engine::Tick(main_window);
+        std::vector<std::function<void()>> ticks;
+        Engine::AddTickFunction(ticks, )
+        Engine::Tick(ticks);
     }
 }
 
@@ -65,9 +67,14 @@ int main(int argc, char* args[])
 
     //Camera
     Graphics::Camera camera = Graphics::Camera();
+
+    //Controller
+    Controller camera_controller = Controller();
+    camera_controller.
     //Level 
     Level lvl = Level(actors);
     lvl.AddCamera(camera);
+
 
     Engine::LoadLevel(lvl);
     

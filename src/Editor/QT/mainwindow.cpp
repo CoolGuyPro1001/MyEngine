@@ -89,35 +89,6 @@ namespace Ui
 
     void MainWindow::keyPressEvent(QKeyEvent* e)
     {
-        if(!Graphics::initialized)
-        {
-            return;
-        }
-
-        switch(e->key())
-        {
-            case Qt::Key_W:
-                Graphics::camera.MoveCameraForward(1.0f);
-                break;
-            case Qt::Key_S:
-                Graphics::camera.MoveCameraForward(-1.0f);
-                break;
-            case Qt::Key_A:
-                Graphics::camera.MoveCameraSideways(1.0f);
-                break;
-            case Qt::Key_D:
-                Graphics::camera.MoveCameraSideways(-1.0f);
-                break;
-            case Qt::Key_E:
-                Graphics::camera.MoveCameraUpwards(1.0f);
-                break;
-            case Qt::Key_Q:
-                Graphics::camera.MoveCameraUpwards(-1.0f);
-                break;
-        }
-
-        Graphics::camera.PrintCameraLocation();
-        open_gl->update();
     }
 
     void MainWindow::mousePressEvent(QMouseEvent* e)

@@ -2,32 +2,30 @@
 
 namespace Graphics
 {
-    void Camera::MoveCameraForward(float dis)
+    void Camera::MoveCameraForward()
     {
-        position.x += glm::cos(orientation.y) * dis;
-        position.z += glm::sin(orientation.y) * dis;
-        position.y += glm::sin(orientation.p) * dis;
+        position.x += velocity.x;
+        position.z += velocity.y;
+        position.y += velocity.z;
 
-        looking_at.x += glm::cos(orientation.y) * dis;
-        looking_at.z += glm::sin(orientation.y) * dis;
-        looking_at.y += glm::sin(orientation.p) * dis;
+        looking_at.x += velocity.x;
+        looking_at.z += velocity.y;
+        looking_at.y += velocity.z;
     }
 
-    void Camera::MoveCameraSideways(float dis)
-    {
-        constexpr float HALF = glm::pi<float>() / 2;
-        
-        position.x += glm::cos(orientation.y - HALF) * dis;
-        position.z += glm::sin(orientation.y - HALF) * dis;
+    void Camera::MoveCameraSideways()
+    {    
+        position.x += velocity.x;
+        position.z += velocity.z;
 
-        looking_at.x += glm::cos(orientation.y - HALF) * dis;
-        looking_at.z += glm::sin(orientation.y - HALF) * dis;
+        looking_at.x += velocity.x;
+        looking_at.z += velocity.z;
     }
 
-    void Camera::MoveCameraUpwards(float dis)
+    void Camera::MoveCameraUpwards()
     {
-        position.y += dis;
-        looking_at.y += dis;
+        position.y += velocity.y;
+        looking_at.y += velocity.y;
     }
 
 
@@ -87,5 +85,49 @@ namespace Graphics
         std::cout << "At| X:" << position.x <<  " Y:" << position.y << " Z:" << position.z << "\n";
         std::cout << "Looking At| X:" << looking_at.x << " Y:" << looking_at.y << " Z:" << looking_at.z << "\n";
         std::cout << "Orientation| P:" << orientation.p << " Y:" << orientation.y << " R:" << orientation.r << "\n";
+    }
+
+    void Camera::Tick()
+    {
+        MoveCameraForward();
+        MoveCameraSideways();
+        MoveCameraUpwards();
+    }
+
+    void Camera::OnStickX(StickXEvent e)
+    {
+        float distance = e.value * 0.001;
+        constexpr float HALF = glm::pi<float>() / 2;
+        
+        velocity.x += glm::cos(orientation.y - HALF) * distance;
+        velocity.z += glm::sin(orientation.y - HALF) * distance;
+    }
+
+    void Camera::OnStickY(StickYEvent e)
+    {
+        float distance = e.value * 0.001;
+        velocity.x = glm::cos(orientation.y) * distance;
+        velocity.y = glm::sin(orientation.p) * distance;
+        velocity.z = glm::sin(orientation.y) * distance;
+    }
+
+    void Camera::OnUpButtonPress()
+    {
+        velocity.y = 5;
+    }
+
+    void Camera::OnUpButtonRelease()
+    {
+        velocity.y = 0;
+    }
+
+    void Camera::OnDownButtonPress()
+    {
+        velocity.y = -5;
+    }
+
+    void Camera::OnDownButtonRelease()
+    {
+        velocity.y = 0;
     }
 }

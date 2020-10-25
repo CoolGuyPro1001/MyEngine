@@ -8,10 +8,7 @@ OpenGLWidget::~OpenGLWidget() {}
 
 void OpenGLWidget::paintGL()
 {
-    if(camera != NULL)
-    {
-        Graphics::Draw(camera);
-    }
+    
 }
 
 void OpenGLWidget::initializeGL()
@@ -20,9 +17,4 @@ void OpenGLWidget::initializeGL()
     {
         doneCurrent();
     }
-}
-
-void OpenGLWidget::AddCamera(Camera camera)
-{
-    this->camera = camera;
 }

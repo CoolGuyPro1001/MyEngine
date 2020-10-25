@@ -23,6 +23,8 @@ set(PROJECT_SOURCES
     Engine/Core/Enviroment.cpp
     Engine/Core/Load.cpp
     Engine/Level.cpp
+    Engine/Events.cpp
+    Engine/Controller.cpp
 
     Editor/Parse.cpp
     Editor/Directory.cpp
@@ -45,6 +47,8 @@ set(PROJECT_HEADERS
     Engine/Core/Load.h
     Engine/Core/Enviroment.h
     Engine/Level.h
+    Engine/Controller.h
+    Engine/Events.h
 
     Editor/Directory.h
     Engine/Actor.h
@@ -86,7 +90,7 @@ target_link_libraries(${PROJECT_NAME}
     Qt::OpenGL
     OpenGL::GL
     GLEW::GLEW
-    SDL::SDL
+    SDL2::SDL2
 )
 
 target_include_directories(${PROJECT_NAME}

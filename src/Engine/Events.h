@@ -18,16 +18,18 @@ struct MouseEvent : Event
     int x;
     int y;
     MouseCodes button;
-}
+};
 
-struct StickEventX
+struct StickXEvent
 {
     int value;
-}
+    StickXEvent(int val);
+};
 
-struct StickEventY
+struct StickYEvent
 {
     int value;
-}
+    StickYEvent(int val);
+};
 
 #endif

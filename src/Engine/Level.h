@@ -7,11 +7,12 @@ struct Level
 {
 public:
     Level(std::vector<Actor> actors);
-    Level(std::vector<Graphics::Camera> actors, std::vector<Graphics::Camera> cameras);
-
-    void AddCamera(Graphics::Camera camera);
+    Level(std::vector<Actor> actors, std::vector<Graphics::Camera> cameras);
+    Level(std::vector<Actor> actors, std::funtion<void()> script);
+    Level(std::vector<Actor> actors, std::vector<Graphics::Camera> cameras, std::function<void()> script)
     
     std::vector<Actor> actors;
     std::vector<Graphics::Camera> cameras;
+    std::function<void()> script;
 };
 #endif
