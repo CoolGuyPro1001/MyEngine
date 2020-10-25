@@ -2,13 +2,13 @@
 
 You will need the following
 * An IDE for C++
-* The GLEW library (for OpenGL)
-* The GCC compiler
-* The GDB
-* Cmake
+* GNU Compiler (For Windows Users Download MinGW) : https://osdn.net/projects/mingw/releases/
+* Additionally you can get MSYS2 which comes with MinGW : https://www.msys2.org/
+* Cmake 3.17.0 : https://cmake.org/download/
 * Qt 5.15
- 
-For Windows 10 users, just install MSYS64 to get GNU programs and GLEW
+* The GLEW library (for OpenGL) : http://glew.sourceforge.net/
+* GLM : https://github.com/g-truc/glm
+* SDL2 (Click on MinGW) : https://www.libsdl.org/download-2.0.php
 
 # Coding Style
 
