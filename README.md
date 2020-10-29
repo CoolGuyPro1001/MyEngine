@@ -4,32 +4,31 @@ Edit 64 is a simplistic game engine and editor for Nintendo 64 titles that have 
 It was originally going to be a tool used to create *Super Mario 64 PC* mod, but I decided to just make it a game engine as well.
 
 It has two main parts:
-1. The Editor
-2. The Engine
+1. Edit64
+2. Engine64
 
-## Editor
-This is the program for creating the game itself.
+## Engine64
+A library to help in game development
 
-## Engine
-This is what games made by the *Editor* run on
-
-## Detaching
-The *Engine* is used by the editor for graphics, memory management, and more.
-When the game is compiled, the *Engine* becomes part of the game as well
+## Editor64
+A visual game editor that uses the Engine64 Library
 
 
-## Other Modules
-
-### The Connector
-This just combines the game's code and contents with the game engine itself to make the game
+## Dependent Libraries
 
 ### Qt
 Just simply Qt libraries and Qt interface classes
-It is part of the *Editor*
+It is part of *Edit64*
 
 ### OpenGL
-A part of the *Engine* that is for graphics rendering.
+A part of *Engine64* that is for graphics rendering.
 There will be more graphics libraries like Direct3D
 
+### SDL2
+Input and audio for *Engine64*
 
-Current Version: v0.0.5
+## GLM
+OpenGL mathematics library for 3D projection and vertex transformations.
+
+
+Current Version: v0.1.5
