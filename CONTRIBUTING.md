@@ -2,8 +2,7 @@
 
 You Will Need The Following
 * An IDE for C++
-* GNU Compiler (For Windows Users Download MinGW) : https://osdn.net/projects/mingw/releases/
-* Additionally you can get MSYS2 which comes with MinGW : https://www.msys2.org/
+* GNU Compiler (For Windows Users Download MSYS2) : https://www.msys2.org/
 * Cmake 3.17.0 : https://cmake.org/download/
 * Qt 5.15
 * GLM : https://github.com/g-truc/glm
