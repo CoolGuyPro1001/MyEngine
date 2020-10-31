@@ -23,8 +23,8 @@ struct ButtonAction
 
 struct StickAction
 {
-    std::function<void(StickEventX)> x_function;
-    std::function<void(StickEventY)> y_function;
+    std::function<void(StickXEvent)> x_function;
+    std::function<void(StickYEvent)> y_function;
 
     SDL_KeyCode up_key;
     SDL_KeyCode down_key;
@@ -54,13 +54,13 @@ public:
     };
 
     template<class PuppetType>
-    void BindStickX(std::string name, PuppetType& puppet, std::function<void(StickEventX)> stick_x_function)
+    void BindStickX(std::string name, PuppetType& puppet, std::function<void(StickXEvent)> stick_x_function)
     {
         stick_actions[name].x_function = std::bind(&PuppetType::stick_x_function, &puppet, std::placeholders::_1);
     };
 
     template<class PuppetType>
-    void BindStickY(std::string name, PuppetType& puppet, std::function<void(StickEventY)> stick_y_function)
+    void BindStickY(std::string name, PuppetType& puppet, std::function<void(StickYEvent)> stick_y_function)
     {
         stick_actions[name].y_function = std::bind(&PuppetType::stick_y_function, &puppet, std::placeholders::_1);
     };

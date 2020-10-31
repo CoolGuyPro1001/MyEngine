@@ -1,7 +1,7 @@
 #ifndef ACTOR_H
 #define ACTOR_H
 
-#include "../Common/Units.h"
+#include "Common/Units.h"
 #include "Events.h"
 
 
@@ -18,7 +18,7 @@ public:
     Actor();
     Actor(Shared<Model> model);
     
-    virtual Tick()
+    virtual Tick();
 
     //AddSoundEffect(SoundEffect sound);
     //RemoveSoundEffect(SoundEffect sound);

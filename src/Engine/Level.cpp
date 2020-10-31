@@ -11,15 +11,15 @@ Level::Level(std::vector<Actor> actors, std::vector<Graphics::Camera> cameras) :
 {
 }
 
-Level(std::vector<Actor> actors, std::funtion<void()> script) : 
+Level::Level(std::vector<Actor> actors, std::function<void()> script) : 
     actors(actors), 
     script(script)
 {
 }
 
-Level(std::vector<Actor> actors, std::vector<Graphics::Camera> cameras, std::function<void()> script) : 
+Level::Level(std::vector<Actor> actors, std::vector<Graphics::Camera> cameras, std::function<void()> script) : 
     actors(actors),
     cameras(cameras),
-    script(scripts)
+    script(script)
 {
 }

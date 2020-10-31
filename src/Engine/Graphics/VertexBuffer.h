@@ -2,7 +2,7 @@
 #define VERTEXBUFFER_H
 
 #include <GL/glew.h>
-#include "../../Common/Units.h"
+#include "../Common/Units.h"
 
 namespace Graphics
 {

@@ -1,8 +1,6 @@
 #ifndef ENVIROMENT_H
 #define ENVIROMENT_H
 
-#include "../../Editor/QT/mainwindow.h"
-
 namespace Engine
 {
     void Tick(std::vector<std::function<void()>>& tick_functions);
