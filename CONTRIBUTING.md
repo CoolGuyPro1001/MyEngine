@@ -1,14 +1,30 @@
 # Setup
 
-You will need the following
+You Will Need The Following
 * An IDE for C++
-* The GLEW library (for OpenGL)
-* The GCC compiler
-* The GDB
-* Cmake
+* GNU Compiler (For Windows Users Download MSYS2) : https://www.msys2.org/
+* Cmake 3.17.0 : https://cmake.org/download/
 * Qt 5.15
- 
-For Windows 10 users, just install MSYS64 to get GNU programs and GLEW
+* GLM : https://github.com/g-truc/glm
+* SDL2 (Click on MinGW) : https://www.libsdl.org/download-2.0.php
+
+CMake Setup Generator
+* open cmakegui.exe
+* For the source code path navigate to wherever your Edit64 folder is
+* For the build path do the same thing and add "/build"
+* Click on Configure
+* Select MinGW as Generator
+* Select Specify Native Compilers
+* For C Compiler use gcc.exe and for C++ Compiler use g++.exe
+* They should be in msys64/mingw64/bin
+
+CMake Add Library Paths
+* Click on GLM path
+* Navigate to (your GLM folder)/cmake/glm
+* Click on Select Folder
+* For SDL2 go to (your msys64 folder)/mingw64/lib/cmake/SDL2
+* For QT go to (your QT folder)/(version number)/mingw64-1229/lib/cmake/QT
+* Click on Configure to save changes
 
 # Coding Style
 
