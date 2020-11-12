@@ -1,5 +1,3 @@
 .vscode/
 build/
 obj/
-lib/glm/doc/
-lib/glm/test/
