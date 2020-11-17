@@ -1,8 +1,8 @@
 #ifndef OPENGLWIDGET_H
 #define OPENGLWIDGET_H
 
-#include "../../Engine/Graphics/Graphics.h"
-#include "../../Engine/Graphics/Camera.h"
+#include <Graphics/Graphics.h>
+#include <Graphics/Camera.h>
 
 #include <QOpenGLWidget>
 #include <QKeyEvent>

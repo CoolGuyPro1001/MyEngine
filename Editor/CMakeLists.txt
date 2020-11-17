@@ -1,8 +1,7 @@
-set(EDITOR_NAME Edit64)
 set(CMAKE_AUTOMOC ON)
 
 find_package(Qt5 REQUIRED COMPONENTS Core Widgets Gui OpenGL)
-#find_package(Engine64 REQUIRED)
+find_package(Engine64 REQUIRED)
 
 add_definitions(${QT_DEFINITIONS})
 
@@ -14,6 +13,36 @@ add_executable(
     ${UI_WRAP}
     ${MOC_SOURCES}
 )
+
+#Output
+set(BUILD_DIR "/Edit64")
+set_target_properties(${EDITOR_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG "${BUILD_DIR}/${OS}/bin")
+set_target_properties(${EDITOR_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE "${BUILD_DIR}/${OS}/bin")
+
+
+#Installation
+install(
+    TARGETS ${EDITOR_NAME}
+    CONFIGURATIONS Debug
+    LIBRARY DESTINATION Debug/bin
+)
+
+install(
+    TARGETS ${EDITOR_NAME}
+    CONFIGURATIONS Release
+    LIBRARY DESTINATION Release/bin
+)
+install(CODE "MESSAGE(\"Are you ready to Luigi time?\")")
+
+
+#Exportation
+export(
+    TARGETS
+    ${EDITOR_NAME}
+    NAMESPACE ${EDITOR_NAME}::
+    FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/Edit64Config.cmake"
+)
+
 
 target_sources(
     ${EDITOR_NAME}
@@ -35,7 +64,7 @@ target_link_libraries(
     Qt::Widgets
     Qt::Gui
     Qt::OpenGL
-    #Engine64::Engine64
+    ${ENGINE_NAME}
 )
 
 target_include_directories(
@@ -46,8 +75,8 @@ target_include_directories(
     ${Qt5Widgets_INCLUDE_DIRS}
     ${Qt5Gui_INCLUDE_DIRS}
     ${Qt5OpenGL_INCLUDE_DIRS}
-    #${Engine64_INCLUDE_DIRS}
 )
+
 
 if(WIN32)
 	add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD

@@ -1,9 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "Engine/Graphics/Graphics.h"
-#include "Engine/Graphics/Camera.h"
-
 #include <QMainWindow>
 #include "openglwidget.h"
 #include <QKeyEvent>

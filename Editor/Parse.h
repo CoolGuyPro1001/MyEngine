@@ -1,10 +1,10 @@
 #ifndef PARSE_H
 #define PARSE_H
 
-#include "Engine/Actor.h"
-#include "Common/Units.h"
-#include "Engine/File.h"
-#include "Common/Hex.h"
+#include <Common/Units.h>
+#include <File.h>
+#include <Actor.h>
+#include <Common/Hex.h>
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -1,7 +1,5 @@
 //define GL headers before QT
 
-#include "Engine/Graphics/Graphics.h"
-
 #include <QApplication>
 #include "Editor/QT/mainwindow.h"
 
@@ -15,11 +13,11 @@
 #include "Editor/Parse.h"
 #include "Editor/Directory.h"
 
-#include <Engine/Actor.h>
-#include "Engine/Actor.h"
-#include "Engine/Core/Load.h"
-#include "Engine/Core/Enviroment.h"
-#include "Engine/Graphics/Camera.h"
+#include <Actor.h>
+#include <Actor.h>
+#include <Core/Load.h>
+#include <Core/Enviroment.h>
+#include <Graphics/Camera.h>
 
 void Run(bool& running, Ui::MainWindow& main_window)
 {

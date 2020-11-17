@@ -1,5 +1,3 @@
-set(ENGINE_NAME Engine64)
-set(INCLUDE_PATH input)
 set(CMAKE_STATIC_LIBRARY_PREFIX "")
 
 #OS Stuff
@@ -11,9 +9,7 @@ if(UNIX)
     set(OS "Unix")
 endif()
 
-add_library(
-    ${ENGINE_NAME}
-)
+add_library(${ENGINE_NAME} STATIC)
 
 #Output
 set(BUILD_DIR "/Engine64")
@@ -48,6 +44,12 @@ install(
 install(CODE "MESSAGE(\"Are you ready to Mario time?\")")
 
 
+#Build
+file(
+    COPY src/ 
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include 
+    FILES_MATCHING PATTERN "*.h"
+)
 
 #Exportation
 export(
@@ -65,16 +67,11 @@ target_link_libraries(
     SDL2::SDL2
 )
 
-target_include_directories(
-    ${ENGINE_NAME}
-    PRIVATE
-    ${INCLUDE_PATH}
-)
-
 target_include_directories(${ENGINE_NAME}
     PUBLIC
     ${GLM_INCLUDE_DIRS}
     ${SDL2-INCLUDE_DIRS}
+    ${CMAKE_SOURCE_DIR}/Engine/src/
 )
 
 target_precompile_headers(

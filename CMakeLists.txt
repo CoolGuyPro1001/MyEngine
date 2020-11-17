@@ -17,5 +17,8 @@ find_package(OpenGL REQUIRED)
 
 #file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../res DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
+set(EDITOR_NAME Edit64)
+set(ENGINE_NAME Engine64)
+
 add_subdirectory(Engine)
 add_subdirectory(Editor)
