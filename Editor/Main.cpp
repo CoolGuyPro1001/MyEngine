@@ -1,19 +1,18 @@
 //define GL headers before QT
 
 #include <QApplication>
-#include "Editor/QT/mainwindow.h"
+#include "QT/mainwindow.h"
 
-#include "Common/Units.h"
-#include "Engine/Graphics/IndexBuffer.h"
-#include "Engine/Controller.h"
+#include <Common/Units.h>
+#include <Graphics/IndexBuffer.h>
+#include <Controller.h>
 
 #include <thread>
 #include <chrono>
 
-#include "Editor/Parse.h"
-#include "Editor/Directory.h"
+#include "Parse.h"
+#include "Directory.h"
 
-#include <Actor.h>
 #include <Actor.h>
 #include <Core/Load.h>
 #include <Core/Enviroment.h>
@@ -29,8 +28,8 @@ void Run(bool& running, Ui::MainWindow& main_window)
         last_time = current_time;
 
         std::vector<std::function<void()>> ticks;
-        Engine::AddTickFunction(ticks, )
-        Engine::Tick(ticks);
+        //Engine::AddTickFunction(ticks, )
+        //Engine::Tick(ticks);
     }
 }
 
@@ -68,10 +67,9 @@ int main(int argc, char* args[])
 
     //Controller
     Controller camera_controller = Controller();
-    camera_controller.
     //Level 
     Level lvl = Level(actors);
-    lvl.AddCamera(camera);
+    lvl.cameras.push_back(camera);
 
 
     Engine::LoadLevel(lvl);

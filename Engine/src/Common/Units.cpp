@@ -30,6 +30,11 @@ bool Vector2::operator!=(Vector2& v)
         return false;
 }
 
+Vector3 Vector2::ToVector3()
+{
+    return Vector3(x, y, 0);
+}
+
 Vector3::Vector3(float x, float y, float z) : x(x), y(y), z(z)
 {
 
@@ -61,6 +66,11 @@ bool Vector3::operator!=(Vector3& v)
         return true;
     else
         return false;
+}
+
+Vector2 Vector3::ToVector2()
+{
+    return Vector2(x, y);
 }
 
 Color::Color(float r, float g, float b, float a) : r(r), g(g), b(b), a(a) 
@@ -97,9 +107,13 @@ bool Color::operator!=(Color& c)
         return false;
 }
 
-Vertex::Vertex(Vector3 vector, Color color) : vector(vector), color(color) 
+Vertex::Vertex(Vector3 vector, Color color) : color(color), vector(vector)
 {
+}
 
+Vertex::Vertex(Vector2 vector, Color color) : color(color)
+{
+    this->vector = vector.ToVector3();
 }
 
 void Vertex::operator=(const Vertex& v)

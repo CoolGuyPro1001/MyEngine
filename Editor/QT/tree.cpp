@@ -91,7 +91,7 @@ bool TreeItem::insertColumns(int position, int columns)
     return true;
 }
 
-
+/*
 TreeModel::TreeModel(const QStringList& headers, const QString& data, QObject* parent) : QAbstractItemModel(parent)
 {
     QVector<QVariant> rootData;
@@ -165,4 +165,4 @@ QModelIndex TreeModel::parent(const QModelIndex& index) const
         return QModelIndex();
 
     return createIndex(parentItem->childNumber(), 0, parentItem);
-}
+}*/

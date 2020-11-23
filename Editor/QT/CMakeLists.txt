@@ -21,4 +21,6 @@ target_sources(
     mainwindow.cpp
     openglwidget.cpp
     tree.cpp
+
+    mainwindow.ui
 )

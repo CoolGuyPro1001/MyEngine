@@ -10,6 +10,7 @@
 #include <SDL2/SDL_keycode.h>
 #include <SDL2/SDL_gamecontroller.h>
 #include <SDL2/SDL_scancode.h>
+#include <SDL2/SDL_mouse.h>
 
 
 struct ButtonAction
@@ -19,6 +20,7 @@ struct ButtonAction
 
     SDL_KeyCode key;
     SDL_GameControllerButton button;
+    Uint8 mouse_button;
 };
 
 struct StickAction
@@ -65,10 +67,11 @@ public:
         stick_actions[name].y_function = std::bind(&PuppetType::stick_y_function, &puppet, std::placeholders::_1);
     };
 
-    void SetButtonKeyboard(std::string name, SDL_KeyCode key);
-    void SetButtonController(std::string name, SDL_GameControllerButton button);
-    void SetStickKeyboard(std::string name, SDL_KeyCode up_key, SDL_KeyCode down_key, SDL_KeyCode right_key, SDL_KeyCode left_key);
-    void SetStickController(std::string name, bool use_right_stick);
+    void SetButtonKeyboard(std::string action_name, SDL_KeyCode key);
+    void SetButtonController(std::string action_name, SDL_GameControllerButton button);
+    void SetStickKeyboard(std::string action_name, SDL_KeyCode up_key, SDL_KeyCode down_key, SDL_KeyCode right_key, SDL_KeyCode left_key);
+    void SetStickController(std::string action_name, bool use_right_stick);
+    void SetStickMouse(std::string action_name);
     
     void PollEvents();
 

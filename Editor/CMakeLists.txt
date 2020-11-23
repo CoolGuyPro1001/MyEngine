@@ -1,17 +1,16 @@
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
 
 find_package(Qt5 REQUIRED COMPONENTS Core Widgets Gui OpenGL)
 find_package(Engine64 REQUIRED)
 
 add_definitions(${QT_DEFINITIONS})
 
-qt5_wrap_ui(UI_WRAP ${EDITOR_UI})
-qt5_wrap_cpp(MOC_SOURCES ${EDITOR_HEADERS})
+#qt5_wrap_ui(UI_WRAP ${EDITOR_UI})
+#qt5_wrap_cpp(MOC_SOURCES ${EDITOR_HEADERS})
 
 add_executable(
     ${EDITOR_NAME}
-    ${UI_WRAP}
-    ${MOC_SOURCES}
 )
 
 #Output

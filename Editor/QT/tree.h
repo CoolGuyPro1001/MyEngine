@@ -33,6 +33,7 @@ private:
 };
 
 
+/*
 class TreeModel : public QAbstractItemModel
 {
     Q_OBJECT
@@ -66,4 +67,4 @@ private:
     TreeItem *getItem(const QModelIndex &index) const;
 
     TreeItem *rootItem;
-};
+};*/
