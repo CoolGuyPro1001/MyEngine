@@ -30,7 +30,7 @@ Input and audio for *Engine64*
 ## GLM
 OpenGL mathematics library for 3D projection and vertex transformations.
 
-##GLFW
+## GLFW
 The Default Window For Games. Edit64 will use QT for windowing instead.
 
 Current Version: v0.1.5
