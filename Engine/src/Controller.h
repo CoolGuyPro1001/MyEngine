@@ -43,28 +43,28 @@ class Controller
 public:
     Controller();
     
-    template<class PuppetType>
-    void BindButtonPress(std::string name, PuppetType& puppet, std::function<void()> button_press_function)
+    template<class PuppetType, class F>
+    void BindButtonPress(std::string name, PuppetType& puppet, F&& button_press_function)
     {
-        button_actions[name].down_function = std::bind(&PuppetType::button_press_function, &puppet);
+        button_actions[name].down_function = std::bind(button_press_function, &puppet);
     };
 
-    template<class PuppetType>
-    void BindButtonRelease(std::string name, PuppetType& puppet, std::function<void()> button_release_function)
+    template<class PuppetType, class F>
+    void BindButtonRelease(std::string name, PuppetType& puppet, F&& button_release_function)
     {
-        button_actions[name].up_function = std::bind(&PuppetType::button_release_function, &puppet);
+        button_actions[name].up_function = std::bind(button_release_function, &puppet);
     };
 
-    template<class PuppetType>
-    void BindStickX(std::string name, PuppetType& puppet, std::function<void(StickXEvent)> stick_x_function)
+    template<class PuppetType, class F>
+    void BindStickX(std::string name, PuppetType& puppet, F&& stick_x_function)
     {
-        stick_actions[name].x_function = std::bind(&PuppetType::stick_x_function, &puppet, std::placeholders::_1);
+        stick_actions[name].x_function = std::bind(stick_x_function, &puppet, std::placeholders::_1);
     };
 
-    template<class PuppetType>
-    void BindStickY(std::string name, PuppetType& puppet, std::function<void(StickYEvent)> stick_y_function)
+    template<class PuppetType, class F>
+    void BindStickY(std::string name, PuppetType& puppet, F&& stick_y_function)
     {
-        stick_actions[name].y_function = std::bind(&PuppetType::stick_y_function, &puppet, std::placeholders::_1);
+        stick_actions[name].y_function = std::bind(stick_y_function, &puppet, std::placeholders::_1);
     };
 
     void SetButtonKeyboard(std::string action_name, SDL_KeyCode key);

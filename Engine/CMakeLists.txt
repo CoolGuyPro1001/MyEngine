@@ -67,11 +67,13 @@ target_link_libraries(
     SDL2::SDL2
 )
 
-target_include_directories(${ENGINE_NAME}
+target_include_directories(
+    ${ENGINE_NAME}
     PUBLIC
     ${GLM_INCLUDE_DIRS}
-    ${SDL2-INCLUDE_DIRS}
+    ${SDL2_INCLUDE_DIRS}
     ${CMAKE_SOURCE_DIR}/Engine/src/
+    ${CMAKE_CURRENT_SOURCE_DIR}/libs/GLFW/include
 )
 
 target_precompile_headers(

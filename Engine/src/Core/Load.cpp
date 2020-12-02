@@ -11,45 +11,64 @@ namespace Engine
         Graphics::InitVertexBuffer(*Graphics::BufferId());
 
         //A vector of pointers to models (pointer to a vector of Vertices objects)
-        std::vector<Shared<Model>> model_ptrs;
-        uint off_set_pointer = 0;
-        bool model_exists = false;
-
-        for(int i = 0; i < level.actors.size(); i++)
+        
+        int offset = 0;
+        for(Shared<Model> model : level.models)
         {
-            int i1 = 0;
-            while(i1 < model_ptrs.size())
+            Graphics::AddDataToBuffer(model->vertices, *Graphics::VaoId());
+            Graphics::FormatData(*Graphics::VaoId(), offset);
+
+            offset += model->vertices.size() * sizeof(Vertex);
+        }
+    }
+
+    void RunLevel(Level& level)
+    {
+        TIME last_time;
+        bool running = true;
+
+        std::vector<int> sizes = std::vector<int>();
+
+        for(Shared<Model> model : level.models)
+        {
+            sizes.push_back(model->vertices.size() * sizeof(Vertex));
+        }
+
+        while(running)
+        {
+            TIME current_time = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double, std::milli> delay = current_time - last_time;
+            last_time = current_time;
+
+            //Model      Actors in Model
+            std::vector<std::vector<Actor>> total_actors = std::vector<std::vector<Actor>>(level.models.size());
+            Graphics::Camera world_camera;
+            
+            for(Controller controller : level.controllers)
             {
-                if(&(level.actors[i].model) == &(model_ptrs[i1]))
+                controller.PollEvents();
+            }
+
+            for(Actor actor : level.actors)
+            {
+                actor.Tick();
+
+                for(int i = 0; i < level.models.size(); i++)
                 {
-                    model_exists = true;
-
-                    //Increase render count for that model
-                    Graphics::RenderCounts()[i1]++;
+                    if(actor.model == level.models[i])
+                    {
+                        total_actors[i].push_back(actor);
+                    }
                 }
-
-                i1++;
             }
 
-            if(model_exists)
+            for(Graphics::Camera camera : level.cameras)
             {
-                model_exists = false;
-                break;
+                camera.Tick();
+                world_camera = camera;
             }
 
-            model_ptrs.push_back(level.actors[i].model);
-
-            Shared<Model> m = model_ptrs[i1];
-            m->off_set = off_set_pointer;
-            
-            Graphics::AddDataToBuffer(m->vertices, *Graphics::VaoId());
-            Graphics::FormatData(*Graphics::VaoId(), off_set_pointer);
-
-            Graphics::RenderCounts().push_back(1);
-            Graphics::AddModelMatrix(&level.actors[i].position, &level.actors[i].rotation, &level.actors[i].scale);
-            
-            off_set_pointer += m->vertices.size() * sizeof(Vertex);
-            Graphics::ObjectSizes().push_back(off_set_pointer);
+            Draw(sizes, total_actors, world_camera);
         }
     }
 }

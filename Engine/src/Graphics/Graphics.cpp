@@ -15,13 +15,11 @@ namespace Graphics
     uint transfrom_uniform_id = NULL_ID;
     uint shader_program = NULL_ID;
     bool initialized = false;
-    Camera camera = Camera();
 
     uint buffer_id = NULL_ID;
     uint vao_id = NULL_ID;
-    std::vector<uint> render_counts = std::vector<uint>();
-    std::vector<uint> object_sizes = std::vector<uint>();
-    std::vector<glm::mat4> model_matrices = std::vector<glm::mat4>();
+
+    GLFWwindow* window;
     
     uint* BufferId()
     {
@@ -31,16 +29,6 @@ namespace Graphics
     uint* VaoId()
     {
         return &vao_id;
-    }
-
-    std::vector<uint>& RenderCounts()
-    {
-        return render_counts;
-    }
-
-    std::vector<uint>& ObjectSizes()
-    {
-        return object_sizes;
     }
 
     Shader ParseShader(const std::string& file_path)
@@ -123,13 +111,23 @@ namespace Graphics
         return true;
     }
 
-    void InitTransformUniform()
+    bool InitWindow(int width, int height, std::string name)
     {
-        if(shader_program == NULL_ID)
+        window = glfwCreateWindow(width, height, name.c_str(), NULL, NULL);
+        if(!window)
         {
-            std::cout << "Shader not set\n";
+            glfwTerminate();
+            return false;
         }
-        GLCallAssign(glGetUniformLocation(shader_program, "mvp"), transfrom_uniform_id);
+
+        glfwMakeContextCurrent(window);
+        if(glewInit() != GLEW_OK)
+        {
+            std::cout << "Error: Window Couldn't Be Initiaded\n";
+            return false;
+        }
+
+        return true;
     }
 
     ///@brief Uses the shader program from .shader file
@@ -141,52 +139,62 @@ namespace Graphics
         GLCall(glUseProgram(shader_program));
     }
 
-    void AddModelMatrix(Vector3* position, Vector3* rotation, Vector3* scale)
+    glm::mat4 TransformationMatrix(Vector3 position, Vector3 rotation, Vector3 scale)
     {
-        glm::mat4 rotation_matrix =    glm::rotate(rotation->x, glm::vec3(1.0f, 0.0f, 0.0f)) * 
-                                glm::rotate(rotation->y, glm::vec3(0.0f, 1.0f, 0.0f)) * 
-                                glm::rotate(rotation->z, glm::vec3(0.0f, 0.0f, 1.0f));
-        glm::mat4 translate_matrix = glm::translate(glm::vec3(position->x, position->y, position->z));
-        glm::mat4 scale_matrix = glm::scale(glm::vec3(scale->x, scale->y, scale->z));
+        glm::mat4 rotation_matrix =    glm::rotate(rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) * 
+                                glm::rotate(rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) * 
+                                glm::rotate(rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+        glm::mat4 translate_matrix = glm::translate(glm::vec3(position.x, position.y, position.z));
+        glm::mat4 scale_matrix = glm::scale(glm::vec3(scale.x, scale.y, scale.z));
         
-        model_matrices.push_back(translate_matrix * scale_matrix * rotation_matrix);
+        return translate_matrix * scale_matrix * rotation_matrix;
     }
 
     ///@brief Draws To Screen
-    void Draw(Camera camera)
-    
+    void Draw(std::vector<int> sizes, std::vector<std::vector<Actor>>& total_actors, Camera& camera)
     {
         if(!initialized || shader_program == NULL_ID || transfrom_uniform_id == NULL_ID)
         {
             return;
         }
 
-        
-
+        //Setup
         GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+        GLCall(glBindVertexArray(vao_id));
 
-        //SetMVP(0);
+        //Create Matrix For 3D View
+        glm::vec3 look = glm::vec3(camera.looking_at.x, camera.looking_at.y, camera.looking_at.z);
+        glm::mat4 projection = glm::perspective(glm::radians(90.0f), 8.0f / 5.0f, 0.1f, 100.0f);
+        glm::mat4 view = glm::lookAt(camera.position, look, glm::vec3(0, 1, 0));
+        glm::mat4 to_3d = projection * view;
+        
+        //Assign Shader 3D Matrix Uniform
+        uint world_uniform_id;
+        GLCallAssign(glGetUniformLocation(shader_program, "to_3d"), world_uniform_id);
+        GLCall(glUniformMatrix4fv(world_uniform_id, 1, GL_FALSE, &(to_3d[0][0])));
 
-
-        GLCall(glBindVertexArray(vao_id))
-        uint draw_pointer = 0;
-        size_t matrix_index = 0;
-        for(int i = 0; i < render_counts.size(); i++)
+        //Draw Actors
+        int offset = 0;
+        for(int model = 0; model < total_actors.size(); model++)
         {
-            int i1 = 0;
-            while(i1 < render_counts[i])
+            std::vector<glm::mat4> transforms = std::vector<glm::mat4>();
+            for(Actor actor : total_actors[model])
             {
-                glm::vec3 look = glm::vec3(camera.looking_at.x, camera.looking_at.y, camera.looking_at.z);
-                glm::mat4 projection = glm::perspective(glm::radians(90.0f), 8.0f / 5.0f, 0.1f, 100.0f);
-                glm::mat4 view = glm::lookAt(camera.position, look, glm::vec3(0, 1, 0));
-
-                glm::mat4 mvp = projection * view * model_matrices[matrix_index];
-                GLCall(glUniformMatrix4fv(transfrom_uniform_id, 1, GL_FALSE, &(mvp[0][0])));
-                GLCall(glDrawArrays(GL_TRIANGLES, draw_pointer, object_sizes[i]));
-                i1++;
-                matrix_index++;
+                transforms.push_back(TransformationMatrix(actor.position, actor.rotation, actor.scale));
             }
-            draw_pointer += object_sizes[i];
+
+            uint transform_uniform_id;
+            GLCallAssign(glGetUniformLocation(shader_program, "transformations"), transform_uniform_id);
+            GLCall(glUniformMatrix4fv(transform_uniform_id, transforms.size(), GL_FALSE, &(transforms[0][0][0])));
+
+            GLCall(glDrawArraysInstanced(GL_TRIANGLES, offset, offset + sizes[model], total_actors[model].size()));
+
+            offset += sizes[model];
+        }
+
+        if(window)
+        {
+            glfwSwapBuffers(window);
         }
     }
 }

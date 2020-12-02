@@ -18,21 +18,6 @@
 #include <Core/Enviroment.h>
 #include <Graphics/Camera.h>
 
-void Run(bool& running, Ui::MainWindow& main_window)
-{
-    TIME last_time;
-    while(running)
-    {
-        TIME current_time = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double, std::milli> delay = current_time - last_time;
-        last_time = current_time;
-
-        std::vector<std::function<void()>> ticks;
-        //Engine::AddTickFunction(ticks, )
-        //Engine::Tick(ticks);
-    }
-}
-
 int main(int argc, char* args[])
 {
     QCoreApplication::addLibraryPath("./");

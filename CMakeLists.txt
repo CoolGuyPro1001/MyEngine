@@ -22,3 +22,4 @@ set(ENGINE_NAME Engine64)
 
 add_subdirectory(Engine)
 add_subdirectory(Editor)
+add_subdirectory(cat_and_mouse)

@@ -1,6 +1,3 @@
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTOUIC ON)
-
 find_package(Qt5 REQUIRED COMPONENTS Core Widgets Gui OpenGL)
 find_package(Engine64 REQUIRED)
 
@@ -13,10 +10,13 @@ add_executable(
     ${EDITOR_NAME}
 )
 
+set_property(TARGET ${EDITOR_NAME} PROPERTY AUTOMOC ON)
+set_property(TARGET ${EDITOR_NAME} PROPERTY AUTOUIC ON)
+
 #Output
-set(BUILD_DIR "/Edit64")
-set_target_properties(${EDITOR_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG "${BUILD_DIR}/${OS}/bin")
-set_target_properties(${EDITOR_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE "${BUILD_DIR}/${OS}/bin")
+#set(BUILD_DIR "/Edit64")
+#set_target_properties(${EDITOR_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG "${BUILD_DIR}/${OS}/bin")
+#set_target_properties(${EDITOR_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE "${BUILD_DIR}/${OS}/bin")
 
 
 #Installation

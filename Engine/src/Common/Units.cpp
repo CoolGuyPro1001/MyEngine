@@ -14,7 +14,7 @@ void Vector2::operator=(const Vector2& v)
     y = v.y;
 }
 
-bool Vector2::operator==(Vector2& v)
+bool Vector2::operator==(const Vector2& v) const
 {
     if(v.x == x && v.y == y)
         return true;
@@ -22,12 +22,17 @@ bool Vector2::operator==(Vector2& v)
         return false;
 }
 
-bool Vector2::operator!=(Vector2& v)
+bool Vector2::operator!=(const Vector2& v) const
 {
     if(v.x != x || v.y != y)
         return true;
     else
         return false;
+}
+
+Vector2 Vector2::operator+(const Vector2& v) const
+{
+    return Vector2(x + v.x, y + v.y);
 }
 
 Vector3 Vector2::ToVector3()
@@ -52,7 +57,7 @@ void Vector3::operator=(const Vector3& v)
     z = v.z;
 }
 
-bool Vector3::operator==(Vector3& v)
+bool Vector3::operator==(const Vector3& v) const
 {
     if(v.x == x && v.y == y && v.z == z)
         return true;
@@ -60,12 +65,17 @@ bool Vector3::operator==(Vector3& v)
         return false;
 }
 
-bool Vector3::operator!=(Vector3& v)
+bool Vector3::operator!=(const Vector3& v) const
 {
     if(v.x != x || v.y != y || v.z == z)
         return true;
     else
         return false;
+}
+
+Vector3 Vector3::operator+(const Vector3& v) const
+{
+    return Vector3(x + v.x, y + v.y, z + v.z);
 }
 
 Vector2 Vector3::ToVector2()
@@ -91,7 +101,7 @@ void Color::operator=(const Color& c)
     a = c.a;
 }
 
-bool Color::operator==(Color& c)
+bool Color::operator==(const Color& c) const
 {
     if(c.r == r && c.g == g && c.b == b && c.a == a)
         return true;
@@ -99,12 +109,16 @@ bool Color::operator==(Color& c)
         return false;
 }
 
-bool Color::operator!=(Color& c)
+bool Color::operator!=(const Color& c) const
 {
     if(c.r != r || c.g != g || c.b != b || c.a != a)
         return true;
     else
         return false;
+}
+
+Vertex::Vertex()
+{
 }
 
 Vertex::Vertex(Vector3 vector, Color color) : color(color), vector(vector)
@@ -122,7 +136,7 @@ void Vertex::operator=(const Vertex& v)
     color = v.color;
 }
 
-bool Vertex::operator==(Vertex& v)
+bool Vertex::operator==(const Vertex& v) const
 {
     if(v.vector == vector && v.color == color)
         return true;
@@ -130,7 +144,7 @@ bool Vertex::operator==(Vertex& v)
         return false;
 }
 
-bool Vertex::operator!=(Vertex& v)
+bool Vertex::operator!=(const Vertex& v) const
 {
     if(v.vector != vector || v.color != color)
         return true;
