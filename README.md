@@ -33,4 +33,4 @@ OpenGL mathematics library for 3D projection and vertex transformations.
 ### GLFW
 The Default Window For Games. Edit64 will use QT for windowing instead.
 
-Current Version: v0.1.5
+Current Version: v0.1.8
