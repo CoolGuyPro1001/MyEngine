@@ -3,7 +3,6 @@
 
 #include "Events.h"
 
-#include <functional>
 
 namespace EventSystem
 {

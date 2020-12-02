@@ -1,5 +1,4 @@
 #include "GLDebug.h"
-#include <iostream>
 
 void ClearErrors()
 {

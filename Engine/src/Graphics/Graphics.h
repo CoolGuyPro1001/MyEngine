@@ -1,18 +1,9 @@
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
-#include "../File.h"
-#include "Shader.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
-
-#include <glm/glm.hpp>
-#include <glm/gtx/transform.hpp>
-#include <glm/gtx/projection.hpp>
-
+#include "Graphics/Shader.h"
+#include "Graphics/VertexBuffer.h"
+#include "Common/Units.h"
 #include "Camera.h"
 #include "Actor.h"
 

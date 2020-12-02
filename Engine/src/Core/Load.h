@@ -2,12 +2,6 @@
 #define LOAD_H
 
 #include "Level.h"
-#include "Graphics/VertexBuffer.h"
-#include "Graphics/Graphics.h"
-
-#include "Actor.h"
-#include "Controller.h"
-#include "Graphics/Camera.h"
 
 namespace Engine
 {

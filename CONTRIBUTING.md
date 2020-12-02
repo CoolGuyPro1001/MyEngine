@@ -115,7 +115,22 @@ Smart pointers are preferred
 
 Brackets on new line, not on same line
 
-
 Create classes **ONLY** when needed.
+
 Use namespaces as containers for functions
 
+
+## Including
+Lower amount of #includes in header files.
+
+External Libraries (STD, STL, etc.) are preferred inside pch.h
+
+### Include Structure
+
+[Direct Header File By Name]
+
+[System Specific Libraries (WIN32, OSX, etc.)]
+
+[Engine Header Files (Path Starts From Top)]
+
+[Any External Libraries That Couldn't Be In Precompiled Header]

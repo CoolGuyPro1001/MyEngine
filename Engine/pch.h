@@ -2,6 +2,7 @@
 #define PCH_H
 
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <memory>
 #include <string>
@@ -10,6 +11,19 @@
 #include <limits.h>
 #include <cmath>
 #include <chrono>
+#include <climits>
+#include <math.h>
+
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_keyboard.h>
+#include <SDL2/SDL_keycode.h>
+#include <SDL2/SDL_gamecontroller.h>
+#include <SDL2/SDL_scancode.h>
+#include <SDL2/SDL_mouse.h>
+
+#include <GL/glew.h>
+
+#include <GLFW/glfw3.h>
 
 typedef unsigned char uchar;
 typedef unsigned int uint;

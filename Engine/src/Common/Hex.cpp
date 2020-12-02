@@ -1,4 +1,5 @@
 #include "Hex.h"
+#include "Binary.h"
 
 namespace Numbers
 {

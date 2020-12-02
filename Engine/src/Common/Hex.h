@@ -1,10 +1,6 @@
 #ifndef HEX_H
 #define HEX_H
 
-#include <string>
-#include <math.h>
-#include "Binary.h"
-
 namespace Numbers
 {
     class Binary;

@@ -1,7 +1,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "../Events.h"
+#include "Events.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Graphics

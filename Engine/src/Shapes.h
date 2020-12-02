@@ -1,7 +1,6 @@
 #ifndef SHAPES_H
 #define SHAPES_H
 
-#include <cstdarg>
 #include "Common/Units.h"
 
 //Shape and shape_index are for setting triangles of different vertices
