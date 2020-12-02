@@ -3,6 +3,8 @@
 Edit 64 is a simplistic game engine and editor for Nintendo 64 titles that have been ported to PC
 It was originally going to be a tool used to create *Super Mario 64 PC* mod, but I decided to just make it a game engine as well.
 
+It's designed to be lightweight. You can run games on a potato. This doesn't mean games will look awful, it just allows complete customization of the memory layout.
+
 It has two main parts:
 1. Edit64
 2. Engine64
