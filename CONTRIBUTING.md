@@ -1,7 +1,9 @@
 # Setup
 
+Note that I am still learning CMake CLI
+
 You Will Need The Following
-* An IDE for C++
+* An IDE for C++ (Or Not If Like Using Terminal)
 * GNU Compiler (For Windows Users Download MSYS2) : https://www.msys2.org/
 * Cmake 3.17.0 : https://cmake.org/download/
 * Qt 5.15
@@ -91,13 +93,19 @@ else
 
 **++/-- on right**
 
-For nested loops, follow the patern for iterator variable
+Variable names like i, j, x are ok
+
+For nested loops, try to use naming.
+If you need placeholder variable names use:
 * First loop: i
 * 2nd: i1
 * 3rd: i2
 
-**Unless the nested loop has to do with coordinates, etc.**
-**Just use the patern for nested loops where iterator has not meaning**
+**For nested loops that handle coordinates, colors, etc. use the approriate names (xyz, rgba)**
+
+**Just use the pattern for nested loops where iterator has not meaning**
+
+**Prefer foreach over for**
 
 **Don't use goto**
 
@@ -105,6 +113,10 @@ For infinite loops use
 ```cpp
 while(true)
 ```
+
+## Functions
+Don't use * for referencing, use &.
+Only use * if you actually want a pointer.
 
 
 ## Other Styles
@@ -117,7 +129,14 @@ Brackets on new line, not on same line
 
 Create classes **ONLY** when needed.
 
-Use namespaces as containers for functions
+Use namespaces as containers for functions that are similar.
+But tone down the namespacing.
+
+The line width is 120. Any variables, conditions, or cout strings surpassing the width must be put on a new line and then indented one more.
+```cpp
+void SomeFunctionWitLotsOfParameters(bool b, char c, double d, float f, int i, long l, short s, uchar uc, uint ui, 
+    ulong ul, ushort us);
+```
 
 
 ## Including
@@ -134,3 +153,9 @@ External Libraries (STD, STL, etc.) are preferred inside pch.h
 [Engine Header Files (Path Starts From Top)]
 
 [Any External Libraries That Couldn't Be In Precompiled Header]
+
+
+## CMake
+Don't use add_library() for adding sources, use target_sources()
+
+When adding sources, don't do GLOB, just list them explicitly
