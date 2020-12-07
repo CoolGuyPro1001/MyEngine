@@ -9,6 +9,7 @@ if(UNIX)
     set(OS "Unix")
 endif()
 
+
 add_library(${ENGINE_NAME} STATIC)
 
 #Output
@@ -16,6 +17,7 @@ set(BUILD_DIR "/Engine64")
 set_target_properties(${ENGINE_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_DEBUG "${BUILD_DIR}/debug/lib/${OS}")
 set_target_properties(${ENGINE_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELEASE "${BUILD_DIR}/release/lib/${OS}")
 
+add_compile_options(-Wl,--verbose -Wl,--print-map)
 
 #Installation
 install(
@@ -59,6 +61,7 @@ export(
     FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/Engine64Config.cmake"
 )
 
+
 target_link_libraries(
     ${ENGINE_NAME}
     PUBLIC
@@ -73,7 +76,6 @@ target_include_directories(
     ${GLM_INCLUDE_DIRS}
     ${SDL2_INCLUDE_DIRS}
     ${CMAKE_SOURCE_DIR}/Engine/src/
-    ${CMAKE_CURRENT_SOURCE_DIR}/libs/GLFW/include
 )
 
 target_precompile_headers(

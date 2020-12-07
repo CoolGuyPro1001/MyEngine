@@ -5,7 +5,6 @@
 #include <fstream>
 #include <vector>
 #include <memory>
-#include <string>
 #include <functional>
 #include <map>
 #include <limits.h>
@@ -22,8 +21,6 @@
 #include <SDL2/SDL_mouse.h>
 
 #include <GL/glew.h>
-
-#include <GLFW/glfw3.h>
 
 typedef unsigned char uchar;
 typedef unsigned int uint;

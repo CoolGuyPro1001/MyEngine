@@ -6,9 +6,30 @@
 #include "Controller.h"
 #include "Graphics/Camera.h"
 
+#include <SDL2/SDL.h>
+
 
 namespace Engine
 {
+    static Level current_level = Level();
+
+    void Start(int window_width, int window_height, const char* window_name)
+    {
+        if(!Graphics::InitWindow(window_width, window_height, window_name) || !Graphics::Initialize())
+        {
+            exit(EXIT_FAILURE);
+        }
+
+        if(SDL_Init(SDL_INIT_GAMECONTROLLER | SDL_INIT_AUDIO) != 0)
+        {
+            SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
+            exit(EXIT_FAILURE);
+        }
+        //atexit(SDL_Quit);*/
+
+        Graphics::UseShader("../../res/BaseShader.shader");
+    }
+
     void LoadLevel(Level& level)
     {
         //Delete Graphics Buffer
@@ -27,16 +48,18 @@ namespace Engine
 
             offset += model->vertices.size() * sizeof(Vertex);
         }
+
+        current_level = level;
     }
 
-    void RunLevel(Level& level)
+    void Run()
     {
         TIME last_time;
         bool running = true;
 
         std::vector<int> sizes = std::vector<int>();
 
-        for(Shared<Model> model : level.models)
+        for(Shared<Model> model : current_level.models)
         {
             sizes.push_back(model->vertices.size() * sizeof(Vertex));
         }
@@ -48,28 +71,25 @@ namespace Engine
             last_time = current_time;
 
             //Model      Actors in Model
-            std::vector<std::vector<Actor>> total_actors = std::vector<std::vector<Actor>>(level.models.size());
+            std::vector<std::vector<Actor>> total_actors = std::vector<std::vector<Actor>>(current_level.models.size());
             Graphics::Camera world_camera;
             
-            for(Controller controller : level.controllers)
-            {
-                controller.PollEvents();
-            }
+            PollEvents(level.controllers);
 
-            for(Actor actor : level.actors)
+            for(Actor actor : current_level.actors)
             {
                 actor.Tick();
 
-                for(int i = 0; i < level.models.size(); i++)
+                for(int i = 0; i < current_level.models.size(); i++)
                 {
-                    if(actor.model == level.models[i])
+                    if(actor.model == current_level.models[i])
                     {
                         total_actors[i].push_back(actor);
                     }
                 }
             }
 
-            for(Graphics::Camera camera : level.cameras)
+            for(Graphics::Camera camera : current_level.cameras)
             {
                 camera.Tick();
                 world_camera = camera;
@@ -77,5 +97,7 @@ namespace Engine
 
             Draw(sizes, total_actors, world_camera);
         }
+
+        Graphics::EndWindow();
     }
 }

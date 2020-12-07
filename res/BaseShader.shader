@@ -6,12 +6,11 @@ layout(location = 1) in vec4 color;
 
 out vec4 fragment_color;
 uniform mat4 to_3d;
-uniform mat4* transformations;
+uniform mat4 transformations;
 
 void main()
 {
-   mat4 transfrom = transformations[gl_InstanceID];
-   gl_Position = to_3d * transform * vec4(position, 1.0);
+   gl_Position = to_3d * transformations * vec4(position, 1.0);
    fragment_color = color;
 }
 

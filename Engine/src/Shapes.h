@@ -5,10 +5,10 @@
 
 //Shape and shape_index are for setting triangles of different vertices
 
-template<typename V>
+template<class V>
 std::vector<Vertex> Triangle(V a, V b, V c, Color color, std::vector<Vertex>& shape, size_t shape_index)
 {
-    if(typeid(V) != typeid(Vector2) || typeid(V) != typeid(Vector3))
+    if(!(typeid(V) != typeid(Vector2) || typeid(V) != typeid(Vector3)))
     {
         return std::vector<Vertex>(0);
     }
@@ -25,6 +25,20 @@ std::vector<Vertex> Triangle(V a, V b, V c, Color color, std::vector<Vertex>& sh
 
     return vertices;
 };
+
+Shared<Model> Square(float size, Color color)
+{
+    std::vector<Vertex> vertices = std::vector<Vertex>(6);
+    vertices[0] = Vertex(Vector2(0, 0), color);
+    vertices[1] = Vertex(Vector2(size, 0), color);
+    vertices[2] = Vertex(Vector2(size, size), color);
+    vertices[3] = Vertex(Vector2(0, 0), color);
+    vertices[4] = Vertex(Vector2(0, size), color);
+    vertices[5] = Vertex(Vector2(size, size), color);
+
+    Shared<Model> square = CreateShared<Model>(vertices);
+    return square;
+}
 
 std::vector<Vertex> Circle(float radius, int triangles, Color color, std::vector<Vertex>& shape, size_t shape_index)
 {

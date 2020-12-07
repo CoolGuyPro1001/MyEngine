@@ -1,6 +1,8 @@
 #include "Shader.h"
 #include "GLDebug.h"
 
+#include "File.h"
+
 namespace Graphics
 {
     Shader::Shader() :
@@ -22,23 +24,27 @@ namespace Graphics
 
         unsigned int id = glCreateShader(type);
         const char* src = source.c_str();
-        GLCall(glShaderSource(id, 1, &src, nullptr));
-        GLCall(glCompileShader(id));
+        glShaderSource(id, 1, &src, nullptr);
+        glCompileShader(id);
 
         int result;
-        GLCall(glGetShaderiv(id, GL_COMPILE_STATUS, &result));
+        glGetShaderiv(id, GL_COMPILE_STATUS, &result);
         if(result == GL_FALSE)
         {
-            int length;
-            GLCall(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length));
+            int length = 0;
+            glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
             std::unique_ptr<char[]> message = std::make_unique<char[]>(length);
-            GLCall(glGetShaderInfoLog(id, length, &length, message.get()));
+            glGetShaderInfoLog(id, length, &length, message.get());
 
             std::cout << "Failed to compile " << 
             (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << std::endl;
             std::cout << message.get() << std::endl;
 
-            GLCall(glDeleteShader(id));
+            std::string error_message = std::string("Failed to compile") + 
+                (type == GL_VERTEX_SHADER ? "vertex" : "fragment") + " : " + message.get();
+            File::WriteFile("../../res/error_log.txt", error_message);
+
+            glDeleteShader(id);
             return 0;
         }
         return id;
@@ -52,13 +58,13 @@ namespace Graphics
         unsigned int vs = Compile(GL_VERTEX_SHADER);
         unsigned int fs = Compile(GL_FRAGMENT_SHADER);
 
-        GLCall(glAttachShader(program, vs));
-        GLCall(glAttachShader(program, fs));
-        GLCall(glLinkProgram(program));
-        GLCall(glValidateProgram(program));
+        glAttachShader(program, vs);
+        glAttachShader(program, fs);
+        glLinkProgram(program);
+        glValidateProgram(program);
 
-        GLCall(glDeleteShader(vs));
-        GLCall(glDeleteShader(fs));
+        glDeleteShader(vs);
+        glDeleteShader(fs);
         return program;
     }
 }

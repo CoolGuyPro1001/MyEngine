@@ -19,4 +19,17 @@ std::string File::ReadFile(const std::string path)
     }
 
     return "";
-};
+}
+
+bool File::WriteFile(const std::string path, const std::string& contents)
+{
+    std::ofstream file(path);
+    if(file.is_open())
+    {
+        file << contents;
+        file.close();
+        return true;
+    }
+
+    return false;
+}

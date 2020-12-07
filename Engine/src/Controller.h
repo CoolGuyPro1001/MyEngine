@@ -35,40 +35,35 @@ public:
     Controller();
     
     template<class PuppetType, class F>
-    void BindButtonPress(std::string name, PuppetType& puppet, F&& button_press_function)
+    void BindButtonPress(ButtonAction action, PuppetType& puppet, F&& button_press_function)
     {
-        button_actions[name].down_function = std::bind(button_press_function, &puppet);
+        button_actions.push_back(action);
+        action.down_function = std::bind(button_press_function, &puppet);
     };
 
     template<class PuppetType, class F>
-    void BindButtonRelease(std::string name, PuppetType& puppet, F&& button_release_function)
+    void BindButtonRelease(ButtonAction action, PuppetType& puppet, F&& button_release_function)
     {
-        button_actions[name].up_function = std::bind(button_release_function, &puppet);
+        button_actions.push_back(action);
+        action.up_function = std::bind(button_release_function, &puppet);
     };
 
     template<class PuppetType, class F>
-    void BindStickX(std::string name, PuppetType& puppet, F&& stick_x_function)
+    void BindStickX(StickAction action, PuppetType& puppet, F&& stick_x_function)
     {
-        stick_actions[name].x_function = std::bind(stick_x_function, &puppet, std::placeholders::_1);
+        stick_actions.push_back(action);
+        action.x_function = std::bind(stick_x_function, &puppet, std::placeholders::_1);
     };
 
     template<class PuppetType, class F>
-    void BindStickY(std::string name, PuppetType& puppet, F&& stick_y_function)
+    void BindStickY(StickAction action, PuppetType& puppet, F&& stick_y_function)
     {
-        stick_actions[name].y_function = std::bind(stick_y_function, &puppet, std::placeholders::_1);
+        stick_actions.push_back(action);
+        action.y_function = std::bind(stick_y_function, &puppet, std::placeholders::_1);
     };
 
-    void SetButtonKeyboard(std::string action_name, SDL_KeyCode key);
-    void SetButtonController(std::string action_name, SDL_GameControllerButton button);
-    void SetStickKeyboard(std::string action_name, SDL_KeyCode up_key, SDL_KeyCode down_key, SDL_KeyCode right_key, SDL_KeyCode left_key);
-    void SetStickController(std::string action_name, bool use_right_stick);
-    void SetStickMouse(std::string action_name);
-    
-    void PollEvents();
-
-private:
-    std::map<std::string, ButtonAction> button_actions;
-    std::map<std::string, StickAction> stick_actions;
+    std::vector<ButtonAction> button_actions = std::vector<ButtonAction>();
+    std::vector<StickAction> stick_actions = std::vector<StickAction>();
 };
 
 #endif

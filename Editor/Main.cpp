@@ -24,9 +24,6 @@ int main(int argc, char* args[])
     QApplication app(argc, args);
     Ui::MainWindow main_window;
     main_window.show();
-
-    Graphics::UseShader("res/BaseShader.shader");
-    Graphics::InitTransformUniform();
     
     //Vertices For The Model
     std::vector<Vertex> vertices = std::vector<Vertex>();

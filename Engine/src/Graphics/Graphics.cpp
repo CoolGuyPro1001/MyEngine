@@ -7,7 +7,9 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/projection.hpp>
 
-#define NULL_ID -1
+#include <GLFW/glfw3.h>
+
+#define NULL_ID UINT_MAX
 namespace Graphics
 {
     //static std::vector<VertexBuffer*> vertex_buffers = std::vector<VertexBuffer*>();
@@ -25,7 +27,12 @@ namespace Graphics
     uint buffer_id = NULL_ID;
     uint vao_id = NULL_ID;
 
-    GLFWwindow* window;
+    SDL_Window* window;
+
+    static void error_callback(int error, const char* description)
+    {
+        fprintf(stderr, "Error: %s\n", description);
+    }
     
     uint* BufferId()
     {
@@ -105,35 +112,51 @@ namespace Graphics
             std::cout << "ERROR: GLEW failed to intialize\n" << (const char*)glewGetErrorString(error);
             return false;
         }
-
-        GLuint VertexArrayID;
-        GLCall(glGenVertexArrays(1, &VertexArrayID));
-        GLCall(glBindVertexArray(VertexArrayID));
+        
+        
+        glGenVertexArrays(1, &vao_id);
+        glBindVertexArray(vao_id);
+        
         initialized = true;
 
-        GLCall(glEnable(GL_DEPTH_TEST));
-        GLCall(glDepthFunc(GL_LESS));
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LESS);
 
         return true;
     }
 
-    bool InitWindow(int width, int height, std::string name)
+    bool InitWindow(int width, int height, const char* name)
     {
-        window = glfwCreateWindow(width, height, name.c_str(), NULL, NULL);
+        window = SDL_CreateWindow
+        (
+            name, 
+            SDL_WINDOWPOS_UNDEFINED, 
+            SDL_WINDOWPOS_UNDEFINED, 
+            width, 
+            height,
+            SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL
+        );
+
         if(!window)
         {
-            glfwTerminate();
             return false;
         }
 
-        glfwMakeContextCurrent(window);
-        if(glewInit() != GLEW_OK)
-        {
-            std::cout << "Error: Window Couldn't Be Initiaded\n";
-            return false;
-        }
-
+        SDL_GL_SetSwapInterval(1);
+        SDL_GL_CreateContext(window);
         return true;
+    }
+
+    bool WindowClosed()
+    {
+        if(glfwWindowShouldClose(window))
+            return true;
+        return false;
+    }
+
+    void EndWindow()
+    {
+        SDL_DestroyWindow(window);
     }
 
     ///@brief Uses the shader program from .shader file
@@ -142,7 +165,7 @@ namespace Graphics
     {
         Shader shader = ParseShader(shader_file_path);
         shader_program = shader.CreateProgram();
-        GLCall(glUseProgram(shader_program));
+        glUseProgram(shader_program);
     }
 
     glm::mat4 TransformationMatrix(Vector3 position, Vector3 rotation, Vector3 scale)
@@ -159,14 +182,14 @@ namespace Graphics
     ///@brief Draws To Screen
     void Draw(std::vector<int> sizes, std::vector<std::vector<Actor>>& total_actors, Camera& camera)
     {
-        if(!initialized || shader_program == NULL_ID || transfrom_uniform_id == NULL_ID)
+        if(!initialized) //|| shader_program == NULL_ID)
         {
             return;
         }
 
         //Setup
-        GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-        GLCall(glBindVertexArray(vao_id));
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glBindVertexArray(vao_id);
 
         //Create Matrix For 3D View
         glm::vec3 look = glm::vec3(camera.looking_at.x, camera.looking_at.y, camera.looking_at.z);
@@ -175,32 +198,37 @@ namespace Graphics
         glm::mat4 to_3d = projection * view;
         
         //Assign Shader 3D Matrix Uniform
-        uint world_uniform_id;
-        GLCallAssign(glGetUniformLocation(shader_program, "to_3d"), world_uniform_id);
-        GLCall(glUniformMatrix4fv(world_uniform_id, 1, GL_FALSE, &(to_3d[0][0])));
+        uint world_uniform_id = glGetUniformLocation(shader_program, "to_3d");
+        glUniformMatrix4fv(world_uniform_id, 1, GL_FALSE, &(to_3d[0][0]));
+
+        int buffer_size = 0;
+        glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &buffer_size);
+
+        //Backup data from vertex buffer. Changing the buffer data deletes everything!
+        float stored_data[buffer_size / sizeof(float)];
+        glGetBufferSubData(GL_ARRAY_BUFFER, 0, buffer_size, stored_data);
 
         //Draw Actors
         int offset = 0;
         for(int model = 0; model < total_actors.size(); model++)
         {
-            std::vector<glm::mat4> transforms = std::vector<glm::mat4>();
-            for(Actor actor : total_actors[model])
-            {
-                transforms.push_back(TransformationMatrix(actor.position, actor.rotation, actor.scale));
-            }
+            //std::vector<glm::mat4> transforms = std::vector<glm::mat4>();
+            //for(Actor actor : total_actors[model])
+            //{
+           //     transforms.push_back(TransformationMatrix(actor.position, actor.rotation, actor.scale));
+            //}
 
-            uint transform_uniform_id;
-            GLCallAssign(glGetUniformLocation(shader_program, "transformations"), transform_uniform_id);
-            GLCall(glUniformMatrix4fv(transform_uniform_id, transforms.size(), GL_FALSE, &(transforms[0][0][0])));
+            Actor actor = total_actors[model][0];
+            glm::mat4 transforms = TransformationMatrix(actor.position, actor.rotation, actor.scale);
 
-            GLCall(glDrawArraysInstanced(GL_TRIANGLES, offset, offset + sizes[model], total_actors[model].size()));
+            uint transform_uniform_id= glGetUniformLocation(shader_program, "transformations");
+            glUniformMatrix4fv(transform_uniform_id, 1, GL_FALSE, &(transforms[0][0]));
+            
+            glDrawArraysInstanced(GL_TRIANGLES, offset, (offset + sizes[model]) / sizeof(Vertex), total_actors[model].size());
 
             offset += sizes[model];
         }
 
-        if(window)
-        {
-            glfwSwapBuffers(window);
-        }
+        SDL_GL_SwapWindow(window);
     }
 }

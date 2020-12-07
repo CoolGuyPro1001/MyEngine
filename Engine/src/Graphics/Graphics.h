@@ -17,13 +17,14 @@ namespace Graphics
     extern uint buffer_id;
     extern uint vao_id;
 
-    extern GLFWwindow* window;
-
     uint* BufferId();
     uint* VaoId();
 
     bool Initialize();
-    bool InitWindow(int width, int height, std::string name);
+    bool InitWindow(int width, int height, const char* name);
+
+    bool WindowClosed();
+    void EndWindow();
     
     void Draw(std::vector<int> sizes, std::vector<std::vector<Actor>>& total_actors, Camera& camera);
 
@@ -33,7 +34,6 @@ namespace Graphics
     void UseShader(const std::string shader_file_path);
 
     glm::mat4 TransformationMatrix(Vector3 position, Vector3 rotation, Vector3 scale);
-    void InitTransformUniform();
 }
 
 #endif

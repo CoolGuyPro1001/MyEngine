@@ -8,14 +8,13 @@ class Cat : public Actor
 {
 public:
     Cat(Shared<Model> model);
-    void MoveForward(float val);
-    void MoveRight(float val);
 
+    void Tick();
+    
+    void MoveForward();
+    void MoveRight();
     void OnUp(StickYEvent e);
     void OnRight(StickXEvent e);
-
-private:
-    Vector3 velocity;
 };
 
 #endif
