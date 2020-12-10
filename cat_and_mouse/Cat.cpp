@@ -6,7 +6,6 @@ Cat::Cat(Shared<Model> model) : Actor(model)
 
 void Cat::Tick()
 {
-    Actor::Tick();
     MoveForward();
     MoveRight();
 }

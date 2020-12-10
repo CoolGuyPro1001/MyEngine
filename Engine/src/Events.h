@@ -1,8 +1,6 @@
 #ifndef EVENTS_H
 #define EVENTS_H
 
-#include "Controller.h"
-
 enum class MouseCodes
 {
     LEFT_CLICK,
@@ -33,7 +31,5 @@ struct StickYEvent
     int value;
     StickYEvent(int val);
 };
-
-void PollEvents(Controller& controllers);
 
 #endif

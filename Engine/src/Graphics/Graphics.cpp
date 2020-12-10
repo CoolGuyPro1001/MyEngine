@@ -7,7 +7,6 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/projection.hpp>
 
-#include <GLFW/glfw3.h>
 
 #define NULL_ID UINT_MAX
 namespace Graphics
@@ -147,13 +146,6 @@ namespace Graphics
         return true;
     }
 
-    bool WindowClosed()
-    {
-        if(glfwWindowShouldClose(window))
-            return true;
-        return false;
-    }
-
     void EndWindow()
     {
         SDL_DestroyWindow(window);
@@ -180,7 +172,7 @@ namespace Graphics
     }
 
     ///@brief Draws To Screen
-    void Draw(std::vector<int> sizes, std::vector<std::vector<Actor>>& total_actors, Camera& camera)
+    void Draw(std::vector<std::vector<Shared<Actor>>>& total_actors, Camera& camera)
     {
         if(!initialized) //|| shader_program == NULL_ID)
         {
@@ -218,15 +210,16 @@ namespace Graphics
            //     transforms.push_back(TransformationMatrix(actor.position, actor.rotation, actor.scale));
             //}
 
-            Actor actor = total_actors[model][0];
-            glm::mat4 transforms = TransformationMatrix(actor.position, actor.rotation, actor.scale);
+            Shared<Actor> actor = total_actors[model][0];
+            glm::mat4 transforms = TransformationMatrix(actor->position, actor->rotation, actor->scale);
 
             uint transform_uniform_id= glGetUniformLocation(shader_program, "transformations");
             glUniformMatrix4fv(transform_uniform_id, 1, GL_FALSE, &(transforms[0][0]));
-            
-            glDrawArraysInstanced(GL_TRIANGLES, offset, (offset + sizes[model]) / sizeof(Vertex), total_actors[model].size());
 
-            offset += sizes[model];
+            int size = actor->model->vertices.size();
+            glDrawArraysInstanced(GL_TRIANGLES, offset, size, total_actors[model].size());
+
+            offset += size * sizeof(Vertex);
         }
 
         SDL_GL_SwapWindow(window);

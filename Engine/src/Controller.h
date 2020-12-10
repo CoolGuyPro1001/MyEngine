@@ -3,7 +3,6 @@
 
 #include "Events.h"
 
-
 struct ButtonAction
 {
     std::function<void()> down_function;
@@ -29,41 +28,42 @@ struct StickAction
 };
 
 
-class Controller
+SDL_KeyCode GetKeyCode(std::string key);
+
+template<class PuppetType, class F>
+void BindButtonPress(ButtonAction& action, PuppetType& puppet, F&& button_press_function)
+{
+    action.down_function = std::bind(button_press_function, puppet);
+};
+
+template<class PuppetType, class F>
+void BindButtonRelease(ButtonAction& action, PuppetType& puppet, F&& button_release_function)
+{
+    action.up_function = std::bind(button_release_function, puppet);
+};
+
+template<class PuppetType, class F>
+void BindStickX(StickAction& action, PuppetType& puppet, F&& stick_x_function)
+{
+    action.x_function = std::bind(stick_x_function, puppet, std::placeholders::_1);
+};
+
+template<class PuppetType, class F>
+void BindStickY(StickAction& action, PuppetType& puppet, F&& stick_y_function)
+{
+    action.y_function = std::bind(stick_y_function, puppet, std::placeholders::_1);
+};
+
+struct Controller
 {
 public:
     Controller();
     
-    template<class PuppetType, class F>
-    void BindButtonPress(ButtonAction action, PuppetType& puppet, F&& button_press_function)
-    {
-        button_actions.push_back(action);
-        action.down_function = std::bind(button_press_function, &puppet);
-    };
+    void AddButtonAction(ButtonAction action);
+    void AddStickAction(StickAction action);
 
-    template<class PuppetType, class F>
-    void BindButtonRelease(ButtonAction action, PuppetType& puppet, F&& button_release_function)
-    {
-        button_actions.push_back(action);
-        action.up_function = std::bind(button_release_function, &puppet);
-    };
-
-    template<class PuppetType, class F>
-    void BindStickX(StickAction action, PuppetType& puppet, F&& stick_x_function)
-    {
-        stick_actions.push_back(action);
-        action.x_function = std::bind(stick_x_function, &puppet, std::placeholders::_1);
-    };
-
-    template<class PuppetType, class F>
-    void BindStickY(StickAction action, PuppetType& puppet, F&& stick_y_function)
-    {
-        stick_actions.push_back(action);
-        action.y_function = std::bind(stick_y_function, &puppet, std::placeholders::_1);
-    };
-
-    std::vector<ButtonAction> button_actions = std::vector<ButtonAction>();
-    std::vector<StickAction> stick_actions = std::vector<StickAction>();
+    std::vector<ButtonAction> button_actions;
+    std::vector<StickAction> stick_actions;
 };
 
 #endif

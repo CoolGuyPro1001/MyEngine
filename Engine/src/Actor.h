@@ -18,7 +18,7 @@ public:
     Actor();
     Actor(Shared<Model> model);
     
-    void Tick();
+    virtual void Tick();
 
     //AddSoundEffect(SoundEffect sound);
     //RemoveSoundEffect(SoundEffect sound);

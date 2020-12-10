@@ -5,6 +5,7 @@
 #include "Actor.h"
 #include "Controller.h"
 #include "Graphics/Camera.h"
+#include "Core/Enviroment.h"
 
 #include <SDL2/SDL.h>
 
@@ -71,18 +72,18 @@ namespace Engine
             last_time = current_time;
 
             //Model      Actors in Model
-            std::vector<std::vector<Actor>> total_actors = std::vector<std::vector<Actor>>(current_level.models.size());
+            std::vector<std::vector<Shared<Actor>>> total_actors = std::vector<std::vector<Shared<Actor>>>(current_level.models.size());
             Graphics::Camera world_camera;
             
-            PollEvents(level.controllers);
+            PollEvents(current_level.controllers);
 
-            for(Actor actor : current_level.actors)
+            for(Shared<Actor> actor : current_level.actors)
             {
-                actor.Tick();
-
+                actor->Tick();
+                
                 for(int i = 0; i < current_level.models.size(); i++)
                 {
-                    if(actor.model == current_level.models[i])
+                    if(actor->model == current_level.models[i])
                     {
                         total_actors[i].push_back(actor);
                     }
@@ -95,7 +96,7 @@ namespace Engine
                 world_camera = camera;
             }
 
-            Draw(sizes, total_actors, world_camera);
+            Draw(total_actors, world_camera);
         }
 
         Graphics::EndWindow();

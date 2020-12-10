@@ -9,13 +9,13 @@ struct Level
 {
 public:
     Level();
-    Level(std::vector<Actor> actors);
-    Level(std::vector<Actor> actors, std::vector<Graphics::Camera> cameras);
-    Level(std::vector<Actor> actors, std::function<void()> script);
-    Level(std::vector<Actor> actors, std::vector<Graphics::Camera> cameras, std::function<void()> script);
+    Level(std::vector<Shared<Actor>> actors);
+    Level(std::vector<Shared<Actor>> actors, std::vector<Graphics::Camera> cameras);
+    Level(std::vector<Shared<Actor>> actors, std::function<void()> script);
+    Level(std::vector<Shared<Actor>> actors, std::vector<Graphics::Camera> cameras, std::function<void()> script);
     
     std::vector<Shared<Model>> models;
-    std::vector<Actor> actors;
+    std::vector<Shared<Actor>> actors;
     std::vector<Graphics::Camera> cameras;
     std::vector<Controller> controllers;
     std::function<void()> script;

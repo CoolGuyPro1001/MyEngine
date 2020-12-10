@@ -26,7 +26,7 @@ namespace Graphics
     bool WindowClosed();
     void EndWindow();
     
-    void Draw(std::vector<int> sizes, std::vector<std::vector<Actor>>& total_actors, Camera& camera);
+    void Draw(std::vector<std::vector<Shared<Actor>>>& total_actors, Camera& camera);
 
     //unsigned int CompileShader(unsigned int type, const std::string& source);
     //unsigned int CreateShader(const std::string& vertex_shader, const std::string& fragment_shader);

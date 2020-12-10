@@ -9,7 +9,7 @@ class Cat : public Actor
 public:
     Cat(Shared<Model> model);
 
-    void Tick();
+    void Tick() override;
     
     void MoveForward();
     void MoveRight();
