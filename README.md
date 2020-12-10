@@ -11,6 +11,9 @@ It has two main parts:
 1. Edit64
 2. Engine64
 
+
+**THE FOLDER cat_and_mouse IS A TARGET FOR TEST ENVIRONMENT. THE GOAL IS TO MAKE A GAME WHERE THE PLAYER IS A CAT CHASING A MOUSE.**
+
 ## Engine64
 A library to help in game development. It has everything already with it. Just link the library, nothing else.
 
