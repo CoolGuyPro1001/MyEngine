@@ -1,1 +1,2 @@
-Failed to compilevertex : 0(13) : error C1008: undefined variable "transform"
+
+

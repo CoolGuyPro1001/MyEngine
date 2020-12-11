@@ -188,10 +188,6 @@ namespace Graphics
         glm::mat4 projection = glm::perspective(glm::radians(90.0f), 8.0f / 5.0f, 0.1f, 100.0f);
         glm::mat4 view = glm::lookAt(camera.position, look, glm::vec3(0, 1, 0));
         glm::mat4 to_3d = projection * view;
-        
-        //Assign Shader 3D Matrix Uniform
-        uint world_uniform_id = glGetUniformLocation(shader_program, "to_3d");
-        glUniformMatrix4fv(world_uniform_id, 1, GL_FALSE, &(to_3d[0][0]));
 
         int buffer_size = 0;
         glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &buffer_size);
@@ -204,19 +200,16 @@ namespace Graphics
         int offset = 0;
         for(int model = 0; model < total_actors.size(); model++)
         {
-            //std::vector<glm::mat4> transforms = std::vector<glm::mat4>();
-            //for(Actor actor : total_actors[model])
-            //{
-           //     transforms.push_back(TransformationMatrix(actor.position, actor.rotation, actor.scale));
-            //}
+            std::vector<glm::mat4> mvps = std::vector<glm::mat4>();
+            for(Shared<Actor> actor : total_actors[model])
+            {
+                mvps.push_back(to_3d * TransformationMatrix(actor->position, actor->rotation, actor->scale));
+            }
 
-            Shared<Actor> actor = total_actors[model][0];
-            glm::mat4 transforms = TransformationMatrix(actor->position, actor->rotation, actor->scale);
+            int mvps_id = glGetUniformLocation(shader_program, "mvps");
+            glUniformMatrix4fv(mvps_id, total_actors[model].size(), GL_FALSE, &(mvps[0][0][0]));
 
-            uint transform_uniform_id= glGetUniformLocation(shader_program, "transformations");
-            glUniformMatrix4fv(transform_uniform_id, 1, GL_FALSE, &(transforms[0][0]));
-
-            int size = actor->model->vertices.size();
+            int size = total_actors[model][0]->model->vertices.size();
             glDrawArraysInstanced(GL_TRIANGLES, offset, size, total_actors[model].size());
 
             offset += size * sizeof(Vertex);

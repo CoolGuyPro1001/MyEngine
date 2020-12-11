@@ -7,5 +7,6 @@ class Mouse : public Actor
 {
 public:
     Mouse(Shared<Model> model);
+    void Tick();
 };
 #endif

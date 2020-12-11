@@ -63,6 +63,13 @@ namespace Graphics
         glLinkProgram(program);
         glValidateProgram(program);
 
+        int valid;
+        glGetProgramiv(program, GL_VALIDATE_STATUS, &valid);
+        if(valid == false)
+        {
+            exit(EXIT_FAILURE);
+        }
+
         glDeleteShader(vs);
         glDeleteShader(fs);
         return program;

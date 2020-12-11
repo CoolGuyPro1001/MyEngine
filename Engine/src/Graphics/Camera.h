@@ -32,7 +32,7 @@ namespace Graphics
         void OnDownButtonRelease();
 
         glm::vec3 position = glm::vec3(0, 0, 0);
-        glm::vec4 looking_at = glm::vec4(10, 0, 0, 1);
+        glm::vec4 looking_at = glm::vec4(0, 0, 10, 1);
         float focal_distance = 50;
         glm::vec3 orientation = glm::vec3(0, 0, 0);
         glm::vec3 velocity = glm::vec3(0, 0, 0);

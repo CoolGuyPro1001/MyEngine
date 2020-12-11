@@ -13,8 +13,12 @@ public:
     
     void MoveForward();
     void MoveRight();
-    void OnUp(StickYEvent e);
+    void MoveUp();
+    void OnForwards(StickYEvent e);
     void OnRight(StickXEvent e);
+    void OnUpPressed();
+    void OnDownPressed();
+    void OnReleased();
 };
 
 #endif

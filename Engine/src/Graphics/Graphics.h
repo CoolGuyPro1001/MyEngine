@@ -17,6 +17,8 @@ namespace Graphics
     extern uint buffer_id;
     extern uint vao_id;
 
+    extern SDL_Window* window;
+
     uint* BufferId();
     uint* VaoId();
 

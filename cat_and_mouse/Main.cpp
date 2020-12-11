@@ -22,8 +22,12 @@ int main()
     cat->position = Vector3(0, 0, 0);
     cat->rotation = Vector3(0, 0, 0);
     cat->scale = Vector3(1.0, 1.0, 1.0);
-    
-    //Mouse mouse = Mouse(box);
+    cat->position_velocity = Vector3(0, 0, 0);
+
+    Shared<Mouse> mouse = CreateShared<Mouse>(box);
+    mouse->position = Vector3(0, 0, 0);
+    mouse->rotation = Vector3(0, 0, 0);
+    mouse->scale = Vector3(0.5, 0.5, 0.5);
 
     Graphics::Camera camera;
 
@@ -33,13 +37,27 @@ int main()
     move.up_key = SDLK_w;
     move.right_key = SDLK_d;
     move.left_key = SDLK_a;
+
+    ButtonAction move_down;
+    move_down.key = SDLK_q;
+
+    ButtonAction move_up;
+    move_up.key = SDLK_e;
     
     BindStickX(move, cat, &Cat::OnRight);
-    BindStickY(move, cat, &Cat::OnUp);
+    BindStickY(move, cat, &Cat::OnForwards);
+    BindButtonPress(move_up, cat, &Cat::OnUpPressed);
+    BindButtonPress(move_down, cat, &Cat::OnDownPressed);
+    BindButtonRelease(move_up, cat, &Cat::OnReleased);
+    BindButtonRelease(move_down, cat, &Cat::OnReleased);
+
     controller.AddStickAction(move);
+    controller.AddButtonAction(move_up);
+    controller.AddButtonAction(move_down);
 
     Level lvl = Level();
     lvl.actors.push_back(cat);
+    lvl.actors.push_back(mouse);
     lvl.cameras.push_back(camera);
     lvl.models.push_back(box);
     lvl.controllers.push_back(controller);

@@ -6,6 +6,7 @@
 
 namespace Engine
 {
+    float Normalize(int num, int low, int high);
     void PollEvents(std::vector<Controller>& controllers);
 }
 #endif

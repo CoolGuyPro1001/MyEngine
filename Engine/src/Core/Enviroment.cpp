@@ -1,7 +1,18 @@
 #include "Enviroment.h"
+#include "Graphics/Graphics.h"
 
 namespace Engine
 {
+    float Normalize(int num, int low, int high)
+    {
+        if(num < low || num > high)
+        {
+            return 0;
+        }
+
+        return (num - low) / (high - low);
+    }
+
     void PollEvents(std::vector<Controller>& controllers)
     {
         SDL_Event event;
@@ -21,6 +32,10 @@ namespace Engine
                         case SDL_WINDOWEVENT_LEAVE:
                             std::cout << "Mouse has exited window\n";
                             break;
+                        case SDL_WINDOWEVENT_RESIZED:
+                            int window_width, window_height;
+                            SDL_GetWindowSize(Graphics::window, &window_width, &window_height);
+                            glViewport(0, 0, window_width, window_height);
                     }
                     break;
                 case SDL_KEYDOWN:
@@ -52,13 +67,13 @@ namespace Engine
                             
                             if(event.key.keysym.sym == action.down_key)
                             {
-                                action.y_function(StickYEvent(SHRT_MAX));
+                                action.y_function(StickYEvent(SHRT_MIN));
                                 return;
                             }
                             
                             if(event.key.keysym.sym == action.up_key)
                             {
-                                action.y_function(StickYEvent(SHRT_MIN));
+                                action.y_function(StickYEvent(SHRT_MAX));
                                 return;
                             }
                         }
@@ -80,7 +95,7 @@ namespace Engine
                         
                         for(StickAction action : controller.stick_actions)
                         {
-                            if(event.key.keysym.sym == action.up_key || event.key.keysym.sym == action.down_key)
+                            if(event.key.keysym.sym == action.right_key || event.key.keysym.sym == action.left_key)
                             {
                                 action.x_function(StickXEvent(0));
                                 return;

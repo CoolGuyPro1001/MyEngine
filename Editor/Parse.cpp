@@ -41,22 +41,6 @@ size_t Parse::FindNumber(std::string x, size_t pos)
     return index_of_closest_num;
 }
 
-float Parse::Normalize(int num, int low, int high)
-{
-    float range = high - low;
-    if(num > range)
-    {
-        return num / (high + low);
-    }
-    
-    if(num <= range)
-    {
-        return num / (range);
-    }
-
-    return 0;
-}
-
 ///@brief Parses model file to a VertexBuffer
 ///@param file_path The file path to the model file
 ///@return A pointer to VertexBuffer object
