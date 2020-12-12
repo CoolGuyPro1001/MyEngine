@@ -7,10 +7,12 @@ target_sources(
     Graphics.h
     Shader.h
     VertexBuffer.h
+    Texture.h
 
     Camera.cpp
     GLDebug.cpp
     Graphics.cpp
     Shader.cpp
     VertexBuffer.cpp
+    Texture.cpp
 )
