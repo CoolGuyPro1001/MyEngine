@@ -148,7 +148,10 @@ namespace Graphics
 
     void EndWindow()
     {
-        SDL_DestroyWindow(window);
+        if(window)
+        {
+            SDL_DestroyWindow(window);
+        }
     }
 
     ///@brief Uses the shader program from .shader file
@@ -171,6 +174,11 @@ namespace Graphics
         return translate_matrix * scale_matrix * rotation_matrix;
     }
 
+    glm::vec3 Vector3GLM(const Vector3 v)
+    {
+        return glm::vec3(v.x, v.y, v.z);
+    }
+
     ///@brief Draws To Screen
     void Draw(std::vector<std::vector<Shared<Actor>>>& total_actors, Camera& camera)
     {
@@ -184,9 +192,9 @@ namespace Graphics
         glBindVertexArray(vao_id);
 
         //Create Matrix For 3D View
-        glm::vec3 look = glm::vec3(camera.looking_at.x, camera.looking_at.y, camera.looking_at.z);
+        glm::vec3 look = Vector3GLM(camera.looking_at);
         glm::mat4 projection = glm::perspective(glm::radians(90.0f), 8.0f / 5.0f, 0.1f, 100.0f);
-        glm::mat4 view = glm::lookAt(camera.position, look, glm::vec3(0, 1, 0));
+        glm::mat4 view = glm::lookAt(Vector3GLM(camera.position), look, glm::vec3(0, 1, 0));
         glm::mat4 to_3d = projection * view;
 
         int buffer_size = 0;
@@ -215,6 +223,9 @@ namespace Graphics
             offset += size * sizeof(Vertex);
         }
 
-        SDL_GL_SwapWindow(window);
+        if(window)
+        {
+            SDL_GL_SwapWindow(window);
+        }
     }
 }

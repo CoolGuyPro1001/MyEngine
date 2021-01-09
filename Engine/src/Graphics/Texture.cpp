@@ -20,17 +20,17 @@ Texture::Texture(std::string image_path)
 
     //U16 format
     //[Color ID][Red and Green][Blue and Alpha]
-    std::array<Color, dict_length> dictionary;
+    Color dictionary[dict_length];
     fread(&dictionary, sizeof(Color), dict_length, file);
 
-    std::array<u16, width * height> data;
-    fread(&data, sizeof(u16), data.size(), file);
-    texture_data = std::vector<Color>(data.size());
+    u16 data[width * height];
+    fread(&data, sizeof(u16), width * height, file);
+    texture_data = std::vector<Color>(width * height);
 
-    for(int i = 0; i < data.size(); i++)
+    for(int i = 0; i < width * height; i++)
     {
         u16 color_id = data[i];
-        if(color_id > dictionary.size() - 1 )
+        if(color_id > dict_length - 1 )
         {
             continue;
         }

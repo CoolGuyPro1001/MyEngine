@@ -35,6 +35,7 @@ namespace Graphics
     Shader ParseShader(const std::string& file_path);
     void UseShader(const std::string shader_file_path);
 
+    glm::vec3 Vector3GLM(const Vector3 v);
     glm::mat4 TransformationMatrix(Vector3 position, Vector3 rotation, Vector3 scale);
 }
 

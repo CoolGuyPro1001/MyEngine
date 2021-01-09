@@ -16,18 +16,12 @@ void Vector2::operator=(const Vector2& v)
 
 bool Vector2::operator==(const Vector2& v) const
 {
-    if(v.x == x && v.y == y)
-        return true;
-    else
-        return false;
+    return v.x == x && v.y == y;
 }
 
 bool Vector2::operator!=(const Vector2& v) const
 {
-    if(v.x != x || v.y != y)
-        return true;
-    else
-        return false;
+    return v.x != x || v.y != y;
 }
 
 Vector2 Vector2::operator+(const Vector2& v) const
@@ -47,7 +41,6 @@ Vector3::Vector3(float x, float y, float z) : x(x), y(y), z(z)
 
 Vector3::Vector3()
 {
-
 }
 
 void Vector3::operator=(const Vector3& v)
@@ -59,23 +52,24 @@ void Vector3::operator=(const Vector3& v)
 
 bool Vector3::operator==(const Vector3& v) const
 {
-    if(v.x == x && v.y == y && v.z == z)
-        return true;
-    else
-        return false;
+    return v.x == x && v.y == y && v.z == z;
 }
 
 bool Vector3::operator!=(const Vector3& v) const
 {
-    if(v.x != x || v.y != y || v.z == z)
-        return true;
-    else
-        return false;
+    return v.x != x || v.y != y || v.z != z;
 }
 
 Vector3 Vector3::operator+(const Vector3& v) const
 {
     return Vector3(x + v.x, y + v.y, z + v.z);
+}
+
+void Vector3::operator+=(const Vector3& v)
+{
+    x += v.x;
+    y += v.y;
+    z += v.z;
 }
 
 Vector2 Vector3::ToVector2()
@@ -103,18 +97,36 @@ void Color::operator=(const Color& c)
 
 bool Color::operator==(const Color& c) const
 {
-    if(c.r == r && c.g == g && c.b == b && c.a == a)
-        return true;
-    else
-        return false;
+    return c.r == r && c.g == g && c.b == b && c.a == a;
 }
 
 bool Color::operator!=(const Color& c) const
 {
-    if(c.r != r || c.g != g || c.b != b || c.a != a)
-        return true;
-    else
-        return false;
+    return c.r != r || c.g != g || c.b != b || c.a != a;
+}
+
+TextureCoords::TextureCoords()
+{
+}
+
+TextureCoords::TextureCoords(float u, float v) : u(u), v(v)
+{
+}
+
+void TextureCoords::operator=(const TextureCoords& t)
+{
+    u = t.u;
+    v = t.v;
+}
+
+bool TextureCoords::operator==(const TextureCoords& t) const
+{
+    return u == t.u && v == t.v;
+}
+
+bool TextureCoords::operator!=(const TextureCoords& t) const
+{
+    return u != t.u || v != t.v;
 }
 
 Vertex::Vertex()
@@ -123,9 +135,22 @@ Vertex::Vertex()
 
 Vertex::Vertex(Vector3 vector, Color color) : color(color), vector(vector)
 {
+    texture_coords = TextureCoords(0, 0);
 }
 
 Vertex::Vertex(Vector2 vector, Color color) : color(color)
+{
+    this->vector = vector.ToVector3();
+    texture_coords = TextureCoords(0, 0);
+}
+
+
+Vertex::Vertex(Vector3 vector, Color color, TextureCoords texture_coords) : color(color), vector(vector), 
+    texture_coords(texture_coords)
+{
+}
+
+Vertex::Vertex(Vector2 vector, Color color, TextureCoords texture_coords) : color(color), texture_coords(texture_coords)
 {
     this->vector = vector.ToVector3();
 }

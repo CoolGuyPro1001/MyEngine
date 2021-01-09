@@ -12,6 +12,9 @@
 #include <chrono>
 #include <climits>
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_keyboard.h>
@@ -27,6 +30,7 @@ typedef unsigned char uchar;
 typedef unsigned int uint;
 typedef unsigned short ushort;
 typedef unsigned long ulong;
+typedef uint8_t u8;
 
 #if UINT_MAX == 4294967295
 typedef ulong u64;

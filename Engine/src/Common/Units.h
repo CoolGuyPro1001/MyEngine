@@ -21,7 +21,9 @@ struct Vector2
 
 struct Vector3
 {
-    float x, y, z;
+    union{float x, pitch;};
+    union{float y, yaw;};
+    union{float z, roll;};
 
     Vector3(float x, float y, float z);
     Vector3();
@@ -30,6 +32,7 @@ struct Vector3
     bool operator==(const Vector3& v) const;
     bool operator!=(const Vector3& v) const;
     Vector3 operator+(const Vector3& v) const;
+    void operator+=(const Vector3& v);
 
     Vector2 ToVector2();
 };
@@ -46,14 +49,28 @@ struct Color
     bool operator!=(const Color& c) const;
 };
 
+struct TextureCoords
+{
+    float u, v;
+    TextureCoords(float u, float v);
+    TextureCoords();
+
+    void operator=(const TextureCoords& t);
+    bool operator==(const TextureCoords& t) const;
+    bool operator!=(const TextureCoords& t) const;
+};
+
 struct Vertex
 {
     Vector3 vector;
     Color color;
+    TextureCoords texture_coords;
 
     Vertex();
     Vertex(Vector3 vector, Color color);
     Vertex(Vector2 vector, Color color);
+    Vertex(Vector3 vector, Color color, TextureCoords texture_coords);
+    Vertex(Vector2 vector, Color color, TextureCoords texture_coords);
     
     void operator =(const Vertex& v);
     bool operator ==(const Vertex& v) const;

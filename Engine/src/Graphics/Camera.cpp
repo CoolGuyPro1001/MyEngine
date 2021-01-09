@@ -2,6 +2,15 @@
 
 namespace Graphics
 {
+    Camera::Camera()
+    {
+        Vector3 position = Vector3(0, 0, 0);
+        Vector3 looking_at = Vector3(0, 0, 10);
+        float focal_distance = 50;
+        Vector3 orientation = Vector3(0, 0, 0);
+        Vector3 velocity = Vector3(0, 0, 0);
+    }
+
     void Camera::MoveCameraForward()
     {
         position.x += velocity.x;
@@ -31,24 +40,24 @@ namespace Graphics
 
     void Camera::TurnCameraP(float deg)
     {
-        AddToOrientation(orientation.p, deg, false);
-        looking_at.y = glm::sin(orientation.p) * focal_distance + position.y;
-        looking_at.x = glm::cos(orientation.y) * focal_distance + position.x;
-        looking_at.z = glm::sin(orientation.y) * focal_distance + position.z;
+        AddToOrientation(orientation.pitch, deg, false);
+        looking_at.y = glm::sin(orientation.pitch) * focal_distance + position.y;
+        looking_at.x = glm::cos(orientation.yaw) * focal_distance + position.x;
+        looking_at.z = glm::sin(orientation.yaw) * focal_distance + position.z;
     }
 
     void Camera::TurnCameraY(float deg)
     {
-        AddToOrientation(orientation.y, deg, true);
-        looking_at.x = glm::cos(orientation.y) * focal_distance + position.x;
-        looking_at.z = glm::sin(orientation.y) * focal_distance + position.z;
+        AddToOrientation(orientation.yaw, deg, true);
+        looking_at.x = glm::cos(orientation.yaw) * focal_distance + position.x;
+        looking_at.z = glm::sin(orientation.yaw) * focal_distance + position.z;
     }
 
     void Camera::TurnCameraR(float deg)
     {
-        AddToOrientation(orientation.r, deg, true);
-        looking_at.x = glm::cos(orientation.z) * focal_distance + position.x;
-        looking_at.y = glm::sin(orientation.z) * focal_distance + position.y;
+        AddToOrientation(orientation.roll, deg, true);
+        looking_at.x = glm::cos(orientation.roll) * focal_distance + position.x;
+        looking_at.y = glm::sin(orientation.roll) * focal_distance + position.y;
     }
     
     void Camera::AddToOrientation(float& axis, float deg, bool full_circle)
@@ -84,7 +93,7 @@ namespace Graphics
     {
         std::cout << "At| X:" << position.x <<  " Y:" << position.y << " Z:" << position.z << "\n";
         std::cout << "Looking At| X:" << looking_at.x << " Y:" << looking_at.y << " Z:" << looking_at.z << "\n";
-        std::cout << "Orientation| P:" << orientation.p << " Y:" << orientation.y << " R:" << orientation.r << "\n";
+        std::cout << "Orientation| P:" << orientation.pitch << " Y:" << orientation.yaw << " R:" << orientation.roll << "\n";
     }
 
     void Camera::Tick()
@@ -99,16 +108,16 @@ namespace Graphics
         float distance = e.value * 0.001;
         constexpr float HALF = glm::pi<float>() / 2;
         
-        velocity.x += glm::cos(orientation.y - HALF) * distance;
-        velocity.z += glm::sin(orientation.y - HALF) * distance;
+        velocity.x += glm::cos(orientation.yaw - HALF) * distance;
+        velocity.z += glm::sin(orientation.yaw - HALF) * distance;
     }
 
     void Camera::OnStickY(StickYEvent e)
     {
         float distance = e.value * 0.001;
-        velocity.x = glm::cos(orientation.y) * distance;
-        velocity.y = glm::sin(orientation.p) * distance;
-        velocity.z = glm::sin(orientation.y) * distance;
+        velocity.x = glm::cos(orientation.yaw) * distance;
+        velocity.y = glm::sin(orientation.pitch) * distance;
+        velocity.z = glm::sin(orientation.yaw) * distance;
     }
 
     void Camera::OnUpButtonPress()

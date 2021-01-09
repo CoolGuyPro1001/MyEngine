@@ -3,12 +3,15 @@
 
 #include "Events.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include "Common/Units.h"
 
 namespace Graphics
 {
     class Camera
     {
     public:
+        Camera();
+        
         void MoveCameraForward();
         void MoveCameraSideways();
         void MoveCameraUpwards();
@@ -17,10 +20,6 @@ namespace Graphics
         void TurnCameraP(float deg);
         void TurnCameraY(float deg);
         void TurnCameraR(float deg);
-
-        glm::mat3 RotationMatrixX(float deg);
-        glm::mat3 RotationMatrixY(float deg); 
-        glm::mat3 RotationMatrixZ(float deg);
 
         void Tick();
 
@@ -31,13 +30,12 @@ namespace Graphics
         void OnDownButtonPress();
         void OnDownButtonRelease();
 
-        glm::vec3 position = glm::vec3(0, 0, 0);
-        glm::vec4 looking_at = glm::vec4(0, 0, 10, 1);
-        float focal_distance = 50;
-        glm::vec3 orientation = glm::vec3(0, 0, 0);
-        glm::vec3 velocity = glm::vec3(0, 0, 0);
+        Vector3 position;
+        Vector3 looking_at;
+        float focal_distance;
+        Vector3 orientation;
+        Vector3 velocity;
 
-        void Transform(glm::vec4& v, glm::mat4 m);
         void AddToOrientation(float& axis, float deg, bool doNegative);
     private:
         //constexpr glm::vec3 camera_front = glm::vec3(0, 0, 1);

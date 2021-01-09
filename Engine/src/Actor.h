@@ -9,7 +9,6 @@ struct Model
 {
     Model(std::vector<Vertex> vertices);
     std::vector<Vertex> vertices;
-    uint off_set;
 };
 
 class Actor

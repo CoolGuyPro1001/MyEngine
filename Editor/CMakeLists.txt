@@ -2,6 +2,7 @@ find_package(Qt5 REQUIRED COMPONENTS Core Widgets Gui OpenGL)
 find_package(Engine64 REQUIRED)
 
 add_definitions(${QT_DEFINITIONS})
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 #qt5_wrap_ui(UI_WRAP ${EDITOR_UI})
 #qt5_wrap_cpp(MOC_SOURCES ${EDITOR_HEADERS})
@@ -64,6 +65,10 @@ target_link_libraries(
     Qt::Gui
     Qt::OpenGL
     ${ENGINE_NAME}
+)
+
+qt_import_plugins(${EDITOR_NAME}
+    INCLUDE Qt5::QWindowsPlugin
 )
 
 target_include_directories(

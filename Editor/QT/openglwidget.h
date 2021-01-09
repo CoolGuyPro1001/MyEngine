@@ -6,7 +6,6 @@
 
 #include <QOpenGLWidget>
 #include <QKeyEvent>
-#include <iostream>
 
 
 class OpenGLWidget : public QOpenGLWidget
@@ -23,4 +22,4 @@ protected:
     void initializeGL() override;
 };
 
-#endif // OPENGLWIDGET_H
+#endif
