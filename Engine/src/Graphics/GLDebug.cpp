@@ -1,4 +1,5 @@
 #include "GLDebug.h"
+#include "Core/Log.h"
 
 void ClearErrors()
 {
@@ -44,8 +45,8 @@ bool LogCall(const char* function, const char* file, int line)
                 break;
         }
 
-        std::cout << "[OpenGL Error] " << file << ":" << line << ": " << error_message << "\n";
-        std::cout << function << std::endl;
+        Engine::Log("[OpenGL Error] %s:%d:%s\n", file, line, error_message);
+        Engine::Log("%s\n", function);
         return false;
     }
 

@@ -16,20 +16,25 @@
 
 int main()
 {
-    Shared<Model> box = Cube(1.0, Color(1.0, 1.0, 0, 1.0));
+    //Textures
+    Shared<Graphics::Texture> smile = CreateShared<Graphics::Texture>("../../res/smile.etex", 0);
 
+    //Models
+    Shared<Model> box = CreateShared<Model>("../../res/cube.emodel", smile);
+
+    //Actors
     Shared<Cat> cat = CreateShared<Cat>(box);
     cat->position = Vector3(0, 0, 0);
     cat->rotation = Vector3(0, 0, 0);
     cat->scale = Vector3(1.0, 1.0, 1.0);
     cat->position_velocity = Vector3(0, 0, 0);
 
-    Shared<Mouse> mouse = CreateShared<Mouse>(box);
-    mouse->position = Vector3(0, 0, 0);
-    mouse->rotation = Vector3(0, 0, 0);
-    mouse->scale = Vector3(0.5, 0.5, 0.5);
+    //Shared<Mouse> mouse = CreateShared<Mouse>(box);
+    //mouse->position = Vector3(0, 0, 0);
+    //mouse->rotation = Vector3(0, 0, 0);
+    //mouse->scale = Vector3(0.5, 0.5, 0.5);
 
-    Graphics::Camera camera;
+    Graphics::Camera camera = Graphics::Camera();
 
     Controller controller = Controller();
     StickAction move;
@@ -57,9 +62,10 @@ int main()
 
     Level lvl = Level();
     lvl.actors.push_back(cat);
-    lvl.actors.push_back(mouse);
+    //lvl.actors.push_back(mouse);
     lvl.cameras.push_back(camera);
     lvl.models.push_back(box);
+    lvl.textures.push_back(smile);
     lvl.controllers.push_back(controller);
 
     Engine::Start(500, 500, "Cat And Mouse");

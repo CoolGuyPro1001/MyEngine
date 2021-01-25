@@ -6,9 +6,9 @@
 #include "Controller.h"
 #include "Graphics/Camera.h"
 #include "Core/Enviroment.h"
+#include "Core/Log.h"
 
 #include <SDL2/SDL.h>
-
 
 namespace Engine
 {
@@ -16,16 +16,19 @@ namespace Engine
 
     void Start(int window_width, int window_height, const char* window_name)
     {
+        bool b = InitLog();
+        
+        if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER | SDL_INIT_AUDIO) != 0)
+        {
+            SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
+            exit(EXIT_FAILURE);
+        }
+
         if(!Graphics::InitWindow(window_width, window_height, window_name) || !Graphics::Initialize())
         {
             exit(EXIT_FAILURE);
         }
 
-        if(SDL_Init(SDL_INIT_GAMECONTROLLER | SDL_INIT_AUDIO) != 0)
-        {
-            SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
-            exit(EXIT_FAILURE);
-        }
         //atexit(SDL_Quit);*/
 
         Graphics::UseShader("../../res/BaseShader.shader");
@@ -39,8 +42,12 @@ namespace Engine
         //Init A New Buffer
         Graphics::InitVertexBuffer(*Graphics::BufferId());
 
+        for(Shared<Graphics::Texture> texture : level.textures)
+        {
+            texture->Load();
+        }
+
         //A vector of pointers to models (pointer to a vector of Vertices objects)
-        
         int offset = 0;
         for(Shared<Model> model : level.models)
         {
@@ -98,7 +105,11 @@ namespace Engine
 
             Draw(total_actors, world_camera);
         }
+    }
 
-        Graphics::EndWindow();
+    void Close()
+    {
+        Graphics::CloseWindow();
+        CloseLog();
     }
 }

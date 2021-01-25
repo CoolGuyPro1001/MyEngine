@@ -14,6 +14,7 @@ public:
     Level(std::vector<Shared<Actor>> actors, std::function<void()> script);
     Level(std::vector<Shared<Actor>> actors, std::vector<Graphics::Camera> cameras, std::function<void()> script);
     
+    std::vector<Shared<Graphics::Texture>> textures;
     std::vector<Shared<Model>> models;
     std::vector<Shared<Actor>> actors;
     std::vector<Graphics::Camera> cameras;

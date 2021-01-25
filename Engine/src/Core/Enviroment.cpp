@@ -1,5 +1,7 @@
 #include "Enviroment.h"
 #include "Graphics/Graphics.h"
+#include "Load.h"
+#include "Log.h"
 
 namespace Engine
 {
@@ -26,11 +28,12 @@ namespace Engine
                 case SDL_WINDOWEVENT:
                     switch(event.window.event)
                     {
+                        case SDL_WINDOWEVENT_CLOSE:
+                            Close();
+                            break;
                         case SDL_WINDOWEVENT_ENTER:
-                            std::cout << "Mouse has entered window\n";
                             break;
                         case SDL_WINDOWEVENT_LEAVE:
-                            std::cout << "Mouse has exited window\n";
                             break;
                         case SDL_WINDOWEVENT_RESIZED:
                             int window_width, window_height;

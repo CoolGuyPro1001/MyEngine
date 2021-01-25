@@ -4,7 +4,9 @@ target_sources(
 
     Enviroment.h
     Load.h
+    Log.h
 
     Enviroment.cpp
     Load.cpp
+    Log.cpp
 )

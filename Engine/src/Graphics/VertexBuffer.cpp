@@ -37,16 +37,28 @@ namespace Graphics
     {
         int position_attrib_index = 0;
         int color_attrib_index = 1;
+        int texcoord_attrib_index = 2;
 
         glBindVertexArray(vao_id);
 
         glEnableVertexAttribArray(position_attrib_index);
         glEnableVertexAttribArray(color_attrib_index);
+        glEnableVertexAttribArray(texcoord_attrib_index);
         
         int vertex_color_offset = 3 * sizeof(float);
-        
-        glVertexAttribPointer(position_attrib_index, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)(starting_offset)); //Vector3
-        glVertexAttribPointer(color_attrib_index, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)(starting_offset + vertex_color_offset)); //Color
+        int vertex_texcoord_offset = 3 * sizeof(float) + 4 * sizeof(u8);
+
+        //Vector3
+        glVertexAttribPointer(position_attrib_index, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
+            (const void*)(starting_offset));
+
+        //Color
+        glVertexAttribPointer(color_attrib_index, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), 
+            (const void*)(starting_offset + vertex_color_offset));
+
+        //Texture Coordinates
+        glVertexAttribPointer(texcoord_attrib_index, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
+            (const void*)(starting_offset + vertex_texcoord_offset));
     }
 
     /*void ModifyData(uint& vao_id, std::vector<Vertex>& vertices)

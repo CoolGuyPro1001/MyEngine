@@ -2,13 +2,23 @@
 #define TEXTURE_H
 
 #include "Common/Units.h"
-
-class Texture
+namespace Graphics
 {
-public:
-    Texture(std::string image_path);
-private:
-    std::vector<Color> texture_data;
-    float u, v;
-};
+    class Texture
+    {
+    public:
+        Texture(std::string image_path, uint slot);
+        ~Texture();
+        
+        void Load();
+        void Use(uint shader_program);
+
+        u8 width;
+        u8 height;
+    private:
+        std::vector<Color> texture_data;
+        uint texture_id;
+        uint slot;
+    };
+}
 #endif

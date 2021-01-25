@@ -1,5 +1,6 @@
 #include "Shader.h"
 #include "GLDebug.h"
+#include "Core/Log.h"
 
 #include "File.h"
 
@@ -36,13 +37,10 @@ namespace Graphics
             std::unique_ptr<char[]> message = std::make_unique<char[]>(length);
             glGetShaderInfoLog(id, length, &length, message.get());
 
-            std::cout << "Failed to compile " << 
-            (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << std::endl;
-            std::cout << message.get() << std::endl;
-
-            std::string error_message = std::string("Failed to compile") + 
-                (type == GL_VERTEX_SHADER ? "vertex" : "fragment") + " : " + message.get();
-            File::WriteFile("../../res/error_log.txt", error_message);
+            std::string s = (type == GL_VERTEX_SHADER ? "vertex" : "fragment");
+            Engine::Log("%d", 1);
+            Engine::Log("Failed to compile %s\n", s);
+            Engine::Log("%s\n", std::string(message.get()));
 
             glDeleteShader(id);
             return 0;

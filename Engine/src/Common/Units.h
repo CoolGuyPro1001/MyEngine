@@ -39,9 +39,9 @@ struct Vector3
 
 struct Color
 {
-    float r, g, b, a;
+    u8 r, g, b, a;
 
-    Color(float r, float g, float b, float a);
+    Color(u8 r, u8 g, u8 b, u8 a);
     Color();
 
     void operator=(const Color& c);
@@ -52,6 +52,7 @@ struct Color
 struct TextureCoords
 {
     float u, v;
+
     TextureCoords(float u, float v);
     TextureCoords();
 
@@ -69,6 +70,8 @@ struct Vertex
     Vertex();
     Vertex(Vector3 vector, Color color);
     Vertex(Vector2 vector, Color color);
+    Vertex(Vector3 vector, TextureCoords texture_coords);
+    Vertex(Vector2 vector, TextureCoords texture_coords);
     Vertex(Vector3 vector, Color color, TextureCoords texture_coords);
     Vertex(Vector2 vector, Color color, TextureCoords texture_coords);
     

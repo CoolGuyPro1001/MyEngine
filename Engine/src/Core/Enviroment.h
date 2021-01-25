@@ -1,7 +1,6 @@
 #ifndef ENVIROMENT_H
 #define ENVIROMENT_H
 
-#include "../pch.h"
 #include "Controller.h"
 
 namespace Engine

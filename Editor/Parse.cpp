@@ -1,6 +1,4 @@
 #include "Parse.h"
-#include <Common/Hex.h>
-#include <Core/Enviroment.h>
 
 ///@brief Find number in string. Inlcuding hex, binary, octal
 ///@tparam T is the number type. Either size_t, Binary, Hex, or Octal
@@ -41,49 +39,6 @@ size_t Parse::FindNumber(std::string x, size_t pos)
     }
 
     return index_of_closest_num;
-}
-
-///@brief Parses model file to a VertexBuffer
-///@param file_path The file path to the model file
-///@return A pointer to VertexBuffer object
-Shared<Model> Parse::FileToModel(std::string file_path)
-{
-    Vector3 vec3 = Vector3();
-    Color color = Color();
-    std::vector<Vertex> vertices = std::vector<Vertex>();
-
-    FILE* file;
-    file = fopen(file_path.c_str(), "r");
-    if(file == NULL)
-    {
-        printf("Can't open file\n");
-        return nullptr;
-    }
-
-    while(true)
-    {
-        char red[16];
-        char green[16];
-        char blue[16];
-        char alpha[16];
-
-        int res = fscanf(file, "%f %f %f %s %s %s %s\n", 
-        &vec3.x, &vec3.y, &vec3.z, &red, &green, &blue, &alpha);
-        
-        if(res == EOF)
-        {
-            break;
-        }
-
-        color.r = Engine::Normalize(Hex(std::string(red)).ToDecimal(), 0, 255);
-        color.g = Engine::Normalize(Hex(std::string(green)).ToDecimal(), 0, 255);
-        color.b = Engine::Normalize(Hex(std::string(blue)).ToDecimal(), 0, 255);
-        color.a = Engine::Normalize(Hex(std::string(alpha)).ToDecimal(), 0, 255);
-
-        vertices.push_back(Vertex(vec3, color));
-    }
-
-    return CreateShared<Model>(vertices);
 }
 
 Level Parse::OpenLevelFile(std::string file_path)

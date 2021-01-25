@@ -17,7 +17,10 @@ set(BUILD_DIR "/Engine64")
 set_target_properties(${ENGINE_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_DEBUG "${BUILD_DIR}/debug/lib/${OS}")
 set_target_properties(${ENGINE_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELEASE "${BUILD_DIR}/release/lib/${OS}")
 
-add_compile_options(-Wl,--verbose -Wl,--print-map)
+get_target_property(F ${ENGINE_NAME} COMPILE_OPTIONS)
+message("${F}")
+
+message("Test")
 
 #Installation
 install(

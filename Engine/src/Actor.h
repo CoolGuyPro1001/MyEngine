@@ -3,12 +3,17 @@
 
 #include "Common/Units.h"
 #include "Events.h"
+#include "Graphics/Texture.h"
 
 
 struct Model
 {
     Model(std::vector<Vertex> vertices);
+    Model(std::vector<Vertex> vertices, Shared<Graphics::Texture> texture);
+    Model(std::string file_path, Shared<Graphics::Texture> texture);
+    
     std::vector<Vertex> vertices;
+    Shared<Graphics::Texture> texture;
 };
 
 class Actor

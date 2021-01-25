@@ -1,5 +1,6 @@
 #include "Cat.h"
 #include <Core/Enviroment.h>
+#include <Core/Log.h>
 
 Cat::Cat(Shared<Model> model) : Actor(model)
 {
@@ -50,7 +51,7 @@ void Cat::OnForwards(StickYEvent e)
     }
     else
     {
-        position_velocity.z += (e.value / SHRT_MAX) * 0.001;
+        position_velocity.z += (e.value / SHRT_MAX) * 0.1;
     }
 }
 

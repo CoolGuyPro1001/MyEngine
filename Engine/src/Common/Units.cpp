@@ -77,7 +77,7 @@ Vector2 Vector3::ToVector2()
     return Vector2(x, y);
 }
 
-Color::Color(float r, float g, float b, float a) : r(r), g(g), b(b), a(a) 
+Color::Color(u8 r, u8 g, u8 b, u8 a) : r(r), g(g), b(b), a(a) 
 {
 
 }
@@ -135,7 +135,7 @@ Vertex::Vertex()
 
 Vertex::Vertex(Vector3 vector, Color color) : color(color), vector(vector)
 {
-    texture_coords = TextureCoords(0, 0);
+    texture_coords = TextureCoords(0.0, 0.0);
 }
 
 Vertex::Vertex(Vector2 vector, Color color) : color(color)
@@ -144,6 +144,16 @@ Vertex::Vertex(Vector2 vector, Color color) : color(color)
     texture_coords = TextureCoords(0, 0);
 }
 
+Vertex::Vertex(Vector3 vector, TextureCoords texture_coords) : vector(vector), texture_coords(texture_coords)
+{
+    color = Color(0, 0, 0, 1.0);
+}
+
+Vertex::Vertex(Vector2 vector, TextureCoords texture_coords) : texture_coords(texture_coords)
+{
+    this->vector = vector.ToVector3();
+    color = Color(0, 0, 0, 1.0);
+}
 
 Vertex::Vertex(Vector3 vector, Color color, TextureCoords texture_coords) : color(color), vector(vector), 
     texture_coords(texture_coords)
@@ -159,20 +169,15 @@ void Vertex::operator=(const Vertex& v)
 {
     vector = v.vector;
     color = v.color;
+    texture_coords = v.texture_coords;
 }
 
 bool Vertex::operator==(const Vertex& v) const
 {
-    if(v.vector == vector && v.color == color)
-        return true;
-    else
-        return false;
+    return v.vector == vector && v.color == color && v.texture_coords == texture_coords;
 }
 
 bool Vertex::operator!=(const Vertex& v) const
 {
-    if(v.vector != vector || v.color != color)
-        return true;
-    else
-        return false;
+    return v.vector != vector || v.color != color || v.texture_coords == texture_coords;
 }

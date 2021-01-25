@@ -1,2 +1,1 @@
-
-
+Failed to compilefragment : 0(16) : error C1035: assignment of incompatible types

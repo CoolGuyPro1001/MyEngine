@@ -1,14 +1,15 @@
 #include "Camera.h"
+#include "Core/Log.h"
 
 namespace Graphics
 {
     Camera::Camera()
     {
-        Vector3 position = Vector3(0, 0, 0);
-        Vector3 looking_at = Vector3(0, 0, 10);
-        float focal_distance = 50;
-        Vector3 orientation = Vector3(0, 0, 0);
-        Vector3 velocity = Vector3(0, 0, 0);
+        position = Vector3(0, 0, 0);
+        looking_at = Vector3(0, 0, 10);
+        focal_distance = 50;
+        orientation = Vector3(0, 0, 0);
+        velocity = Vector3(0, 0, 0);
     }
 
     void Camera::MoveCameraForward()
@@ -91,9 +92,9 @@ namespace Graphics
 
     void Camera::PrintCameraLocation()
     {
-        std::cout << "At| X:" << position.x <<  " Y:" << position.y << " Z:" << position.z << "\n";
-        std::cout << "Looking At| X:" << looking_at.x << " Y:" << looking_at.y << " Z:" << looking_at.z << "\n";
-        std::cout << "Orientation| P:" << orientation.pitch << " Y:" << orientation.yaw << " R:" << orientation.roll << "\n";
+        Engine::Log("At| X: %f Y: %f Z: %f\n", position.x, position.y, position.z);
+        Engine::Log("Looking At| X: %f Y: %f Z: %f\n", looking_at.x, looking_at.y, looking_at.z);
+        Engine::Log("Orientation| P: %f Y: %f R: %f\n",orientation.pitch, orientation.yaw, orientation.roll);
     }
 
     void Camera::Tick()

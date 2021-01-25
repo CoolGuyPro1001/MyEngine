@@ -6,7 +6,6 @@
 
 namespace Parse
 {
-    Shared<Model> FileToModel(std::string file_path);
     Level OpenLevelFile(std::string file_path);
 
     template<typename T>

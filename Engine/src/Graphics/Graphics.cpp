@@ -2,6 +2,8 @@
 
 #include "GLDebug.h"
 #include "File.h"
+#include "Texture.h"
+#include "Core/Log.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
@@ -108,7 +110,7 @@ namespace Graphics
         GLenum error = glewInit();
         if(GLEW_OK != error)
         {
-            std::cout << "ERROR: GLEW failed to intialize\n" << (const char*)glewGetErrorString(error);
+            Engine::Log("ERROR: GLEW failed to intialize\n%s", (const char*)glewGetErrorString(error));
             return false;
         }
         
@@ -142,11 +144,14 @@ namespace Graphics
         }
 
         SDL_GL_SetSwapInterval(1);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
         SDL_GL_CreateContext(window);
         return true;
     }
 
-    void EndWindow()
+    void CloseWindow()
     {
         if(window)
         {
@@ -214,6 +219,8 @@ namespace Graphics
                 mvps.push_back(to_3d * TransformationMatrix(actor->position, actor->rotation, actor->scale));
             }
 
+            total_actors[model][0]->model->texture->Use(shader_program);
+            
             int mvps_id = glGetUniformLocation(shader_program, "mvps");
             glUniformMatrix4fv(mvps_id, total_actors[model].size(), GL_FALSE, &(mvps[0][0][0]));
 
