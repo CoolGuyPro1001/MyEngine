@@ -8,7 +8,7 @@ It's designed to be lightweight. You can run games on a potato. This doesn't mea
 
 
 It has two main parts:
-1. Edit64
+1. Editor64
 2. Engine64
 
 
@@ -16,9 +16,11 @@ It has two main parts:
 
 ## Engine64
 A library to help in game development. It has everything already with it. Just link the library, nothing else.
+Current Version: v0.2.0
 
 ## Editor64
 A visual game editor that uses the Engine64 Library
+Current Version: v0.0.1
 
 
 ## Dependent Libraries
@@ -36,5 +38,3 @@ Windowing, input, and audio for *Engine64*
 
 ### GLM
 OpenGL mathematics library for 3D projection and vertex transformations.
-
-Current Version: v0.1.9
