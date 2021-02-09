@@ -15,12 +15,6 @@ namespace Engine
         return (num - low) / (high - low);
     }
 
-    float cos(float x)
-    {
-        float pi = acos(0.0) * 2;
-        return pi; 
-    }
-
     void PollEvents(std::vector<Controller>& controllers)
     {
         SDL_Event event;
