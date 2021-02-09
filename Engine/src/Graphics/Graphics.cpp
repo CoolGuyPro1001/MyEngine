@@ -185,7 +185,7 @@ namespace Graphics
     }
 
     ///@brief Draws To Screen
-    void Draw(std::vector<std::vector<Shared<Actor>>>& total_actors, Camera& camera)
+    void Draw(std::vector<std::vector<Shared<Actor>>>& total_actors, Shared<Camera> camera)
     {
         if(!initialized) //|| shader_program == NULL_ID)
         {
@@ -197,9 +197,9 @@ namespace Graphics
         glBindVertexArray(vao_id);
 
         //Create Matrix For 3D View
-        glm::vec3 look = Vector3GLM(camera.looking_at);
+        glm::vec3 look = Vector3GLM(camera->looking_at);
         glm::mat4 projection = glm::perspective(glm::radians(90.0f), 8.0f / 5.0f, 0.1f, 100.0f);
-        glm::mat4 view = glm::lookAt(Vector3GLM(camera.position), look, glm::vec3(0, 1, 0));
+        glm::mat4 view = glm::lookAt(Vector3GLM(camera->position), look, Vector3GLM(camera->up));
         glm::mat4 to_3d = projection * view;
 
         int buffer_size = 0;
@@ -219,15 +219,18 @@ namespace Graphics
                 mvps.push_back(to_3d * TransformationMatrix(actor->position, actor->rotation, actor->scale));
             }
 
-            total_actors[model][0]->model->texture->Use(shader_program);
+            if(total_actors[model][0]->model->texture)
+            {
+                total_actors[model][0]->model->texture->Use(shader_program);
+            }
             
             int mvps_id = glGetUniformLocation(shader_program, "mvps");
-            glUniformMatrix4fv(mvps_id, total_actors[model].size(), GL_FALSE, &(mvps[0][0][0]));
+            glUniformMatrix4fv(mvps_id, total_actors[model].size(), GL_FALSE, &mvps[0][0][0]);
 
             int size = total_actors[model][0]->model->vertices.size();
             glDrawArraysInstanced(GL_TRIANGLES, offset, size, total_actors[model].size());
 
-            offset += size * sizeof(Vertex);
+            offset += size;
         }
 
         if(window)

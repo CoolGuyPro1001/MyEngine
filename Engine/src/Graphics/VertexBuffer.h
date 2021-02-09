@@ -5,11 +5,11 @@
 
 namespace Graphics
 {
-    void DeleteBuffer(uint& id);
-    void InitVertexBuffer(uint& id);
-    void AddDataToBuffer(std::vector<Vertex>& vertices, uint& vao_id);
-    void FormatData(uint& vao_id, int starting_offset);
-    void ModifyData(uint& vao_id, std::vector<Vertex>& vertices);
+    void DeleteBuffer();
+    void InitVertexBuffer();
+    void AddDataToBuffer(std::vector<Vertex>& vertices);
+    void FormatData(int starting_offset);
+    void ModifyData(std::vector<Vertex>& vertices);
 }
 
 #endif

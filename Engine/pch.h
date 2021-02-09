@@ -71,4 +71,6 @@ constexpr Shared<T> CreateShared(Args&& ... args)
 {
     return std::make_shared<T>(std::forward<Args>(args)...);
 }
+
+constexpr float PI = 3.14159250;
 #endif

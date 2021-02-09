@@ -1,20 +1,24 @@
 #include "VertexBuffer.h"
+#include "Graphics.h"
 #include "GLDebug.h"
 
 namespace Graphics
 {
-    void InitVertexBuffer(uint& id)
+    void InitVertexBuffer()
     {
-        glCreateBuffers(1, &id);
-        glBindBuffer(GL_ARRAY_BUFFER, id);
+        glCreateBuffers(1, BufferId());
+        glBindBuffer(GL_ARRAY_BUFFER, *BufferId());
+
+        //Setup VAO
+        glGenVertexArrays(1, VaoId());
     }
 
-    void DeleteBuffer(uint& id)
+    void DeleteBuffer()
     {
-        glDeleteBuffers(1, &id);
+        glDeleteBuffers(1, BufferId());
     }
 
-    void AddDataToBuffer(std::vector<Vertex>& vertices, uint& vao_id)
+    void AddDataToBuffer(std::vector<Vertex>& vertices)
     {
         uint vertices_size = vertices.size() * sizeof(Vertex);
         int buffer_size = 0;
@@ -28,18 +32,15 @@ namespace Graphics
         glBufferData(GL_ARRAY_BUFFER, vertices_size + buffer_size, 0, GL_DYNAMIC_DRAW);
         glBufferSubData(GL_ARRAY_BUFFER, 0, buffer_size, stored_data);
         glBufferSubData(GL_ARRAY_BUFFER, buffer_size, vertices_size, &(vertices[0]));
-
-        //Setup VAO
-        glGenVertexArrays(1, &vao_id);
     }
 
-    void FormatData(uint& vao_id, int starting_offset)
+    void FormatData(int starting_offset)
     {
         int position_attrib_index = 0;
         int color_attrib_index = 1;
         int texcoord_attrib_index = 2;
 
-        glBindVertexArray(vao_id);
+        glBindVertexArray(*VaoId());
 
         glEnableVertexAttribArray(position_attrib_index);
         glEnableVertexAttribArray(color_attrib_index);
@@ -50,15 +51,14 @@ namespace Graphics
 
         //Vector3
         glVertexAttribPointer(position_attrib_index, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
-            (const void*)(starting_offset));
-
+            (const void*)(0));
         //Color
         glVertexAttribPointer(color_attrib_index, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), 
-            (const void*)(starting_offset + vertex_color_offset));
+            (const void*)(vertex_color_offset));
 
         //Texture Coordinates
         glVertexAttribPointer(texcoord_attrib_index, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
-            (const void*)(starting_offset + vertex_texcoord_offset));
+            (const void*)(vertex_texcoord_offset));
     }
 
     /*void ModifyData(uint& vao_id, std::vector<Vertex>& vertices)

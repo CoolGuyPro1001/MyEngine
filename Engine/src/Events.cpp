@@ -1,11 +1,19 @@
 #include "Events.h"
 
-StickXEvent::StickXEvent(int val) : value(val)
+ButtonEvent::ButtonEvent()
 {
-
+    value = SHRT_MAX;
 }
 
-StickYEvent::StickYEvent(int val) : value(val)
+ButtonEvent::ButtonEvent(ushort val)
 {
-    
+    value = val;
+}
+
+StickXEvent::StickXEvent(short val) : value(val)
+{
+}
+
+StickYEvent::StickYEvent(short val) : value(val)
+{
 }

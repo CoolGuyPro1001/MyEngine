@@ -21,9 +21,10 @@ struct Vector2
 
 struct Vector3
 {
-    union{float x, pitch;};
-    union{float y, yaw;};
-    union{float z, roll;};
+    //Coordinates, Rotation, Relative Direction
+    union{float x, pitch, direct;};
+    union{float y, yaw, side;};
+    union{float z, roll, vertical;};
 
     Vector3(float x, float y, float z);
     Vector3();

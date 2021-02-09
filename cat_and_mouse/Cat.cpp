@@ -11,6 +11,7 @@ void Cat::Tick()
     MoveForward();
     MoveRight();
     MoveUp();
+    Engine::Log("X:%f Y:%f Z:%f\n", position.x, position.y, position.z);
 }
 
 void Cat::MoveForward()
@@ -51,7 +52,7 @@ void Cat::OnForwards(StickYEvent e)
     }
     else
     {
-        position_velocity.z += (e.value / SHRT_MAX) * 0.1;
+        position_velocity.z += (e.value / SHRT_MAX) * 0.001;
     }
 }
 

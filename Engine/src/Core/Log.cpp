@@ -28,13 +28,13 @@ namespace Engine
                     case 'd':
                     {
                         int i = va_arg(args, int);
-                        fputc(*std::to_string(i).c_str(), log_file);
+                        fputs(std::to_string(i).c_str(), log_file);
                         break;
                     }
                     case 'f':
                     {
                         double d = va_arg(args, double);
-                        fputc(*std::to_string(d).c_str(), log_file);
+                        fputs(std::to_string(d).c_str(), log_file);
                         break;
                     }
                     /*case 'c':
@@ -45,8 +45,8 @@ namespace Engine
                     }*/
                     case 's':
                     {
-                        std::string s = va_arg(args, std::string);
-                        fputc(*s.c_str(), log_file);
+                        const char* s = va_arg(args, const char*);
+                        fputc(*s, log_file);
                         break;
                     }
                 }

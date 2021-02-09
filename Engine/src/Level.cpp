@@ -9,7 +9,7 @@ Level::Level(std::vector<Shared<Actor>> actors) :
 {
 }
 
-Level::Level(std::vector<Shared<Actor>> actors, std::vector<Graphics::Camera> cameras) : 
+Level::Level(std::vector<Shared<Actor>> actors, std::vector<Shared<Graphics::Camera>> cameras) : 
     actors(actors), 
     cameras(cameras)
 {
@@ -21,7 +21,7 @@ Level::Level(std::vector<Shared<Actor>> actors, std::function<void()> script) :
 {
 }
 
-Level::Level(std::vector<Shared<Actor>> actors, std::vector<Graphics::Camera> cameras, std::function<void()> script) : 
+Level::Level(std::vector<Shared<Actor>> actors, std::vector<Shared<Graphics::Camera>> cameras, std::function<void()> script) : 
     actors(actors),
     cameras(cameras),
     script(script)

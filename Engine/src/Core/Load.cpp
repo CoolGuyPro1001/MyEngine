@@ -37,10 +37,10 @@ namespace Engine
     void LoadLevel(Level& level)
     {
         //Delete Graphics Buffer
-        Graphics::DeleteBuffer(*Graphics::BufferId());
+        Graphics::DeleteBuffer();
         
         //Init A New Buffer
-        Graphics::InitVertexBuffer(*Graphics::BufferId());
+        Graphics::InitVertexBuffer();
 
         for(Shared<Graphics::Texture> texture : level.textures)
         {
@@ -51,11 +51,10 @@ namespace Engine
         int offset = 0;
         for(Shared<Model> model : level.models)
         {
-            Graphics::AddDataToBuffer(model->vertices, *Graphics::VaoId());
-            Graphics::FormatData(*Graphics::VaoId(), offset);
-
+            Graphics::AddDataToBuffer(model->vertices);
             offset += model->vertices.size() * sizeof(Vertex);
         }
+            Graphics::FormatData(offset);
 
         current_level = level;
     }
@@ -80,7 +79,7 @@ namespace Engine
 
             //Model      Actors in Model
             std::vector<std::vector<Shared<Actor>>> total_actors = std::vector<std::vector<Shared<Actor>>>(current_level.models.size());
-            Graphics::Camera world_camera;
+            Shared<Graphics::Camera> world_camera;
             
             PollEvents(current_level.controllers);
 
@@ -97,13 +96,17 @@ namespace Engine
                 }
             }
 
-            for(Graphics::Camera camera : current_level.cameras)
+            for(Shared<Graphics::Camera> camera : current_level.cameras)
             {
-                camera.Tick();
+                camera->Tick();
                 world_camera = camera;
             }
 
             Draw(total_actors, world_camera);
+
+            //Log("Delay: %f\n", delay.count());
+            //float d = 1000.0f / delay.count();
+            //Log("FPS: %f\n\n", (1000.0f / delay.count()));
         }
     }
 

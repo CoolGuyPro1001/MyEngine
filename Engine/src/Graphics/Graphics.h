@@ -28,7 +28,7 @@ namespace Graphics
     bool WindowClosed();
     void CloseWindow();
     
-    void Draw(std::vector<std::vector<Shared<Actor>>>& total_actors, Camera& camera);
+    void Draw(std::vector<std::vector<Shared<Actor>>>& total_actors, Shared<Camera> camera);
 
     Shader ParseShader(const std::string& file_path);
     void UseShader(const std::string shader_file_path);

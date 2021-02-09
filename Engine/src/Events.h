@@ -1,35 +1,30 @@
 #ifndef EVENTS_H
 #define EVENTS_H
 
-enum class MouseCodes
-{
-    LEFT_CLICK,
-    RIGHT_CLICK
-};
-
 struct Event
 {
     bool handled;
+
     virtual std::string ToString() = 0;
 };
 
-struct MouseEvent : Event
+struct ButtonEvent
 {
-    int x;
-    int y;
-    MouseCodes button;
+    ushort value;
+    ButtonEvent();
+    ButtonEvent(ushort val);
 };
 
 struct StickXEvent
 {
-    int value;
-    StickXEvent(int val);
+    short value;
+    StickXEvent(short val);
 };
 
 struct StickYEvent
 {
-    int value;
-    StickYEvent(int val);
+    short value;
+    StickYEvent(short val);
 };
 
 #endif
