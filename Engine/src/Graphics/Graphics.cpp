@@ -199,7 +199,7 @@ namespace Graphics
         glBindVertexArray(vao_id);
 
         //Create Matrix For 3D View
-        glm::mat4 projection = glm::perspective(camera->fov, (float) window_width / (float) window_height, 0.1f, 1000.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(camera->fov), (float) window_width / (float) window_height, 0.1f, 1000.0f);
         glm::mat4 view = glm::lookAt(Vector3GLM(camera->position), Vector3GLM(camera->looking_at), Vector3GLM(camera->up));
         glm::mat4 to_3d = projection * view;
 

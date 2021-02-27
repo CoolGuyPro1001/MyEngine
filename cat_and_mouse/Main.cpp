@@ -16,8 +16,6 @@
 
 int main()
 {
-    Level lvl = Level();
-
     //Textures
     Shared<Graphics::Texture> colors = Graphics::Texture::BMPToTexture("../../res/colors.bmp", 0);
     Shared<Graphics::Texture> sky = Graphics::Texture::BMPToTexture("../../res/sky.bmp", 1);
@@ -100,8 +98,9 @@ int main()
     //controller.AddButtonAction(move_up);
     //controller.AddButtonAction(move_down);
 
+    Level lvl = Level();
     //lvl.actors.push_back(mouse);
-    lvl.sky_block = CreateShared<Model>("../../res/model.emodel", sky);
+    lvl.sky_block = CreateShared<Model>("../../res/sky.emodel", sky);
     lvl.terrain = CreateShared<Model>("../../res/terrain.emodel", grass);
     lvl.models.push_back(box);
     lvl.actors.push_back(cat);
