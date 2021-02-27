@@ -36,9 +36,8 @@ namespace Engine
                         case SDL_WINDOWEVENT_LEAVE:
                             break;
                         case SDL_WINDOWEVENT_RESIZED:
-                            int window_width, window_height;
-                            SDL_GetWindowSize(Graphics::window, &window_width, &window_height);
-                            glViewport(0, 0, window_width, window_height);
+                            SDL_GetWindowSize(Graphics::window, &Graphics::window_width, &Graphics::window_height);
+                            glViewport(0, 0, Graphics::window_width, Graphics::window_height);
                     }
                     break;
                 case SDL_KEYDOWN:

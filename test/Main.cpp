@@ -1,10 +1,11 @@
 #include <stdio.h>
+#include <stdint.h>
 
 int main(int argc, char* argv[])
 {
-    FILE* file = fopen("test.txt", "w");
+    unsigned short num = 0xABCD;
+    unsigned short* ptr = &num;
+    printf("%d", *ptr);
 
-    fputs("test", file);
-    fclose(file);
     return 0;
 }

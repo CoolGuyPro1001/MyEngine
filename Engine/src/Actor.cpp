@@ -27,23 +27,19 @@ Model::Model(std::string file_path, Shared<Graphics::Texture> texture) : texture
 
     while(true)
     {
-        char red[4];
-        char green[4];
-        char blue[4];
-        char alpha[4];
-
-        int res = fscanf(file, "%f %f %f %s %s %s %s %f %f\n", 
-        &vec3.x, &vec3.y, &vec3.z, &red, &green, &blue, &alpha, &tex.u, &tex.v);
+        uint red, green, blue, alpha;
+        int res = fscanf(file, "%f %f %f %x %x %x %x %f %f\n", 
+            &vec3.x, &vec3.y, &vec3.z, &red, &green, &blue, &alpha, &tex.u, &tex.v);
         
         if(res == EOF)
         {
             break;
         }
 
-        color.r = Hex(std::string(red)).ToDecimal();
-        color.g = Hex(std::string(green)).ToDecimal();
-        color.b = Hex(std::string(blue)).ToDecimal();
-        color.a = Hex(std::string(alpha)).ToDecimal();
+        color.r = red;
+        color.g = green;
+        color.b = blue;
+        color.a = alpha;
 
         vertices.push_back(Vertex(vec3, color, tex));
     }

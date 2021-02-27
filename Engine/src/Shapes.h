@@ -29,7 +29,7 @@ std::vector<Vertex> Triangle(V a, V b, V c, ColTex coltex, std::vector<Vertex>& 
 };
 
 template<class ColTex>
-Shared<Model> Square(float size, ColTex coltex)
+Shared<Model> Square(float size, ColTex coltex, Vector3 origin)
 {
     if(typeid(ColTex) != typeid(Color) && typeid(ColTex) != typeid(TextureCoords))
     {
@@ -37,12 +37,12 @@ Shared<Model> Square(float size, ColTex coltex)
     }
 
     std::vector<Vertex> vertices = std::vector<Vertex>(6);
-    vertices[0] = Vertex(Vector2(0, 0), coltex);
-    vertices[1] = Vertex(Vector2(size, 0), coltex);
-    vertices[2] = Vertex(Vector2(size, size), coltex);
-    vertices[3] = Vertex(Vector2(0, 0), coltex);
-    vertices[4] = Vertex(Vector2(0, size), coltex);
-    vertices[5] = Vertex(Vector2(size, size), coltex);
+    vertices[0] = Vertex(origin, coltex);
+    vertices[1] = Vertex(origin + Vector3(size, 0), coltex);
+    vertices[2] = Vertex(origin + Vector3(size, size), coltex);
+    vertices[3] = Vertex(origin, coltex);
+    vertices[4] = Vertex(origin + Vector3(0, size), coltex);
+    vertices[5] = Vertex(origin + Vector3(size, size), coltex);
 
     Shared<Model> square = CreateShared<Model>(vertices);
     return square;
@@ -85,7 +85,7 @@ std::vector<Vertex> Circle(float radius, int triangles, ColTex coltex, std::vect
 
 //===============================================================================================================
 template<class ColTex>
-Shared<Model> Cube(float size, ColTex coltex)
+Shared<Model> Cube(float size, ColTex coltex, Vector3 origin = Vector3(0, 0, 0))
 {
     if(typeid(ColTex) != typeid(Color) && typeid(ColTex) != typeid(TextureCoords))
     {
@@ -94,18 +94,17 @@ Shared<Model> Cube(float size, ColTex coltex)
 
     std::vector<Vertex> vertices = std::vector<Vertex>(36);
     
-    const Vector3 ORIGIN = Vector3(0, 0, 0);
-    const Vector3 X = Vector3(size, 0, 0);
-    const Vector3 Y = Vector3(0, size, 0);
-    const Vector3 Z = Vector3(0, 0, size);
-    const Vector3 XY = Vector3(size, size, 0);
-    const Vector3 XZ = Vector3(size, 0, size);
-    const Vector3 YZ = Vector3(0, size, size);
-    const Vector3 XYZ = Vector3(size, size, size);
+    const Vector3 X = origin + Vector3(size, 0, 0);
+    const Vector3 Y = origin + Vector3(0, size, 0);
+    const Vector3 Z = origin + Vector3(0, 0, size);
+    const Vector3 XY = origin + Vector3(size, size, 0);
+    const Vector3 XZ = origin + Vector3(size, 0, size);
+    const Vector3 YZ = origin + Vector3(0, size, size);
+    const Vector3 XYZ = origin + Vector3(size, size, size);
     
     //Front Side
-    Triangle(ORIGIN, X, XY, coltex, vertices, 0);
-    Triangle(ORIGIN, Y, XY, coltex, vertices, 3);
+    Triangle(origin, X, XY, coltex, vertices, 0);
+    Triangle(origin, Y, XY, coltex, vertices, 3);
     
     //Back Side
     Triangle(Z, XZ, XYZ, coltex, vertices, 6);
@@ -116,23 +115,23 @@ Shared<Model> Cube(float size, ColTex coltex)
     Triangle(X, XY, XYZ, coltex, vertices, 15);
     
     //Left Side
-    Triangle(ORIGIN, Y, YZ, coltex, vertices, 18);
-    Triangle(ORIGIN, Z, YZ, coltex, vertices ,21);
+    Triangle(origin, Y, YZ, coltex, vertices, 18);
+    Triangle(origin, Z, YZ, coltex, vertices ,21);
 
     //Top Side
     Triangle(Y, YZ, XYZ, coltex, vertices, 24);
-    Triangle(Y, YZ, XYZ, coltex, vertices, 27);
+    Triangle(Y, XY, XYZ, coltex, vertices, 27);
 
     //Bottom Side
-    Triangle(ORIGIN, Z, XZ, coltex, vertices, 30);
-    Triangle(ORIGIN, X, XZ, coltex, vertices, 33);
+    Triangle(origin, Z, XZ, coltex, vertices, 30);
+    Triangle(origin, X, XZ, coltex, vertices, 33);
 
     Shared<Model> cube = CreateShared<Model>(vertices);
     return cube;
 };
 
 template<class ColTex>
-Shared<Model> Prism(float x, float y, float z, ColTex coltex)
+Shared<Model> Prism(float x, float y, float z, ColTex coltex, Vector3 origin = Vector3(0, 0, 0))
 {
     if(typeid(ColTex) != typeid(Color) && typeid(ColTex) != typeid(TextureCoords))
     {
@@ -141,18 +140,17 @@ Shared<Model> Prism(float x, float y, float z, ColTex coltex)
 
     std::vector<Vertex> vertices = std::vector<Vertex>(36);
     
-    const Vector3 ORIGIN = Vector3(0, 0, 0);
-    const Vector3 X = Vector3(x, 0, 0);
-    const Vector3 Y = Vector3(0, y, 0);
-    const Vector3 Z = Vector3(0, 0, z);
-    const Vector3 XY = Vector3(x, y, 0);
-    const Vector3 XZ = Vector3(x, 0, z);
-    const Vector3 YZ = Vector3(0, y, z);
-    const Vector3 XYZ = Vector3(x, y, z);
+    const Vector3 X = origin + Vector3(x, 0, 0);
+    const Vector3 Y = origin + Vector3(0, y, 0);
+    const Vector3 Z = origin + Vector3(0, 0, z);
+    const Vector3 XY = origin + Vector3(x, y, 0);
+    const Vector3 XZ = origin + Vector3(x, 0, z);
+    const Vector3 YZ = origin + Vector3(0, y, z);
+    const Vector3 XYZ = origin + Vector3(x, y, z);
     
     //Front Side
-    Triangle(ORIGIN, X, XY, coltex, vertices, 0);
-    Triangle(ORIGIN, Y, XY, coltex, vertices, 3);
+    Triangle(origin, X, XY, coltex, vertices, 0);
+    Triangle(origin, Y, XY, coltex, vertices, 3);
     
     //Back Side
     Triangle(Z, XZ, XYZ, coltex, vertices, 6);
@@ -163,16 +161,16 @@ Shared<Model> Prism(float x, float y, float z, ColTex coltex)
     Triangle(X, XY, XYZ, coltex, vertices, 15);
     
     //Left Side
-    Triangle(ORIGIN, Y, YZ, coltex, vertices, 18);
-    Triangle(ORIGIN, Z, YZ, coltex, vertices ,21);
+    Triangle(origin, Y, YZ, coltex, vertices, 18);
+    Triangle(origin, Z, YZ, coltex, vertices ,21);
 
     //Top Side
     Triangle(Y, YZ, XYZ, coltex, vertices, 24);
     Triangle(Y, YZ, XYZ, coltex, vertices, 27);
 
     //Bottom Side
-    Triangle(ORIGIN, Z, XZ, coltex, vertices, 30);
-    Triangle(ORIGIN, X, XZ, coltex, vertices, 33);
+    Triangle(origin, Z, XZ, coltex, vertices, 30);
+    Triangle(origin, X, XZ, coltex, vertices, 33);
 
     Shared<Model> prism = CreateShared<Model>(vertices);
     return prism;

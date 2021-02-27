@@ -11,6 +11,7 @@ uniform mat4 mvps[32];
 
 void main()
 {
+
    gl_Position = mvps[gl_InstanceID] * vec4(vertex_position, 1.0);
    fragment_color = vertex_color;
    uv = vertex_uv;
@@ -27,10 +28,11 @@ out vec4 color;
 
 void main()
 {
-   if(uv.x == 0 && uv.y == 0)
+   if(fragment_color == vec4(0, 0, 0, 0))
    {
-      color = fragment_color;
+      color = texture(texture_sampler, uv).rgba;
       return;
    }
-   color = texture(texture_sampler, uv).rgba;
+
+   color = fragment_color;
 }

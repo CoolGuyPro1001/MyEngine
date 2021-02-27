@@ -15,6 +15,7 @@ namespace Graphics
         rod_rotation = Vector3(0, 0, 0);
         rod_rotation_velocity = Vector3(0, 0, 0);
         up = Vector3(0, 1.0f, 0);
+        fov = 70.0f;
         
         log_on_tick = enable_logging;
         if(log_on_tick) this->log_delay = log_delay;
@@ -78,9 +79,6 @@ namespace Graphics
     {
         axis += deg;
 
-        float half = PI / 2.0f;
-        float b = cos(half);
-
         if(full_circle)
         {
             if(axis > PI)
@@ -110,6 +108,7 @@ namespace Graphics
         Engine::Log("At| X: %f Y: %f Z: %f\n", position.x, position.y, position.z);
         Engine::Log("Looking At| X: %f Y: %f Z: %f\n", looking_at.x, looking_at.y, looking_at.z);
         Engine::Log("Orientation| P: %f Y: %f R: %f\n", rotation.pitch, rotation.yaw, rotation.roll);
+        Engine::Log("Rod Orientation| P: %f Y: %f R: %f\n", rod_rotation.pitch, rod_rotation.yaw, rod_rotation.roll);
         Engine::Log("Up| X: %f Y: %f Z; %f\n\n", up.x, up.y, up.z);
     }
 

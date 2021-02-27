@@ -77,6 +77,8 @@ namespace Graphics
         int log_delay;
         bool log_on_tick;
 
+        float fov;
+
     private:
 
         float focal_distance;

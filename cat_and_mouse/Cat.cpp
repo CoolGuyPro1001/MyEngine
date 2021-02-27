@@ -11,7 +11,7 @@ void Cat::Tick()
     MoveForward();
     MoveRight();
     MoveUp();
-    Engine::Log("X:%f Y:%f Z:%f\n", position.x, position.y, position.z);
+    //Engine::Log("X:%f Y:%f Z:%f\n", position.x, position.y, position.z);
 }
 
 void Cat::MoveForward()

@@ -19,19 +19,21 @@ int main()
     Level lvl = Level();
 
     //Textures
-    Shared<Graphics::Texture> smile = CreateShared<Graphics::Texture>("../../res/smile.etex", 0);
+    Shared<Graphics::Texture> colors = Graphics::Texture::BMPToTexture("../../res/colors.bmp", 0);
+    Shared<Graphics::Texture> sky = Graphics::Texture::BMPToTexture("../../res/sky.bmp", 1);
+    Shared<Graphics::Texture> grass = Graphics::Texture::BMPToTexture("../../res/grass.bmp", 2);
 
     //Models
-    Shared<Model> box = CreateShared<Model>("../../res/cube.emodel", smile);
+    Shared<Model> box = CreateShared<Model>("../../res/cube.emodel", colors);
 
     //Actors
     Shared<Cat> cat = CreateShared<Cat>(box);
-    cat->position = Vector3(0, 0, 10);
+    cat->position = Vector3(0, 3, 0);
     cat->rotation = Vector3(0, 0, 0);
     cat->scale = Vector3(1.0f, 1.0f, 1.0f);
     cat->position_velocity = Vector3(0, 0, 0);
 
-    Shared<Graphics::Camera> camera = CreateShared<Graphics::Camera>(50, false, 0);
+    Shared<Graphics::Camera> camera = CreateShared<Graphics::Camera>(50, true, 50);
     camera->forward_throttle = 0.0000001f;
     camera->sideways_throttle = 0.0000001f;
     camera->vertical_throttle = 0.0000001f;
@@ -40,7 +42,8 @@ int main()
     camera->roll_throttle = 0.00000001f;
     camera->rod_yaw_throttle = 0.00000001f;
     camera->rod_pitch_throttle = 0.00000001f;
-    camera->AttachRod(cat, 10.0f, true);
+    camera->fov = 70.0f;
+    camera->AttachRod(cat, 30.0f, true);
 
     Controller controller = Controller();
 
@@ -98,10 +101,14 @@ int main()
     //controller.AddButtonAction(move_down);
 
     //lvl.actors.push_back(mouse);
+    lvl.sky_block = CreateShared<Model>("../../res/model.emodel", sky);
+    lvl.terrain = CreateShared<Model>("../../res/terrain.emodel", grass);
     lvl.models.push_back(box);
     lvl.actors.push_back(cat);
     lvl.cameras.push_back(camera);
-    lvl.textures.push_back(smile);
+    lvl.textures.push_back(colors);
+    lvl.textures.push_back(sky);
+    lvl.textures.push_back(grass);
     lvl.controllers.push_back(controller);
 
     Engine::Start(500, 500, "Cat And Mouse");

@@ -73,4 +73,20 @@ constexpr Shared<T> CreateShared(Args&& ... args)
 }
 
 constexpr float PI = 3.14159250;
+
+template<typename T>
+T ToBigEndian(T x)
+{
+    u8* bytes;
+    bytes = (u8*)&x;
+    
+    u8 flip[sizeof(T)];
+    long move_by = sizeof(T) - 1;
+
+    for(size_t i = 0; i < sizeof(T); i++)
+    {
+        flip[i + move_by] = bytes[i];
+        move_by -= 2;
+    }
+}
 #endif

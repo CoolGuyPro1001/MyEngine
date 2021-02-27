@@ -18,6 +18,8 @@ namespace Graphics
     extern uint vao_id;
 
     extern SDL_Window* window;
+    extern int window_width;
+    extern int window_height;
 
     uint* BufferId();
     uint* VaoId();
@@ -28,7 +30,7 @@ namespace Graphics
     bool WindowClosed();
     void CloseWindow();
     
-    void Draw(std::vector<std::vector<Shared<Actor>>>& total_actors, Shared<Camera> camera);
+    void Draw(std::vector<std::vector<Shared<Actor>>>& total_actors, Shared<Camera> camera, Shared<Model> sky_block, Shared<Model> terrain);
 
     Shader ParseShader(const std::string& file_path);
     void UseShader(const std::string shader_file_path);

@@ -29,6 +29,8 @@ namespace Graphics
     uint vao_id = NULL_ID;
 
     SDL_Window* window;
+    int window_width = 4;
+    int window_height = 3;
 
     static void error_callback(int error, const char* description)
     {
@@ -170,9 +172,9 @@ namespace Graphics
 
     glm::mat4 TransformationMatrix(Vector3 position, Vector3 rotation, Vector3 scale)
     {
-        glm::mat4 rotation_matrix =    glm::rotate(rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) * 
-                                glm::rotate(rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) * 
-                                glm::rotate(rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+        glm::mat4 rotation_matrix =    glm::rotate(rotation.pitch, glm::vec3(1.0f, 0.0f, 0.0f)) * 
+                                glm::rotate(rotation.yaw, glm::vec3(0.0f, 1.0f, 0.0f)) * 
+                                glm::rotate(rotation.roll, glm::vec3(0.0f, 0.0f, 1.0f));
         glm::mat4 translate_matrix = glm::translate(glm::vec3(position.x, position.y, position.z));
         glm::mat4 scale_matrix = glm::scale(glm::vec3(scale.x, scale.y, scale.z));
         
@@ -185,7 +187,7 @@ namespace Graphics
     }
 
     ///@brief Draws To Screen
-    void Draw(std::vector<std::vector<Shared<Actor>>>& total_actors, Shared<Camera> camera)
+    void Draw(std::vector<std::vector<Shared<Actor>>>& total_actors, Shared<Camera> camera, Shared<Model> sky_block, Shared<Model> terrain)
     {
         if(!initialized) //|| shader_program == NULL_ID)
         {
@@ -197,9 +199,8 @@ namespace Graphics
         glBindVertexArray(vao_id);
 
         //Create Matrix For 3D View
-        glm::vec3 look = Vector3GLM(camera->looking_at);
-        glm::mat4 projection = glm::perspective(glm::radians(90.0f), 8.0f / 5.0f, 0.1f, 100.0f);
-        glm::mat4 view = glm::lookAt(Vector3GLM(camera->position), look, Vector3GLM(camera->up));
+        glm::mat4 projection = glm::perspective(camera->fov, (float) window_width / (float) window_height, 0.1f, 1000.0f);
+        glm::mat4 view = glm::lookAt(Vector3GLM(camera->position), Vector3GLM(camera->looking_at), Vector3GLM(camera->up));
         glm::mat4 to_3d = projection * view;
 
         int buffer_size = 0;
@@ -209,8 +210,24 @@ namespace Graphics
         float stored_data[buffer_size / sizeof(float)];
         glGetBufferSubData(GL_ARRAY_BUFFER, 0, buffer_size, stored_data);
 
-        //Draw Actors
         int offset = 0;
+        int mvps_id = glGetUniformLocation(shader_program, "mvps");
+
+        //Draw Sky Block (Offset 0)
+        glm::mat4 sky_block_mvp = to_3d * TransformationMatrix(Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(1, 1, 1));
+        glUniformMatrix4fv(mvps_id, 1, GL_FALSE, &sky_block_mvp[0][0]);
+        sky_block->texture->Use(shader_program);
+        glDrawArraysInstanced(GL_TRIANGLES, offset, sky_block->vertices.size(), 1);
+        offset += sky_block->vertices.size();
+        
+        //Draw Terrain Block
+        glm::mat4 terrain_mvp = to_3d * TransformationMatrix(Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(1, 1, 1));
+        glUniformMatrix4fv(mvps_id, 1, GL_FALSE, &terrain_mvp[0][0]);
+        terrain->texture->Use(shader_program);
+        glDrawArraysInstanced(GL_TRIANGLES, offset, terrain->vertices.size(), 1);
+        offset += terrain->vertices.size();
+
+        //Draw Actors
         for(int model = 0; model < total_actors.size(); model++)
         {
             std::vector<glm::mat4> mvps = std::vector<glm::mat4>();
@@ -224,7 +241,6 @@ namespace Graphics
                 total_actors[model][0]->model->texture->Use(shader_program);
             }
             
-            int mvps_id = glGetUniformLocation(shader_program, "mvps");
             glUniformMatrix4fv(mvps_id, total_actors[model].size(), GL_FALSE, &mvps[0][0][0]);
 
             int size = total_actors[model][0]->model->vertices.size();

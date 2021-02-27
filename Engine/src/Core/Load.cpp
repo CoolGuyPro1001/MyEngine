@@ -47,14 +47,25 @@ namespace Engine
             texture->Load();
         }
 
-        //A vector of pointers to models (pointer to a vector of Vertices objects)
         int offset = 0;
+
+        //Sky Block
+        Shared<Model> sky_block = level.sky_block;
+        Graphics::AddDataToBuffer(sky_block->vertices);
+        offset += sky_block->vertices.size() * sizeof(Vertex);
+
+        //Terrain
+        Shared<Model> terrain = level.terrain;
+        Graphics::AddDataToBuffer(terrain->vertices);
+        offset += terrain->vertices.size() * sizeof(Vertex);
+
+        //A vector of pointers to models (pointer to a vector of Vertices objects)
         for(Shared<Model> model : level.models)
         {
             Graphics::AddDataToBuffer(model->vertices);
             offset += model->vertices.size() * sizeof(Vertex);
         }
-            Graphics::FormatData(offset);
+        Graphics::FormatData(offset);
 
         current_level = level;
     }
@@ -63,13 +74,6 @@ namespace Engine
     {
         TIME last_time;
         bool running = true;
-
-        std::vector<int> sizes = std::vector<int>();
-
-        for(Shared<Model> model : current_level.models)
-        {
-            sizes.push_back(model->vertices.size() * sizeof(Vertex));
-        }
 
         while(running)
         {
@@ -102,7 +106,7 @@ namespace Engine
                 world_camera = camera;
             }
 
-            Draw(total_actors, world_camera);
+            Draw(total_actors, world_camera, current_level.sky_block, current_level.terrain);
 
             //Log("Delay: %f\n", delay.count());
             //float d = 1000.0f / delay.count();
