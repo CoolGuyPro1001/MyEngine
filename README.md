@@ -17,7 +17,7 @@ It has two main parts:
 ## Engine64
 A library to help in game development. It has everything already with it. Just link the library, nothing else.
 
-Current Version: v0.2.5
+Current Version: v0.2.8 (The World Update)
 
 ## Editor64
 A visual game editor that uses the Engine64 Library
