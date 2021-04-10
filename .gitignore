@@ -1,6 +1,3 @@
 .vscode/
 build/
 obj/
-Engine/libs/GLFW/docs/
-Engine/libs/GLFW/examples/
-Engine/libs/GLFW/tests/

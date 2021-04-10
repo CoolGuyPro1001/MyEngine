@@ -1,13 +1,16 @@
 #include "Actor.h"
-#include "Core/Enviroment.h"
+#include "Core/Runtime.h"
 #include "Common/Hex.h"
+#include "Core/Log.h"
+#include "Level.h"
 
 Model::Model(std::vector<Vertex> vertices) : vertices(vertices)
 {
     texture = nullptr;
 }
 
-Model::Model(std::vector<Vertex> vertices, Shared<Graphics::Texture> texture) : vertices(vertices), texture(texture)
+Model::Model(std::vector<Vertex> vertices, Shared<Graphics::Texture> texture) : 
+    vertices(vertices), texture(texture)
 {
 }
 
@@ -47,12 +50,30 @@ Model::Model(std::string file_path, Shared<Graphics::Texture> texture) : texture
 
 Actor::Actor()
 {
+    can_fall = true;
 }
 
 Actor::Actor(Shared<Model> model) : model(model)
 {
+    can_fall = true;
+}
+
+Actor::~Actor()
+{
+    delete collision;
+    delete current_level;
 }
 
 void Actor::Tick()
 {
+    if(can_fall && current_level)
+    {
+        position_velocity.y += (Engine::Delay() > 1) ? current_level->gravity : current_level->gravity * Engine::Delay();
+        position.y += position_velocity.y;
+    }
+}
+
+void Actor::CreateHitBox(float depth, float height, float width)
+{
+    collision = new CollisionBox(position, depth, height, width);
 }

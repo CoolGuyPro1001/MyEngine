@@ -1,10 +1,12 @@
-#include "Enviroment.h"
+#include "Runtime.h"
 #include "Graphics/Graphics.h"
-#include "Load.h"
+#include "Entry.h"
 #include "Log.h"
 
 namespace Engine
 {
+    std::chrono::duration<double, std::milli> delay;
+
     float Normalize(int num, int low, int high)
     {
         if(num < low || num > high)
@@ -13,6 +15,11 @@ namespace Engine
         }
 
         return (num - low) / (high - low);
+    }
+
+    double Delay()
+    {
+        return delay.count();
     }
 
     void PollEvents(std::vector<Controller>& controllers)
@@ -202,4 +209,84 @@ namespace Engine
             }
         }
     }
+
+    void DoCollision(Shared<Actor> actor, std::vector<Shared<Actor>> all_actors)
+    {
+        Vector3& velocity = actor->position_velocity;
+        Vector3& position = actor->position;
+        Vector3 position_before = actor->position - velocity;
+
+        if(CollisionBox* actor_box = dynamic_cast<CollisionBox*>(actor->collision))
+        {
+            float actor_d = actor_box->depth / 2;
+            float actor_h = actor_box->height / 2;
+            float actor_w = actor_box->width / 2;
+
+            Vector3 actor_a = position + Vector3(actor_d, actor_h, actor_w);
+            Vector3 actor_b = position - Vector3(actor_d, actor_h, actor_w);
+
+            for(Shared<Actor> a : all_actors)
+            {
+                if(a->collision == actor_box)
+                    continue;
+
+                if(CollisionBox* box = dynamic_cast<CollisionBox*>(a->collision))
+                {
+                    float other_d = actor_box->depth / 2;
+                    float other_h = actor_box->height / 2;
+                    float other_w = actor_box->width / 2;
+
+                    Vector3 other_a = a->position + Vector3(other_d, other_h, other_w);
+                    Vector3 other_b = a->position - Vector3(other_d, other_h, other_w);
+
+                    if(actor_a >= other_b && actor_b <= other_a)
+                    {
+                        position = position_before;
+                        velocity = Vector3(0, 0, 0);
+                        actor_box->Print();
+                    }
+                }
+            }
+        }
+    }
+
+    /*void ContinousCollision(Shared<Actor> actor, std::vector<Shared<Collision>> all_hitboxes)
+    {
+        Vector3 velocity = actor->position_velocity;
+        Vector3 position = actor->position;
+        Vector3 position_before = actor->position - velocity;
+        
+        CollisionBox* collision_box = dynamic_cast<CollisionBox*>(actor->model->collision.get());
+
+        float xy_slope = velocity.y / velocity.x;
+        float zx_slope = velocity.x / velocity.z;
+        float zy_slope = velocity.y / velocity.z;
+
+        float xy_b = xy_slope * position.x + position.y;
+        float zx_b = zx_slope * position.z + position.x;
+        float zy_b = zy_slope * position.z + position.y;
+
+        //Detect
+        for(Shared<Collision> hitbox : all_hitboxes)
+        {
+            if(hitbox.get() == collision_box)
+                continue;
+
+            if(CollisionBox* box = dynamic_cast<CollisionBox*>(hitbox.get()))
+            {
+                if(box->position.
+            }
+        }
+        /*
+        XYZ
+            xy: b = xy_slope * (pos.x + depth) + pos.y + height
+            zx: b = zx_slope * (pos.z + width) + pos.x + depth
+            zy: b = zy_slope * (pos.z + width) + pos.y + height
+        /*
+
+        y - y1 = m(x-x1)
+        y = m(x-(pos.x+d) + (pos.y+h)
+        y = mx - m(pos.x+d) + pos.y + h
+        y = mx - 
+    }*/
 }

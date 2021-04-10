@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include "Core/Log.h"
+#include "Core/Runtime.h"
 
 namespace Graphics
 {
@@ -23,18 +24,33 @@ namespace Graphics
 
     void Camera::Tick()
     {
+        float sin_yaw;
+        float sin_pitch;
+        float cos_yaw;
+        float cos_pitch;
+        float sin_yaw_half;
+        float cos_yaw_half;
+
         if(attached_actor)
         {
             Vector3 actor_pos = attached_actor->position;
+            float pitch_velocity = rod_rotation_velocity.pitch * Engine::Delay();
+            float yaw_velocity = rod_rotation_velocity.yaw * Engine::Delay();
+            float roll_velocity = rod_rotation_velocity.roll * Engine::Delay();
 
             //Rotate Rod
-            AddToOrientation(rod_rotation.pitch, rod_rotation_velocity.pitch, false);
-            AddToOrientation(rod_rotation.yaw, rod_rotation_velocity.yaw, true);
-            AddToOrientation(rod_rotation.roll, rod_rotation_velocity.roll, true);
+            AddToOrientation(rod_rotation.pitch, pitch_velocity, false);
+            AddToOrientation(rod_rotation.yaw, yaw_velocity, true);
+            AddToOrientation(rod_rotation.roll, roll_velocity, true);
 
-            position.x = sin(rod_rotation.yaw) * (cos(rod_rotation.pitch) * rod_length) + actor_pos.x;
-            position.y = sin(rod_rotation.pitch) * rod_length + actor_pos.y;
-            position.z = cos(rod_rotation.yaw) * (cos(rod_rotation.pitch) * rod_length) + actor_pos.z;
+            float rod_sin_yaw = sin(rod_rotation.yaw);
+            float rod_sin_pitch = sin(rod_rotation.pitch);
+            float rod_cos_yaw = cos(rod_rotation.yaw);
+            float rod_cos_pitch = cos(rod_rotation.pitch);
+
+            position.x = rod_sin_yaw * rod_cos_pitch * rod_length + actor_pos.x;
+            position.y = rod_sin_pitch * rod_length + actor_pos.y;
+            position.z = rod_cos_yaw * rod_cos_pitch * rod_length + actor_pos.z;
         }
 
         if(rod_lock && attached_actor)
@@ -44,25 +60,43 @@ namespace Graphics
         else
         {
             //Rotate Camera
-            AddToOrientation(rotation.pitch, rotation_velocity.pitch, false);
-            AddToOrientation(rotation.yaw, rotation_velocity.yaw, true);
-            AddToOrientation(rotation.roll, rotation_velocity.roll, true);
+            float pitch_velocity = rotation_velocity.pitch * Engine::Delay();
+            float yaw_velocity = rotation_velocity.yaw * Engine::Delay();
+            float roll_velocity = rotation_velocity.roll * Engine::Delay();
 
-            looking_at.x = sin(rotation.yaw) * (cos(rotation.pitch) * focal_distance) + position.x;
-            looking_at.y = sin(rotation.pitch) * focal_distance + position.y;
-            looking_at.z = cos(rotation.yaw) * (cos(rotation.pitch) * focal_distance) + position.z;
+            AddToOrientation(rotation.pitch, pitch_velocity, false);
+            AddToOrientation(rotation.yaw, yaw_velocity, true);
+            AddToOrientation(rotation.roll, roll_velocity, true);
+
+            sin_yaw = sin(rotation.yaw);
+            sin_pitch = sin(rotation.pitch);
+            cos_yaw = cos(rotation.yaw);
+            cos_pitch = cos(rotation.pitch);
+            sin_yaw_half = sin(rotation.yaw - PI / 2.0f);
+            cos_yaw_half = cos(rotation.yaw - PI / 2.0f);
+
+            float sin_roll = sin(rotation.roll);
+            float cos_roll = cos(rotation.roll);
+
+            looking_at.x = sin_yaw * (cos_pitch * focal_distance) + position.x;
+            looking_at.y = sin_pitch * focal_distance + position.y;
+            looking_at.z = cos_yaw * (cos_pitch * focal_distance) + position.z;
             
-            up.x = sin(rotation.yaw) * (sin(rotation.roll));
-            up.y = cos(rotation.roll);
-            up.z = cos(rotation.yaw) * (sin(rotation.roll));
+            up.x = sin_yaw * sin_roll;
+            up.y = cos_roll;
+            up.z = cos_yaw * sin_roll;
         }
 
         if(!attached_actor)
         {
             //Move Camera
-            position_velocity.x = sin(rotation.yaw) * (cos(rotation.pitch) * relative_position_velocity.direct) + sin(rotation.yaw - PI / 2.0f) * relative_position_velocity.side;
-            position_velocity.y = sin(rotation.pitch) * relative_position_velocity.direct + relative_position_velocity.vertical;
-            position_velocity.z = cos(rotation.yaw) * (cos(rotation.pitch) * relative_position_velocity.direct) + cos(rotation.yaw - PI / 2.0f) * relative_position_velocity.side;
+            float direct = relative_position_velocity.direct * Engine::Delay();
+            float side = relative_position_velocity.side * Engine::Delay();
+            float vertical = relative_position_velocity.vertical * Engine::Delay();
+
+            position_velocity.x = sin_yaw * cos_pitch * direct + sin_yaw_half * side;
+            position_velocity.y = sin_pitch * direct + vertical;
+            position_velocity.z = cos_yaw * cos_pitch * direct + cos_yaw_half * side;
 
             position += position_velocity;
             looking_at += position_velocity;
@@ -85,7 +119,7 @@ namespace Graphics
             {
                 axis = axis - 2.0f * PI;
             }
-            else if(axis < -1 * PI)
+            else if(axis < -PI)
             {
                 axis = axis + 2.0f * PI;
             }
@@ -96,9 +130,9 @@ namespace Graphics
             {
                 axis = PI / 2.0f;
             }
-            else if(axis < -1 * PI / 2.0f)
+            else if(axis < -PI / 2.0f)
             {
-                axis = -1 * PI / 2;
+                axis = -PI / 2;
             }
         }  
     }
@@ -134,7 +168,7 @@ namespace Graphics
 
     void Camera::MoveDownwards(ButtonEvent e)
     {
-        relative_position_velocity.vertical = -1 * e.value * vertical_throttle;
+        relative_position_velocity.vertical = -e.value * vertical_throttle;
     }
 
     void Camera::MoveRight(ButtonEvent e)
@@ -144,7 +178,7 @@ namespace Graphics
 
     void Camera::MoveLeft(ButtonEvent e)
     {
-        relative_position_velocity.side = -1 * e.value * sideways_throttle;
+        relative_position_velocity.side = -e.value * sideways_throttle;
     }
 
     void Camera::MoveForwards(ButtonEvent e)
@@ -154,7 +188,7 @@ namespace Graphics
 
     void Camera::MoveBackwards(ButtonEvent e)
     {
-        relative_position_velocity.direct = -1 * e.value * forward_throttle;
+        relative_position_velocity.direct = -e.value * forward_throttle;
     }
 
     void Camera::Pitch(StickYEvent e)
@@ -169,17 +203,17 @@ namespace Graphics
 
     void Camera::PitchDown(ButtonEvent e)
     {
-        rotation_velocity.pitch = -1 * e.value * pitch_throttle;
+        rotation_velocity.pitch = -e.value * pitch_throttle;
     }
 
     void Camera::Yaw(StickXEvent e)
     {
-        rotation_velocity.yaw = -1 * e.value * yaw_throttle;
+        rotation_velocity.yaw = -e.value * yaw_throttle;
     }
 
     void Camera::YawRight(ButtonEvent e)
     {
-        rotation_velocity.yaw = -1* e.value * yaw_throttle;
+        rotation_velocity.yaw = -e.value * yaw_throttle;
     }
 
     void Camera::YawLeft(ButtonEvent e)
@@ -199,7 +233,7 @@ namespace Graphics
 
     void Camera::RollLeft(ButtonEvent e)
     {
-        rotation_velocity.roll = -1 * e.value * yaw_throttle;
+        rotation_velocity.roll = -e.value * yaw_throttle;
     }
 
     void Camera::AttachRod(Shared<Actor> actor, float length, bool lock_on_actor)
@@ -223,7 +257,7 @@ namespace Graphics
 
     void Camera::RodPitchDown(ButtonEvent e)
     {
-        rod_rotation_velocity.pitch = -1 * e.value * rod_pitch_throttle;
+        rod_rotation_velocity.pitch = -e.value * rod_pitch_throttle;
     }
 
     void Camera::RodYaw(StickXEvent e)
@@ -238,7 +272,7 @@ namespace Graphics
 
     void Camera::RodYawLeft(ButtonEvent e)
     {
-        rod_rotation_velocity.yaw = -1 * e.value * rod_yaw_throttle;
+        rod_rotation_velocity.yaw = -e.value * rod_yaw_throttle;
     }
 
     void Camera::RodRoll(StickXEvent e)
@@ -253,6 +287,6 @@ namespace Graphics
 
     void Camera::RodRollLeft(ButtonEvent e)
     {
-        rod_rotation_velocity.roll = -1 * e.value * rod_roll_throttle;
+        rod_rotation_velocity.roll = -e.value * rod_roll_throttle;
     }
 }

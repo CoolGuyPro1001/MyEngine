@@ -1,17 +1,11 @@
 #include "Units.h"
 
-Vector2::Vector2(float x, float y) : x(x), y(y)
-{
-}
-
 Vector2::Vector2()
 {
 }
 
-void Vector2::operator=(const Vector2& v)
+Vector2::Vector2(float x, float y) : x(x), y(y)
 {
-    x = v.x;
-    y = v.y;
 }
 
 bool Vector2::operator==(const Vector2& v) const
@@ -24,9 +18,74 @@ bool Vector2::operator!=(const Vector2& v) const
     return v.x != x || v.y != y;
 }
 
+bool Vector2::operator>(const Vector2& v) const
+{
+    return x > v.x && y > v.y;
+}
+
+bool Vector2::operator>=(const Vector2& v) const
+{
+    return x >= v.x && y >= v.y;
+}
+
+bool Vector2::operator<(const Vector2& v) const
+{
+    return x < v.x && y < v.y;
+}
+
+bool Vector2::operator<=(const Vector2& v) const
+{
+    return x <= v.x && y <= v.y;
+}
+
+void Vector2::operator=(const Vector2& v)
+{
+    x = v.x;
+    y = v.y;
+}
+
+void Vector2::operator+=(const Vector2& v)
+{
+    x += v.x;
+    y += v.y;
+}
+
+void Vector2::operator-=(const Vector2& v)
+{
+    x -= v.x;
+    y -= v.y;
+}
+
+void Vector2::operator*=(const Vector2& v)
+{
+    x *= v.x;
+    y *= v.y;
+}
+
+void Vector2::operator/=(const Vector2& v)
+{
+    x /= v.x;
+    y /= v.y;
+}
+
 Vector2 Vector2::operator+(const Vector2& v) const
 {
     return Vector2(x + v.x, y + v.y);
+}
+
+Vector2 Vector2::operator-(const Vector2& v) const
+{
+    return Vector2(x - v.x, y - v.y);
+}
+
+Vector2 Vector2::operator*(const Vector2& v) const
+{
+    return Vector2(x * v.x, y * v.y);
+}
+
+Vector2 Vector2::operator/(const Vector2& v) const
+{
+    return Vector2(x / v.x, y / v.y);
 }
 
 Vector3 Vector2::ToVector3()
@@ -34,20 +93,21 @@ Vector3 Vector2::ToVector3()
     return Vector3(x, y, 0);
 }
 
-Vector3::Vector3(float x, float y, float z) : x(x), y(y), z(z)
-{
 
-}
+
+
+
+
+
+
 
 Vector3::Vector3()
 {
 }
 
-void Vector3::operator=(const Vector3& v)
+Vector3::Vector3(float x, float y, float z) : x(x), y(y), z(z)
 {
-    x = v.x;
-    y = v.y;
-    z = v.z;
+
 }
 
 bool Vector3::operator==(const Vector3& v) const
@@ -60,9 +120,31 @@ bool Vector3::operator!=(const Vector3& v) const
     return v.x != x || v.y != y || v.z != z;
 }
 
-Vector3 Vector3::operator+(const Vector3& v) const
+bool Vector3::operator>(const Vector3& v) const
 {
-    return Vector3(x + v.x, y + v.y, z + v.z);
+    return x > v.x && y > v.y && z > v.z;
+}
+
+bool Vector3::operator>=(const Vector3& v) const
+{
+    return x >= v.x && y >= v.y && z >= v.z;
+}
+
+bool Vector3::operator<(const Vector3& v) const
+{
+    return x < v.x && y < v.y && z < v.z;
+}
+
+bool Vector3::operator<=(const Vector3& v) const
+{
+    return x <= v.x && y <= v.y && z <= v.z;
+}
+
+void Vector3::operator=(const Vector3& v)
+{
+    x = v.x;
+    y = v.y;
+    z = v.z;
 }
 
 void Vector3::operator+=(const Vector3& v)
@@ -72,27 +154,65 @@ void Vector3::operator+=(const Vector3& v)
     z += v.z;
 }
 
+void Vector3::operator-=(const Vector3& v)
+{
+    x -= v.x;
+    y -= v.y;
+    z -= v.z;
+}
+
+void Vector3::operator*=(const Vector3& v)
+{
+    x *= v.x;
+    y *= v.y;
+    z *= v.z;
+}
+
+void Vector3::operator/=(const Vector3& v)
+{
+    x /= v.x;
+    y /= v.y;
+    z /= v.z;
+}
+
+Vector3 Vector3::operator+(const Vector3& v) const
+{
+    return Vector3(x + v.x, y + v.y, z + v.z);
+}
+
+Vector3 Vector3::operator-(const Vector3& v) const
+{
+    return Vector3(x - v.x, y - v.y, z - v.z);
+}
+
+Vector3 Vector3::operator*(const Vector3& v) const
+{
+    return Vector3(x * v.x, y * v.y, z * v.z);
+}
+
+Vector3 Vector3::operator/(const Vector3& v) const
+{
+    return Vector3(x / v.x, y / v.y, z / v.z);
+}
+
 Vector2 Vector3::ToVector2()
 {
     return Vector2(x, y);
 }
 
-Color::Color(u8 r, u8 g, u8 b, u8 a) : r(r), g(g), b(b), a(a) 
-{
 
-}
+
+
+
+
+
 
 Color::Color()
 {
-
 }
 
-void Color::operator=(const Color& c)
+Color::Color(u8 r, u8 g, u8 b, u8 a) : r(r), g(g), b(b), a(a) 
 {
-    r = c.r;
-    g = c.g;
-    b = c.b;
-    a = c.a;
 }
 
 bool Color::operator==(const Color& c) const
@@ -105,18 +225,99 @@ bool Color::operator!=(const Color& c) const
     return c.r != r || c.g != g || c.b != b || c.a != a;
 }
 
+bool Color::operator>(const Color& c) const
+{
+    return r > c.r && g > c.g && b > c.b && a > c.a;
+}
+
+bool Color::operator>=(const Color& c) const
+{
+    return r >= c.r && g >= c.g && b >= c.b && a >= c.a;
+}
+
+bool Color::operator<(const Color& c) const
+{
+    return r < c.r && g < c.g && b < c.b && a < c.a;
+}
+
+bool Color::operator<=(const Color& c) const
+{
+    return r <= c.r && g <= c.g && b <= c.b && a <= c.a;
+}
+
+void Color::operator=(const Color& c)
+{
+    r = c.r;
+    g = c.g;
+    b = c.b;
+    a = c.a;
+}
+
+void Color::operator+=(const Color& c)
+{
+    r += c.r;
+    g += c.g;
+    b += c.b;
+    a += c.a;
+}
+
+void Color::operator-=(const Color& c)
+{
+    r -= c.r;
+    g -= c.g;
+    b -= c.b;
+    a -= c.a;
+}
+
+void Color::operator*=(const Color& c)
+{
+    r *= c.r;
+    g *= c.g;
+    b *= c.b;
+    a *- c.a;
+}
+
+void Color::operator/=(const Color& c)
+{
+    r /= c.r;
+    g /= c.g;
+    b /= c.b;
+    a /= c.a;
+}
+
+Color Color::operator+(const Color& c) const
+{
+    return Color(r + c.r, g + c.g, b + c.b, a + c.a);
+}
+
+Color Color::operator-(const Color& c) const
+{
+    return Color(r - c.r, g - c.g, b - c.b, a - c.a);
+}
+
+Color Color::operator*(const Color& c) const
+{
+    return Color(r * c.r, g * c.g, b * c.b, a * c.a);
+}
+
+Color Color::operator/(const Color& c) const
+{
+    return Color(r / c.r, g / c.g, b / c.b, a / c.a);
+}
+
+
+
+
+
+
+
+
 TextureCoords::TextureCoords()
 {
 }
 
 TextureCoords::TextureCoords(float u, float v) : u(u), v(v)
 {
-}
-
-void TextureCoords::operator=(const TextureCoords& t)
-{
-    u = t.u;
-    v = t.v;
 }
 
 bool TextureCoords::operator==(const TextureCoords& t) const
@@ -128,6 +329,83 @@ bool TextureCoords::operator!=(const TextureCoords& t) const
 {
     return u != t.u || v != t.v;
 }
+
+bool TextureCoords::operator>(const TextureCoords& t) const
+{
+    return u > t.u && v > t.v;
+}
+
+bool TextureCoords::operator>=(const TextureCoords& t) const
+{
+    return u >= t.u && v >= t.v;
+}
+
+bool TextureCoords::operator<(const TextureCoords& t) const
+{
+    return u < t.u && v < t.v;
+}
+
+bool TextureCoords::operator<=(const TextureCoords& t) const
+{
+    return u <= t.u && v <= t.v;
+}
+
+void TextureCoords::operator=(const TextureCoords& t)
+{
+    u = t.u;
+    v = t.v;
+}
+
+void TextureCoords::operator+=(const TextureCoords& t)
+{
+    u += t.u;
+    v += t.v;
+}
+
+void TextureCoords::operator-=(const TextureCoords& t)
+{
+    u -= t.u;
+    v -= t.v;
+}
+
+void TextureCoords::operator*=(const TextureCoords& t)
+{
+    u *= t.u;
+    v *= t.v;
+}
+
+void TextureCoords::operator/=(const TextureCoords& t)
+{
+    u /= t.u;
+    v /= t.v;
+}
+
+TextureCoords TextureCoords::operator+(const TextureCoords& t) const
+{
+    return TextureCoords(u + t.u, v + t.v);
+}
+
+TextureCoords TextureCoords::operator-(const TextureCoords& t) const
+{
+    return TextureCoords(u - t.u, v - t.v);
+}
+
+TextureCoords TextureCoords::operator*(const TextureCoords& t) const
+{
+    return TextureCoords(u * t.u, v * t.v);
+}
+
+TextureCoords TextureCoords::operator/(const TextureCoords& t) const
+{
+    return TextureCoords(u / t.u, v / t.v);
+}
+
+
+
+
+
+
+
 
 Vertex::Vertex()
 {
@@ -165,13 +443,6 @@ Vertex::Vertex(Vector2 vector, Color color, TextureCoords texture_coords) : colo
     this->vector = vector.ToVector3();
 }
 
-void Vertex::operator=(const Vertex& v)
-{
-    vector = v.vector;
-    color = v.color;
-    texture_coords = v.texture_coords;
-}
-
 bool Vertex::operator==(const Vertex& v) const
 {
     return v.vector == vector && v.color == color && v.texture_coords == texture_coords;
@@ -180,4 +451,79 @@ bool Vertex::operator==(const Vertex& v) const
 bool Vertex::operator!=(const Vertex& v) const
 {
     return v.vector != vector || v.color != color || v.texture_coords == texture_coords;
+}
+
+bool Vertex::operator>(const Vertex& v) const
+{
+    return vector > v.vector && color > v.color && texture_coords > v.texture_coords;
+}
+
+bool Vertex::operator>=(const Vertex& v) const
+{
+    return vector >= v.vector && color >= v.color && texture_coords >= v.texture_coords;
+}
+
+bool Vertex::operator<(const Vertex& v) const
+{
+    return vector < v.vector && color < v.color && texture_coords < v.texture_coords;
+}
+
+bool Vertex::operator<=(const Vertex& v) const
+{
+    return vector <= v.vector && color <= v.color && texture_coords <= v.texture_coords;
+}
+
+void Vertex::operator=(const Vertex& v)
+{
+    vector = v.vector;
+    color = v.color;
+    texture_coords = v.texture_coords;
+}
+
+void Vertex::operator+=(const Vertex& v)
+{
+    vector += v.vector;
+    color += v.color;
+    texture_coords += v.texture_coords;
+}
+
+void Vertex::operator-=(const Vertex& v)
+{
+    vector -= v.vector;
+    color -= v.color;
+    texture_coords -= v.texture_coords;
+}
+
+void Vertex::operator*=(const Vertex& v)
+{
+    vector *= v.vector;
+    color *= v.color;
+    texture_coords *= v.texture_coords;
+}
+
+void Vertex::operator/=(const Vertex& v)
+{
+    vector /= v.vector;
+    color /= v.color;
+    texture_coords /= v.texture_coords;
+}
+
+Vertex Vertex::operator+(const Vertex& v) const
+{
+    return Vertex(vector + v.vector, color + v.color, texture_coords + v.texture_coords);
+}
+
+Vertex Vertex::operator-(const Vertex& v) const
+{
+    return Vertex(vector - v.vector, color - v.color, texture_coords - v.texture_coords);
+}
+
+Vertex Vertex::operator*(const Vertex& v) const
+{
+    return Vertex(vector * v.vector, color * v.color, texture_coords * v.texture_coords);
+}
+
+Vertex Vertex::operator/(const Vertex& v) const
+{
+    return Vertex(vector / v.vector, color / v.color, texture_coords / v.texture_coords);
 }

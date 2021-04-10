@@ -3,13 +3,14 @@ target_sources(
     PRIVATE
 
     Actor.h
+    Collision.h
     Controller.h
-    Course.h
     Events.h
     File.h
     Level.h
 
     Actor.cpp
+    Collision.cpp
     Controller.cpp
     Events.cpp
     File.cpp

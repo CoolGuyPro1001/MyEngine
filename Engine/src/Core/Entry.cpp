@@ -1,12 +1,13 @@
-#include "Load.h"
+#include "Entry.h"
 
 #include "Graphics/VertexBuffer.h"
 #include "Graphics/Graphics.h"
 #include "Actor.h"
 #include "Controller.h"
 #include "Graphics/Camera.h"
-#include "Core/Enviroment.h"
+#include "Core/Runtime.h"
 #include "Core/Log.h"
+#include "Collision.h"
 
 #include <SDL2/SDL.h>
 
@@ -70,15 +71,18 @@ namespace Engine
         current_level = level;
     }
 
-    void Run()
+    void Run(bool log_delay)
     {
         TIME last_time;
         bool running = true;
 
+        //if(current_level.sky_block->collision) collisions.push_back(current_level.sky_block->collision);
+        //if(current_level.terrain->collision) collisions.push_back(current_level.terrain->collision);
+
         while(running)
         {
             TIME current_time = std::chrono::high_resolution_clock::now();
-            std::chrono::duration<double, std::milli> delay = current_time - last_time;
+            delay = current_time - last_time;
             last_time = current_time;
 
             //Model      Actors in Model
@@ -90,6 +94,7 @@ namespace Engine
             for(Shared<Actor> actor : current_level.actors)
             {
                 actor->Tick();
+                DoCollision(actor, current_level.actors);
                 
                 for(int i = 0; i < current_level.models.size(); i++)
                 {
@@ -108,9 +113,11 @@ namespace Engine
 
             Draw(total_actors, world_camera, current_level.sky_block, current_level.terrain);
 
-            //Log("Delay: %f\n", delay.count());
-            //float d = 1000.0f / delay.count();
-            //Log("FPS: %f\n\n", (1000.0f / delay.count()));
+            if(log_delay)
+            {
+                Log("Delay: %f\n", delay.count());
+                Log("FPS: %f\n\n", (1000.0 / delay.count()));
+            }
         }
     }
 

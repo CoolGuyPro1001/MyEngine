@@ -4,6 +4,7 @@ target_sources(
 
     Binary.h
     Hex.h
+    Tree.h
     Units.h
 
     Binary.cpp

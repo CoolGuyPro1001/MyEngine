@@ -1,11 +1,15 @@
 #include <stdio.h>
-#include <stdint.h>
+#include <math.h>
 
-int main(int argc, char* argv[])
+int main()
 {
-    unsigned short num = 0xABCD;
-    unsigned short* ptr = &num;
-    printf("%d", *ptr);
-
+    int num = 0;
+    int i = 0;
+    while(i < 100)
+    {
+        num += i;
+        i++;
+    }
+    printf("%d", num);
     return 0;
 }

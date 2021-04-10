@@ -2,11 +2,11 @@ target_sources(
     ${ENGINE_NAME}
     PRIVATE
 
-    Enviroment.h
-    Load.h
+    Entry.h
     Log.h
+    Runtime.h
 
-    Enviroment.cpp
-    Load.cpp
+    Entry.cpp
     Log.cpp
+    Runtime.cpp
 )

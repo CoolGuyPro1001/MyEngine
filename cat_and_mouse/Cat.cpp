@@ -1,5 +1,5 @@
 #include "Cat.h"
-#include <Core/Enviroment.h>
+#include <Core/Runtime.h>
 #include <Core/Log.h>
 
 Cat::Cat(Shared<Model> model) : Actor(model)
@@ -8,6 +8,7 @@ Cat::Cat(Shared<Model> model) : Actor(model)
 
 void Cat::Tick()
 {
+    Actor::Tick();
     MoveForward();
     MoveRight();
     MoveUp();
@@ -31,7 +32,7 @@ void Cat::MoveUp()
 
 void Cat::OnUpPressed()
 {
-    position_velocity.y += 0.001;
+    position_velocity.y = 0.5;
 }
 
 void Cat::OnReleased()
@@ -41,7 +42,7 @@ void Cat::OnReleased()
 
 void Cat::OnDownPressed()
 {
-    position_velocity.y -= 0.001;
+    position_velocity.y = -0.5;
 }
 
 void Cat::OnForwards(StickYEvent e)
@@ -52,7 +53,7 @@ void Cat::OnForwards(StickYEvent e)
     }
     else
     {
-        position_velocity.z += (e.value / SHRT_MAX) * 0.001;
+        position_velocity.z = (e.value / SHRT_MAX) * 0.005 * Engine::Delay();
     }
 }
 
@@ -64,6 +65,6 @@ void Cat::OnRight(StickXEvent e)
     }
     else
     {
-        position_velocity.x += (e.value / SHRT_MAX) * 0.001;
+        position_velocity.x = (e.value / SHRT_MAX) * 0.005 * Engine::Delay();
     }
 }

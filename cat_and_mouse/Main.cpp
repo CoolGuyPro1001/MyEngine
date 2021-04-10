@@ -1,12 +1,12 @@
 #include "Cat.h"
 #include "Mouse.h"
 
-#include <Actor.h>
 #include <Level.h>
+#include <Actor.h>
 #include <Controller.h>
 #include <Shapes.h>
 #include <Common/Units.h>
-#include <Core/Load.h>
+#include <Core/Entry.h>
 #include <Graphics/Camera.h>
 
 #include <SDL2/SDL_keycode.h>
@@ -26,12 +26,22 @@ int main()
 
     //Actors
     Shared<Cat> cat = CreateShared<Cat>(box);
-    cat->position = Vector3(0, 3, 0);
+    cat->position = Vector3(0, 0, 0);
     cat->rotation = Vector3(0, 0, 0);
     cat->scale = Vector3(1.0f, 1.0f, 1.0f);
     cat->position_velocity = Vector3(0, 0, 0);
+    cat->can_fall = false;
+    cat->CreateHitBox(2, 2, 2);
 
-    Shared<Graphics::Camera> camera = CreateShared<Graphics::Camera>(50, true, 50);
+    Shared<Mouse> mouse = CreateShared<Mouse>(box);
+    mouse->position = Vector3(5, 0, 0);
+    mouse->rotation = Vector3(0, 0, 0);
+    mouse->scale = Vector3(1.0f, 1.0f, 1.0f);
+    mouse->position_velocity = Vector3(0, 0, 0);
+    mouse->can_fall = false;
+    mouse->CreateHitBox(2, 2, 2);
+
+    Shared<Graphics::Camera> camera = CreateShared<Graphics::Camera>(50, false, 50);
     camera->forward_throttle = 0.0000001f;
     camera->sideways_throttle = 0.0000001f;
     camera->vertical_throttle = 0.0000001f;
@@ -41,7 +51,7 @@ int main()
     camera->rod_yaw_throttle = 0.00000001f;
     camera->rod_pitch_throttle = 0.00000001f;
     camera->fov = 70.0f;
-    camera->AttachRod(cat, 30.0f, true);
+    camera->AttachRod(cat, 10.0f, true);
 
     Controller controller = Controller();
 
@@ -75,7 +85,7 @@ int main()
     move_down.key = SDLK_q;
 
     ButtonAction move_up;
-    move_up.key = SDLK_e;
+    move_up.key = SDLK_e; 
     
     BindStickX(move, cat, &Cat::OnRight);
     BindStickY(move, cat, &Cat::OnForwards);
@@ -85,34 +95,36 @@ int main()
     BindStickX(camera_roll, camera, &Graphics::Camera::Roll);
     BindStickX(camera_rotate, camera, &Graphics::Camera::Yaw);
     BindStickY(camera_rotate, camera, &Graphics::Camera::Pitch);
-    //BindButtonPress(move_up, cat, &Cat::OnUpPressed);
-    //BindButtonPress(move_down, cat, &Cat::OnDownPressed);
-    //BindButtonRelease(move_up, cat, &Cat::OnReleased);
-    //BindButtonRelease(move_down, cat, &Cat::OnReleased);
+    BindButtonPress(move_up, cat, &Cat::OnUpPressed);
+    BindButtonPress(move_down, cat, &Cat::OnDownPressed);
+    BindButtonRelease(move_up, cat, &Cat::OnReleased);
+    BindButtonRelease(move_down, cat, &Cat::OnReleased);
 
     controller.AddStickAction(move);
     controller.AddStickAction(camera_rod);
     controller.AddStickAction(camera_vertical);
     controller.AddStickAction(camera_roll);
     controller.AddStickAction(camera_rotate);
-    //controller.AddButtonAction(move_up);
-    //controller.AddButtonAction(move_down);
+    controller.AddButtonAction(move_up);
+    controller.AddButtonAction(move_down);
 
     Level lvl = Level();
-    //lvl.actors.push_back(mouse);
+    lvl.AddActor(mouse);
     lvl.sky_block = CreateShared<Model>("../../res/sky.emodel", sky);
     lvl.terrain = CreateShared<Model>("../../res/terrain.emodel", grass);
-    lvl.models.push_back(box);
-    lvl.actors.push_back(cat);
-    lvl.cameras.push_back(camera);
-    lvl.textures.push_back(colors);
-    lvl.textures.push_back(sky);
-    lvl.textures.push_back(grass);
-    lvl.controllers.push_back(controller);
+    //lvl.terrain->hitbox = CreateShared<HitBox>(Vector3(0, 0, 0), 200, 0, 200);
+    lvl.gravity = -0.01;
+    lvl.AddModel(box);
+    lvl.AddActor(cat);
+    lvl.AddCamera(camera);
+    lvl.AddTexture(colors);
+    lvl.AddTexture(sky);
+    lvl.AddTexture(grass);
+    lvl.AddController(controller);
 
     Engine::Start(500, 500, "Cat And Mouse");
     Engine::LoadLevel(lvl);
-    Engine::Run();
+    Engine::Run(false);
 
     return 0;
 }
