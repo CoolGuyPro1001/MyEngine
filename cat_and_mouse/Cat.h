@@ -11,9 +11,6 @@ public:
 
     void Tick() override;
     
-    void MoveForward();
-    void MoveRight();
-    void MoveUp();
     void OnForwards(StickYEvent e);
     void OnRight(StickXEvent e);
     void OnUpPressed();

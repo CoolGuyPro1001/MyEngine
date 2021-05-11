@@ -68,6 +68,8 @@ namespace Engine
         }
         Graphics::FormatData(offset);
 
+        SetFlatCollisionNormals(level.flat_collisions);
+
         current_level = level;
     }
 
@@ -94,7 +96,6 @@ namespace Engine
             for(Shared<Actor> actor : current_level.actors)
             {
                 actor->Tick();
-                DoCollision(actor, current_level.actors);
                 
                 for(int i = 0; i < current_level.models.size(); i++)
                 {
@@ -104,6 +105,8 @@ namespace Engine
                     }
                 }
             }
+
+            DoCollision(current_level.actors, current_level.flat_collisions);
 
             for(Shared<Graphics::Camera> camera : current_level.cameras)
             {

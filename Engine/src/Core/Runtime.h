@@ -11,7 +11,8 @@ namespace Engine
 
     float Normalize(int num, int low, int high);
     void PollEvents(std::vector<Controller>& controllers);
-    void DoCollision(Shared<Actor> actor, std::vector<Shared<Actor>> other_actors);
+    void SetFlatCollisionNormals(std::vector<CollisionTri>& flat_collisions);
+    void DoCollision(std::vector<Shared<Actor>> all_actors, std::vector<CollisionTri> flat_collisions);
     double Delay();
 }
 #endif

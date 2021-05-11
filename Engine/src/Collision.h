@@ -11,10 +11,13 @@ struct Collision
     Vector3 position;
 };
 
+
 struct CollisionTri
 {
+    CollisionTri();
     CollisionTri(Vector3 p0, Vector3 p1, Vector3 p2);
     Vector3 p0, p1, p2;
+    Vector3 normal;
 };
 
 struct CollisionQuad

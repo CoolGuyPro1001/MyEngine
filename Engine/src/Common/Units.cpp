@@ -83,6 +83,11 @@ Vector2 Vector2::operator*(const Vector2& v) const
     return Vector2(x * v.x, y * v.y);
 }
 
+Vector2 Vector2::operator*(const float& f) const
+{
+    return Vector2(x * f, y * f);
+}
+
 Vector2 Vector2::operator/(const Vector2& v) const
 {
     return Vector2(x / v.x, y / v.y);
@@ -90,7 +95,7 @@ Vector2 Vector2::operator/(const Vector2& v) const
 
 Vector3 Vector2::ToVector3()
 {
-    return Vector3(x, y, 0);
+    return Vector3(x, y, 0.0f);
 }
 
 
@@ -188,6 +193,11 @@ Vector3 Vector3::operator-(const Vector3& v) const
 Vector3 Vector3::operator*(const Vector3& v) const
 {
     return Vector3(x * v.x, y * v.y, z * v.z);
+}
+
+Vector3 Vector3::operator*(const float f) const
+{
+    return Vector3(x * f, y * f, z * f);
 }
 
 Vector3 Vector3::operator/(const Vector3& v) const
@@ -413,24 +423,24 @@ Vertex::Vertex()
 
 Vertex::Vertex(Vector3 vector, Color color) : color(color), vector(vector)
 {
-    texture_coords = TextureCoords(0.0, 0.0);
+    texture_coords = TextureCoords(0.0f, 0.0f);
 }
 
 Vertex::Vertex(Vector2 vector, Color color) : color(color)
 {
     this->vector = vector.ToVector3();
-    texture_coords = TextureCoords(0, 0);
+    texture_coords = TextureCoords(0.0f, 0.0f);
 }
 
 Vertex::Vertex(Vector3 vector, TextureCoords texture_coords) : vector(vector), texture_coords(texture_coords)
 {
-    color = Color(0, 0, 0, 1.0);
+    color = Color(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 Vertex::Vertex(Vector2 vector, TextureCoords texture_coords) : texture_coords(texture_coords)
 {
     this->vector = vector.ToVector3();
-    color = Color(0, 0, 0, 1.0);
+    color = Color(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 Vertex::Vertex(Vector3 vector, Color color, TextureCoords texture_coords) : color(color), vector(vector), 

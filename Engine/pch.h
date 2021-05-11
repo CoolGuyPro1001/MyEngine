@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <algorithm>
 
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_keyboard.h>
@@ -25,6 +26,7 @@
 #include <SDL2/SDL_video.h>
 
 #include <GL/glew.h>
+
 
 typedef unsigned char uchar;
 typedef unsigned int uint;
@@ -73,6 +75,7 @@ constexpr Shared<T> CreateShared(Args&& ... args)
 }
 
 constexpr float PI = 3.14159250;
+constexpr double EPSILON = 1.0e-323;
 
 template<typename T>
 T ToBigEndian(T x)

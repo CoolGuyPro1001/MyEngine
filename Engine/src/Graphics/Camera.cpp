@@ -236,10 +236,11 @@ namespace Graphics
         rotation_velocity.roll = -e.value * yaw_throttle;
     }
 
-    void Camera::AttachRod(Shared<Actor> actor, float length, bool lock_on_actor)
+    void Camera::AttachRod(Shared<Actor> actor, float length, Vector3 rotation, bool lock_on_actor)
     {
         attached_actor = actor;
         rod_length = length;
+        rod_rotation = rotation;
         looking_at = attached_actor->position;
         rod_lock = lock_on_actor;
     }

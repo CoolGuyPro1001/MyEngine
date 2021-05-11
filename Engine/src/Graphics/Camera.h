@@ -38,7 +38,7 @@ namespace Graphics
 
         void Tick();
 
-        void AttachRod(Shared<Actor> actor, float length, bool lock_on_actor);
+        void AttachRod(Shared<Actor> actor, float length, Vector3 rotation, bool lock_on_actor);
         void RodPitch(StickYEvent e);
         void RodPitchUp(ButtonEvent e);
         void RodPitchDown(ButtonEvent e);

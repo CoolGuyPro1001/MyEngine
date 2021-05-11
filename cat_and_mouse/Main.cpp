@@ -17,7 +17,7 @@
 int main()
 {
     //Textures
-    Shared<Graphics::Texture> colors = Graphics::Texture::BMPToTexture("../../res/colors.bmp", 0);
+    Shared<Graphics::Texture> colors = Graphics::Texture::BMPToTexture("../../res/strevo.bmp", 0);
     Shared<Graphics::Texture> sky = Graphics::Texture::BMPToTexture("../../res/sky.bmp", 1);
     Shared<Graphics::Texture> grass = Graphics::Texture::BMPToTexture("../../res/grass.bmp", 2);
 
@@ -26,7 +26,7 @@ int main()
 
     //Actors
     Shared<Cat> cat = CreateShared<Cat>(box);
-    cat->position = Vector3(0, 0, 0);
+    cat->position = Vector3(0, 1.01f, 0);
     cat->rotation = Vector3(0, 0, 0);
     cat->scale = Vector3(1.0f, 1.0f, 1.0f);
     cat->position_velocity = Vector3(0, 0, 0);
@@ -34,7 +34,7 @@ int main()
     cat->CreateHitBox(2, 2, 2);
 
     Shared<Mouse> mouse = CreateShared<Mouse>(box);
-    mouse->position = Vector3(5, 0, 0);
+    mouse->position = Vector3(5, 0, 20);
     mouse->rotation = Vector3(0, 0, 0);
     mouse->scale = Vector3(1.0f, 1.0f, 1.0f);
     mouse->position_velocity = Vector3(0, 0, 0);
@@ -47,11 +47,11 @@ int main()
     camera->vertical_throttle = 0.0000001f;
     camera->pitch_throttle = 0.00000001f;
     camera->yaw_throttle = 0.00000001f;
-    camera->roll_throttle = 0.00000001f;
-    camera->rod_yaw_throttle = 0.00000001f;
-    camera->rod_pitch_throttle = 0.00000001f;
+    camera->roll_throttle = 0.00000005f;
+    camera->rod_yaw_throttle = -0.00000005f;
+    camera->rod_pitch_throttle = 0.00000005f;
     camera->fov = 70.0f;
-    camera->AttachRod(cat, 10.0f, true);
+    camera->AttachRod(cat, 10.0f, Vector3(0, -PI / 2, 0), true);
 
     Controller controller = Controller();
 
@@ -112,8 +112,7 @@ int main()
     lvl.AddActor(mouse);
     lvl.sky_block = CreateShared<Model>("../../res/sky.emodel", sky);
     lvl.terrain = CreateShared<Model>("../../res/terrain.emodel", grass);
-    //lvl.terrain->hitbox = CreateShared<HitBox>(Vector3(0, 0, 0), 200, 0, 200);
-    lvl.gravity = -0.01;
+    lvl.gravity = -0.15625f;
     lvl.AddModel(box);
     lvl.AddActor(cat);
     lvl.AddCamera(camera);
@@ -121,6 +120,7 @@ int main()
     lvl.AddTexture(sky);
     lvl.AddTexture(grass);
     lvl.AddController(controller);
+    lvl.ReadCollisionFile("../../res/landcollision.ecol");
 
     Engine::Start(500, 500, "Cat And Mouse");
     Engine::LoadLevel(lvl);

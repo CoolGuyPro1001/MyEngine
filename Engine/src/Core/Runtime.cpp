@@ -2,6 +2,7 @@
 #include "Graphics/Graphics.h"
 #include "Entry.h"
 #include "Log.h"
+#include "Common/Mathematics.h"
 
 namespace Engine
 {
@@ -210,83 +211,141 @@ namespace Engine
         }
     }
 
-    void DoCollision(Shared<Actor> actor, std::vector<Shared<Actor>> all_actors)
+    void SetFlatCollisionNormals(std::vector<CollisionTri>& collisions)
     {
-        Vector3& velocity = actor->position_velocity;
-        Vector3& position = actor->position;
-        Vector3 position_before = actor->position - velocity;
-
-        if(CollisionBox* actor_box = dynamic_cast<CollisionBox*>(actor->collision))
+        for(CollisionTri& col : collisions)
         {
-            float actor_d = actor_box->depth / 2;
-            float actor_h = actor_box->height / 2;
-            float actor_w = actor_box->width / 2;
+            Vector3 u = col.p1 - col.p0; 
+            Vector3 v = col.p2 - col.p0; 
+            col.normal = CrossProduct(u, v);
+        }
+    }
 
-            Vector3 actor_a = position + Vector3(actor_d, actor_h, actor_w);
-            Vector3 actor_b = position - Vector3(actor_d, actor_h, actor_w);
+    void DoCollision(std::vector<Shared<Actor>> all_actors, std::vector<CollisionTri> flat_collisions)
+    {
+        for(Shared<Actor> actor : all_actors)
+        {
+            Vector3& velocity = actor->position_velocity;
 
-            for(Shared<Actor> a : all_actors)
+            if(velocity == Vector3(0, 0, 0))
+                continue;
+
+            Vector3& position = actor->position;
+            Vector3 position_before = actor->position - velocity;
+
+            if(CollisionBox* actor_box = dynamic_cast<CollisionBox*>(actor->collision))
             {
-                if(a->collision == actor_box)
+                float actor_d = actor_box->depth / 2;
+                float actor_h = actor_box->height / 2;
+                float actor_w = actor_box->width / 2;
+
+                //Four Corners
+                Vector3 actor_a = position + Vector3(actor_d, actor_h, actor_w);
+                Vector3 actor_b = position - Vector3(actor_d, actor_h, actor_w);
+
+                //Detect Collision With Other Actors
+                for(Shared<Actor> a : all_actors)
+                {
+                    if(a->collision == actor_box)
+                        continue;
+
+                    if(CollisionBox* box = dynamic_cast<CollisionBox*>(a->collision))
+                    {
+                        float other_d = actor_box->depth / 2;
+                        float other_h = actor_box->height / 2;
+                        float other_w = actor_box->width / 2;
+
+                        Vector3 other_a = a->position + Vector3(other_d, other_h, other_w);
+                        Vector3 other_b = a->position - Vector3(other_d, other_h, other_w);
+
+                        if(actor_a >= other_b && actor_b <= other_a)
+                        {
+                            position = position_before;
+                            velocity = Vector3(0, 0, 0);
+                        }
+                    }
+                }
+
+                if(velocity == Vector3(0, 0, 0))
                     continue;
 
-                if(CollisionBox* box = dynamic_cast<CollisionBox*>(a->collision))
-                {
-                    float other_d = actor_box->depth / 2;
-                    float other_h = actor_box->height / 2;
-                    float other_w = actor_box->width / 2;
+                Vector3 origin_pos = position_before + Vector3(actor_d, actor_h, actor_w);
+                Vector3 origin_neg = position_before - Vector3(actor_d, actor_h, actor_w);
 
-                    Vector3 other_a = a->position + Vector3(other_d, other_h, other_w);
-                    Vector3 other_b = a->position - Vector3(other_d, other_h, other_w);
+                Vector3 depth = origin_neg + Vector3(actor_d, 0, 0);
+                Vector3 height = origin_neg + Vector3(0, actor_h, 0);
+                Vector3 width = origin_neg + Vector3(0, 0, actor_w);
+                Vector3 depth_n = origin_pos - Vector3(actor_d, 0, 0);
+                Vector3 height_n = origin_pos - Vector3(0, actor_h, 0);
+                Vector3 width_n = origin_pos - Vector3(0, 0, actor_w);
 
-                    if(actor_a >= other_b && actor_b <= other_a)
+                Vector3 dir = NormalizeVector3(velocity);
+                Vector3 intersect_pos = Vector3(0, 0, 0);
+                Vector3 intersect_neg = Vector3(0, 0, 0);
+                float m_pos;
+                float m_neg;
+
+                //Detect Collision With Flat Collisions
+                for(CollisionTri col : flat_collisions)
+                {   
+                    bool f_collision = false;
+                    bool r_collision = false;
+                    bool u_collision = false;
+                    bool b_collision = false;
+                    bool l_collision = false;
+                    bool d_collision = false;
+
+                    Vector3 bob = Vector3(7,8,9);
+
+
+                    if(velocity.x > 0 || velocity.y > 0 || velocity.z > 0)
                     {
-                        position = position_before;
-                        velocity = Vector3(0, 0, 0);
-                        actor_box->Print();
+                        //Forward
+                        f_collision = IntersectParallelpipedTriangle(bob, dir, depth_n, height_n, 
+                            col.p0, col.p1, col.p2, col.normal, intersect_pos, m_pos);
+                        //Right
+                        r_collision = IntersectParallelpipedTriangle(origin_pos, dir, depth_n, height_n, 
+                            col.p0, col.p1, col.p2, col.normal, intersect_pos, m_pos);
+                        //Up
+                        u_collision = IntersectParallelpipedTriangle(origin_pos, dir, width_n, depth_n, 
+                            col.p0, col.p1, col.p2, col.normal, intersect_pos, m_pos);
                     }
+                    
+                    if(velocity.x < 0 || velocity.y < 0 || velocity.z < 0)
+                    {
+                        //Back
+                        b_collision = IntersectParallelpipedTriangle(origin_neg, dir, width, height, 
+                            col.p0, col.p1, col.p2, col.normal, intersect_neg, m_neg);
+                        //Left
+                        l_collision = IntersectParallelpipedTriangle(origin_neg, dir, depth, height, 
+                            col.p0, col.p1, col.p2, col.normal, intersect_neg, m_neg);
+                        //Down
+                        d_collision = IntersectParallelpipedTriangle(origin_neg, dir, width, depth, 
+                                col.p0, col.p1, col.p2, col.normal, intersect_neg, m_neg);
+                    }
+
+                    bool positive_collision = f_collision || r_collision || u_collision;
+                    bool negative_collision = b_collision || l_collision || d_collision;
+
+                    if(!(positive_collision || negative_collision))
+                        continue;
+
+                    //Checking if velocity is shorter than distance between origin point and intersect point
+                    if(Vector3Magnitude(intersect_pos - origin_pos) > Vector3Magnitude(velocity) && Vector3Magnitude(intersect_neg - origin_neg) > Vector3Magnitude(velocity))
+                        continue;
+
+                    velocity = Vector3(0, 0, 0);     //Distance between corner and middle
+                    if(positive_collision)
+                    {
+                        position = intersect_pos - Vector3(actor_d, actor_h, actor_d);
+                    }
+                    else
+                    {
+                        position = intersect_neg + Vector3(actor_d, actor_h, actor_d);
+                    }
+                    break;
                 }
             }
         }
     }
-
-    /*void ContinousCollision(Shared<Actor> actor, std::vector<Shared<Collision>> all_hitboxes)
-    {
-        Vector3 velocity = actor->position_velocity;
-        Vector3 position = actor->position;
-        Vector3 position_before = actor->position - velocity;
-        
-        CollisionBox* collision_box = dynamic_cast<CollisionBox*>(actor->model->collision.get());
-
-        float xy_slope = velocity.y / velocity.x;
-        float zx_slope = velocity.x / velocity.z;
-        float zy_slope = velocity.y / velocity.z;
-
-        float xy_b = xy_slope * position.x + position.y;
-        float zx_b = zx_slope * position.z + position.x;
-        float zy_b = zy_slope * position.z + position.y;
-
-        //Detect
-        for(Shared<Collision> hitbox : all_hitboxes)
-        {
-            if(hitbox.get() == collision_box)
-                continue;
-
-            if(CollisionBox* box = dynamic_cast<CollisionBox*>(hitbox.get()))
-            {
-                if(box->position.
-            }
-        }
-        /*
-        XYZ
-            xy: b = xy_slope * (pos.x + depth) + pos.y + height
-            zx: b = zx_slope * (pos.z + width) + pos.x + depth
-            zy: b = zy_slope * (pos.z + width) + pos.y + height
-        /*
-
-        y - y1 = m(x-x1)
-        y = m(x-(pos.x+d) + (pos.y+h)
-        y = mx - m(pos.x+d) + pos.y + h
-        y = mx - 
-    }*/
 }

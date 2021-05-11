@@ -4,10 +4,12 @@ target_sources(
 
     Binary.h
     Hex.h
+    Mathematics.h
     Tree.h
     Units.h
 
     Binary.cpp
     Hex.cpp
+    Mathematics.cpp
     Units.cpp
 )

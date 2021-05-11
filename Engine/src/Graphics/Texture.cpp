@@ -91,9 +91,9 @@ namespace Graphics
         fread(raw_data, sizeof(u8), area * 4, file);
 
 
-        //Need ocumentation on this
-        int bmp_change = width * (height - 1);
-        int bmp_row_change = -2 * width;
+        //Need documentation on this
+        //int bmp_change = width * (height - 1);
+        //int bmp_row_change = -2 * width;
 
         int b = 0;
         for(int p = 0; p < area; p++)
@@ -103,10 +103,10 @@ namespace Graphics
             if(bpp == 32) 
                 selected_pixel.a = raw_data[b + 3];
 
-            if(p % width == 0 && p != 0)
-                bmp_change += bmp_row_change;
+            //if(p % width == 0 && p != 0)
+             //   bmp_change += bmp_row_change;
             
-            color_data[p + bmp_change] = selected_pixel;
+            color_data[p] = selected_pixel;
 
             b += bpp / 8;
         }

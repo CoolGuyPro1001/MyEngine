@@ -3,13 +3,12 @@
 
 int main()
 {
-    int num = 0;
-    int i = 0;
-    while(i < 100)
-    {
-        num += i;
-        i++;
-    }
-    printf("%d", num);
-    return 0;
+    char feels = 0b00001111;
+    char mask = 0b10101010;
+    printf("%x", feels & mask);
+
+    00001111
+    10101010
+    00001010
+    
 }

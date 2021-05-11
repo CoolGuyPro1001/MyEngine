@@ -14,6 +14,10 @@ void Collision::Print()
     Engine::Log("Colliding\n");
 }
 
+CollisionTri::CollisionTri()
+{
+}
+
 CollisionTri::CollisionTri(Vector3 p0, Vector3 p1, Vector3 p2) : p0(p0), p1(p1), p2(p2)
 {
 }

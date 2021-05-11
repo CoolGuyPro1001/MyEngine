@@ -31,6 +31,15 @@ Model::Model(std::string file_path, Shared<Graphics::Texture> texture) : texture
     while(true)
     {
         uint red, green, blue, alpha;
+        std::string comment;
+
+        /*fscanf(file, "%s", comment.c_str());
+        if(comment.size() > 1 && comment.substr(0, 2)  == "//")
+        {
+            file
+            continue;
+        }*/
+
         int res = fscanf(file, "%f %f %f %x %x %x %x %f %f\n", 
             &vec3.x, &vec3.y, &vec3.z, &red, &green, &blue, &alpha, &tex.u, &tex.v);
         
@@ -69,9 +78,12 @@ void Actor::Tick()
     if(can_fall && current_level)
     {
         position_velocity.y += (Engine::Delay() > 1) ? current_level->gravity : current_level->gravity * Engine::Delay();
-        position.y += position_velocity.y;
     }
-}
+
+    position.x += position_velocity.x;
+    position.y += position_velocity.y;
+    position.z += position_velocity.z;
+}  
 
 void Actor::CreateHitBox(float depth, float height, float width)
 {

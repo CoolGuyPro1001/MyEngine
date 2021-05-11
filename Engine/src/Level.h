@@ -18,6 +18,7 @@ public:
     void AddActor(Shared<Actor> actor);
     void AddCamera(Shared<Graphics::Camera> camera);
     void AddController(Controller controller);
+    void ReadCollisionFile(std::string file);
     
     std::vector<Shared<Graphics::Texture>> textures;
     std::vector<Shared<Model>> models;
@@ -29,6 +30,7 @@ public:
 
     Shared<Model> sky_block;
     Shared<Model> terrain;
+    std::vector<CollisionTri> flat_collisions;
 
     float gravity;
 };

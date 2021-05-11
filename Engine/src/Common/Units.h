@@ -26,6 +26,7 @@ struct Vector2
     Vector2 operator+(const Vector2& v) const;
     Vector2 operator-(const Vector2& v) const;
     Vector2 operator*(const Vector2& v) const;
+    Vector2 operator*(const float& f) const;
     Vector2 operator/(const Vector2& v) const;
 
 
@@ -57,6 +58,7 @@ struct Vector3
     Vector3 operator+(const Vector3& v) const;
     Vector3 operator-(const Vector3& v) const;
     Vector3 operator*(const Vector3& v) const;
+    Vector3 operator*(const float f) const;
     Vector3 operator/(const Vector3& v) const;
 
     Vector2 ToVector2();
