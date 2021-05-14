@@ -23,15 +23,6 @@ int main()
     //Models
     Shared<Model> box = CreateShared<Model>("../../res/cube.emodel", colors);
 
-    //Actors
-    Shared<Strevo> strevo = CreateShared<Strevo>(box);
-    strevo->position = Vector3(0, 1.01f, 0);
-    strevo->rotation = Vector3(0, 0, 0);
-    strevo->scale = Vector3(1.0f, 1.0f, 1.0f);
-    strevo->position_velocity = Vector3(0, 0, 0);
-    strevo->can_fall = true;
-    strevo->CreateHitBox(2, 2, 2);
-
     Shared<Graphics::Camera> camera = CreateShared<Graphics::Camera>(50, false, 50);
     camera->forward_throttle = 0.0000001f;
     camera->sideways_throttle = 0.0000001f;
@@ -40,8 +31,18 @@ int main()
     camera->yaw_throttle = 0.00000001f;
     camera->roll_throttle = 0.00000005f;
     camera->rod_yaw_throttle = -0.00000005f;
-    camera->rod_pitch_throttle = 0.00000005f;
+    camera->rod_pitch_throttle = -0.00000005f;
     camera->fov = 70.0f;
+
+    //Actors
+    Shared<Strevo> strevo = CreateShared<Strevo>(box, camera);
+    strevo->position = Vector3(0, 1.01f, 0);
+    strevo->rotation = Vector3(0, 0, 0);
+    strevo->scale = Vector3(1.0f, 1.0f, 1.0f);
+    strevo->position_velocity = Vector3(0, 0, 0);
+    strevo->can_fall = true;
+    strevo->CreateHitBox(2, 2, 2);
+
     camera->AttachRod(strevo, 10.0f, Vector3(0, -PI / 2, 0), true);
 
     Controller controller = Controller();
@@ -106,7 +107,7 @@ int main()
     lvl.AddController(controller);
     lvl.ReadCollisionFile("../../res/landcollision.ecol");
 
-    Engine::Start(500, 500, "Cat And Mouse");
+    Engine::Start(500, 500, "Strevo");
     Engine::LoadLevel(lvl);
     Engine::Run(false);
 

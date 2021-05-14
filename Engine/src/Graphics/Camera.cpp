@@ -56,6 +56,18 @@ namespace Graphics
         if(rod_lock && attached_actor)
         {
             looking_at = attached_actor->position;
+            if(rod_rotation.yaw >= 0)
+            {
+                float a = 5;
+            }
+
+            float& pitch = rod_rotation.pitch;
+            float& yaw = rod_rotation.yaw;
+            float& roll = rod_rotation.roll;
+
+            rotation.pitch = (pitch >= 0 && pitch <= PI) ? pitch - PI : pitch + PI;
+            rotation.yaw = (yaw >= 0 && yaw <= PI) ? yaw - PI : yaw + PI;
+            rotation.roll = (roll >= 0 && roll <= PI) ? roll - PI : roll + PI;
         }
         else
         {
@@ -91,8 +103,8 @@ namespace Graphics
         {
             //Move Camera
             float direct = relative_position_velocity.direct * Engine::Delay();
-            float side = relative_position_velocity.side * Engine::Delay();
             float vertical = relative_position_velocity.vertical * Engine::Delay();
+            float side = relative_position_velocity.side * Engine::Delay();
 
             position_velocity.x = sin_yaw * cos_pitch * direct + sin_yaw_half * side;
             position_velocity.y = sin_pitch * direct + vertical;
@@ -242,6 +254,7 @@ namespace Graphics
         rod_length = length;
         rod_rotation = rotation;
         looking_at = attached_actor->position;
+        rotation = rod_rotation * -1;
         rod_lock = lock_on_actor;
     }
 

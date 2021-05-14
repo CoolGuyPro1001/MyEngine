@@ -2,19 +2,29 @@
 #include <Core/Runtime.h>
 #include <Core/Log.h>
 
-Strevo::Strevo(Shared<Model> model) : Actor(model)
+Strevo::Strevo(Shared<Model> model, Shared<Graphics::Camera> camera) : Actor(model), camera(camera)
 {
+    relative_velocity = Vector3(0, 0, 0);
 }
 
 void Strevo::Tick()
 {
+    float direct = relative_velocity.direct;
+    float side = relative_velocity.side;
+
+    position_velocity.x = sin(camera->rotation.yaw) * direct + 
+        sin(camera->rotation.yaw - PI / 2.0f) * side;
+
+    position_velocity.z = cos(camera->rotation.yaw) * direct + 
+        cos(camera->rotation.yaw - PI / 2.0f) * side;
+    
     Actor::Tick();
     Engine::Log("X:%f Y:%f Z:%f\n", position.x, position.y, position.z);
 }
 
 void Strevo::OnJumpReleased()
 {
-    position_velocity.y = 0;
+    relative_velocity.y = 0;
 }
 
 void Strevo::OnJumpPressed()
@@ -26,11 +36,11 @@ void Strevo::OnForwards(StickYEvent e)
 {
     if(e.value == 0)
     {
-        position_velocity.x = 0;
+        relative_velocity.direct = 0;
     }
     else
     {
-        position_velocity.x = (e.value / SHRT_MAX) * 0.02f * Engine::Delay();
+        relative_velocity.direct = 0.02 * (e.value / SHRT_MAX) * Engine::Delay();
     }
 }
 
@@ -38,10 +48,10 @@ void Strevo::OnRight(StickXEvent e)
 {
     if(e.value == 0)
     {
-        position_velocity.z = 0;
+        relative_velocity.side = 0;
     }
     else
     {
-        position_velocity.z = (e.value / SHRT_MAX) * 0.02f * Engine::Delay();
+        relative_velocity.side = 0.02 * (e.value / SHRT_MAX) * Engine::Delay();
     }
 }

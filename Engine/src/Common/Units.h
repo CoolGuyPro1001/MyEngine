@@ -37,8 +37,8 @@ struct Vector3
 {
     //Coordinates, Rotation, Relative Direction
     union{float x, pitch, direct;};
-    union{float y, yaw, side;};
-    union{float z, roll, vertical;};
+    union{float y, yaw, vertical;};
+    union{float z, roll, side;};
 
     Vector3();
     Vector3(float x, float y, float z);
