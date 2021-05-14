@@ -1,21 +1,20 @@
-#ifndef CAT_H
-#define CAT_H
+#ifndef STREVO_H
+#define STREVO_H
 
 #include <Actor.h>
 #include <Events.h>
 
-class Cat : public Actor
+class Strevo : public Actor
 {
 public:
-    Cat(Shared<Model> model);
+    Strevo(Shared<Model> model);
 
     void Tick() override;
     
     void OnForwards(StickYEvent e);
     void OnRight(StickXEvent e);
-    void OnUpPressed();
-    void OnDownPressed();
-    void OnReleased();
+    void OnJumpReleased();
+    void OnJumpPressed();
 };
 
 #endif

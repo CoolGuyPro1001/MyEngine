@@ -203,13 +203,6 @@ namespace Graphics
         glm::mat4 view = glm::lookAt(Vector3GLM(camera->position), Vector3GLM(camera->looking_at), Vector3GLM(camera->up));
         glm::mat4 to_3d = projection * view;
 
-        int buffer_size = 0;
-        glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &buffer_size);
-
-        //Backup data from vertex buffer. Changing the buffer data deletes everything!
-        float stored_data[buffer_size / sizeof(float)];
-        glGetBufferSubData(GL_ARRAY_BUFFER, 0, buffer_size, stored_data);
-
         int offset = 0;
         int mvps_id = glGetUniformLocation(shader_program, "mvps");
 

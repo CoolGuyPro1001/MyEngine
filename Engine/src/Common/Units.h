@@ -10,7 +10,7 @@ struct Vector2
 
     Vector2();
     Vector2(float x, float y);
-    
+    Vector2(const Vector2& v);
 
     bool operator==(const Vector2& v) const;
     bool operator!=(const Vector2& v) const;
@@ -42,8 +42,8 @@ struct Vector3
 
     Vector3();
     Vector3(float x, float y, float z);
+    Vector3(const Vector3& v);
     
-
     bool operator==(const Vector3& v) const;
     bool operator!=(const Vector3& v) const;
     bool operator>(const Vector3& v) const;
@@ -70,6 +70,7 @@ struct Color
 
     Color();
     Color(u8 r, u8 g, u8 b, u8 a);
+    Color(const Color& c);
 
     bool operator==(const Color& c) const;
     bool operator!=(const Color& c) const;
@@ -94,6 +95,7 @@ struct TextureCoords
 
     TextureCoords(float u, float v);
     TextureCoords();
+    TextureCoords(const TextureCoords& t);
 
     bool operator==(const TextureCoords& t) const;
     bool operator!=(const TextureCoords& t) const;
@@ -125,6 +127,7 @@ struct Vertex
     Vertex(Vector2 vector, TextureCoords texture_coords);
     Vertex(Vector3 vector, Color color, TextureCoords texture_coords);
     Vertex(Vector2 vector, Color color, TextureCoords texture_coords);
+    Vertex(const Vertex& v);
     
     bool operator==(const Vertex& v) const;
     bool operator!=(const Vertex& v) const;

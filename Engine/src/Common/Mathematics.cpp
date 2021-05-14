@@ -108,7 +108,7 @@ bool GaussJordan(std::vector<std::vector<float>>& a)
     return flag;
 }
 
-Vector3 Intersect3DSegments(Vector3 a0, Vector3 a1, Vector3 b0, Vector3 b1, bool intersected)
+Vector3 Intersect3DSegments(const Vector3 a0, const Vector3 a1, const Vector3 b0, const Vector3 b1, bool& intersected)
 {
     /*Vector3 intersect;
     std::vector<std::vector<float>> equations = std::vector<std::vector<float>>(3);
@@ -287,7 +287,7 @@ bool IntersectRayTriangle(const Vector3 origin, const Vector3 dir, const Vector3
     return InsideOutTest(intersect, t0, t1, t2, n);
 }
 
-bool IntersectParallelpipedTriangle(const Vector3 b,  Vector3 dir, const Vector3 width, const Vector3 height, 
+bool IntersectParallelpipedTriangle(const Vector3 origin, const Vector3 dir, const Vector3 width, const Vector3 height, 
     const Vector3 t0, const Vector3 t1, const Vector3 t2, const Vector3 n, Vector3& intersect, float& m)
 {
     intersect = Vector3(1, 5, 3);
@@ -300,13 +300,13 @@ bool IntersectParallelpipedTriangle(const Vector3 b,  Vector3 dir, const Vector3
         return false; // Parallel Confirmed
 
     float d = DotProduct(NormalizeVector3(n), t0);
-    float o = -DotProduct(NormalizeVector3(n), b);
+    float o = -DotProduct(NormalizeVector3(n), origin);
     m = (o + d) / direction;
 
     if(m < 0)
         return false;
 
-    intersect = b + dir * m;
+    intersect = origin + dir * m;
     Vector3 diagonal = intersect + width + height;
 
     //Bounding Box Test
@@ -349,17 +349,17 @@ bool IntersectParallelpipedTriangle(const Vector3 b,  Vector3 dir, const Vector3
     Intersect3DSegments(t0, t1, intersect, width, overlap);
     Intersect3DSegments(t0, t1, intersect, height, overlap);
     Intersect3DSegments(t0, t1, width, diagonal, overlap);
-    //Intersect3DSegments(t0, t1, height, diagonal,overlap);
+    Intersect3DSegments(t0, t1, height, diagonal,overlap);
 
     Intersect3DSegments(t1, t2, intersect, width, overlap);
-    //Intersect3DSegments(t1, t2, intersect, height, overlap);
+    Intersect3DSegments(t1, t2, intersect, height, overlap);
     Intersect3DSegments(t1, t2, width, diagonal, overlap);
-    //Intersect3DSegments(t1, t2, height, diagonal, overlap);
+    Intersect3DSegments(t1, t2, height, diagonal, overlap);
 
     Intersect3DSegments(t2, t0, intersect, width, overlap);
-    //Intersect3DSegments(t2, t0, intersect, height, overlap);
+    Intersect3DSegments(t2, t0, intersect, height, overlap);
     Intersect3DSegments(t2, t0, width, diagonal, overlap);
-    //Intersect3DSegments(t2, t0, height, diagonal, overlap);
+    Intersect3DSegments(t2, t0, height, diagonal, overlap);
 
     //If A Square Point Is In Triangle
     if(InsideOutTest(intersect, t0, t1, t2, n))

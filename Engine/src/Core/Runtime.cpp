@@ -280,70 +280,91 @@ namespace Engine
                 Vector3 width_n = origin_pos - Vector3(0, 0, actor_w);
 
                 Vector3 dir = NormalizeVector3(velocity);
-                Vector3 intersect_pos = Vector3(0, 0, 0);
-                Vector3 intersect_neg = Vector3(0, 0, 0);
+                Vector3 intersect_pos;
+                Vector3 intersect_neg;
                 float m_pos;
                 float m_neg;
 
                 //Detect Collision With Flat Collisions
                 for(CollisionTri col : flat_collisions)
                 {   
-                    bool f_collision = false;
-                    bool r_collision = false;
-                    bool u_collision = false;
-                    bool b_collision = false;
-                    bool l_collision = false;
-                    bool d_collision = false;
-
-                    Vector3 bob = Vector3(7,8,9);
-
-
-                    if(velocity.x > 0 || velocity.y > 0 || velocity.z > 0)
+                    //X Collision
+                    if(velocity.x > 0)
                     {
-                        //Forward
-                        f_collision = IntersectParallelpipedTriangle(bob, dir, depth_n, height_n, 
-                            col.p0, col.p1, col.p2, col.normal, intersect_pos, m_pos);
-                        //Right
-                        r_collision = IntersectParallelpipedTriangle(origin_pos, dir, depth_n, height_n, 
-                            col.p0, col.p1, col.p2, col.normal, intersect_pos, m_pos);
-                        //Up
-                        u_collision = IntersectParallelpipedTriangle(origin_pos, dir, width_n, depth_n, 
-                            col.p0, col.p1, col.p2, col.normal, intersect_pos, m_pos);
+                        if(IntersectParallelpipedTriangle(origin_pos, dir, depth_n, height_n, 
+                            col.p0, col.p1, col.p2, col.normal, intersect_pos, m_pos))
+                        {
+                           if(DotProduct(Vector3(1, 0, 0), col.normal) != 0 && velocity.x >= intersect_pos.x - origin_pos.x)
+                           {
+                               position.x = intersect_pos.x - actor_d;
+                               velocity.x = 0;
+                           }
+                        }
                     }
-                    
-                    if(velocity.x < 0 || velocity.y < 0 || velocity.z < 0)
+                    else if(velocity.x < 0)
                     {
-                        //Back
-                        b_collision = IntersectParallelpipedTriangle(origin_neg, dir, width, height, 
-                            col.p0, col.p1, col.p2, col.normal, intersect_neg, m_neg);
-                        //Left
-                        l_collision = IntersectParallelpipedTriangle(origin_neg, dir, depth, height, 
-                            col.p0, col.p1, col.p2, col.normal, intersect_neg, m_neg);
-                        //Down
-                        d_collision = IntersectParallelpipedTriangle(origin_neg, dir, width, depth, 
-                                col.p0, col.p1, col.p2, col.normal, intersect_neg, m_neg);
+                        if(IntersectParallelpipedTriangle(origin_neg, dir, width, height, 
+                            col.p0, col.p1, col.p2, col.normal, intersect_neg, m_neg))
+                        {
+                            if(DotProduct(Vector3(-1, 0, 0), col.normal) != 0 && -velocity.x >= origin_neg.x - intersect_neg.x)
+                            {
+                                position.x = intersect_neg.x + actor_d;
+                                velocity.x = 0;
+                            }
+                        }
                     }
 
-                    bool positive_collision = f_collision || r_collision || u_collision;
-                    bool negative_collision = b_collision || l_collision || d_collision;
-
-                    if(!(positive_collision || negative_collision))
-                        continue;
-
-                    //Checking if velocity is shorter than distance between origin point and intersect point
-                    if(Vector3Magnitude(intersect_pos - origin_pos) > Vector3Magnitude(velocity) && Vector3Magnitude(intersect_neg - origin_neg) > Vector3Magnitude(velocity))
-                        continue;
-
-                    velocity = Vector3(0, 0, 0);     //Distance between corner and middle
-                    if(positive_collision)
+                    //Y Collision
+                    if(velocity.y > 0)
                     {
-                        position = intersect_pos - Vector3(actor_d, actor_h, actor_d);
+                        if(IntersectParallelpipedTriangle(origin_pos, dir, width_n, depth_n, 
+                            col.p0, col.p1, col.p2, col.normal, intersect_pos, m_pos))
+                        {
+                           if(DotProduct(Vector3(0, 1, 0), col.normal) != 0 && velocity.y >= intersect_pos.y - origin_pos.y)
+                           {
+                               position.y = intersect_pos.y - actor_h;
+                               velocity.y = 0;
+                           }
+                        }
                     }
-                    else
+                    else if(velocity.y < 0)
                     {
-                        position = intersect_neg + Vector3(actor_d, actor_h, actor_d);
+                        if(IntersectParallelpipedTriangle(origin_neg, dir, width, depth, 
+                            col.p0, col.p1, col.p2, col.normal, intersect_neg, m_neg))
+                        {
+                            if(DotProduct(Vector3(0, -1, 0), col.normal) != 0 && -velocity.y >= origin_neg.y - intersect_neg.y)
+                            {
+                                position.y = intersect_neg.y + actor_h;
+                                velocity.y = 0;
+                            }
+                        }
                     }
-                    break;
+
+                    //Z Collision
+                    if(velocity.z > 0)
+                    {
+                        if(IntersectParallelpipedTriangle(origin_pos, dir, depth_n, height_n, 
+                            col.p0, col.p1, col.p2, col.normal, intersect_pos, m_pos))
+                        {
+                           if(DotProduct(Vector3(0, 0, 1), col.normal) != 0 && velocity.z >= intersect_pos.z - origin_pos.z)
+                           {
+                               position.z = intersect_pos.z - actor_w;
+                               velocity.z = 0;
+                           }
+                        }
+                    }
+                    else if(velocity.z < 0)
+                    {
+                        if(IntersectParallelpipedTriangle(origin_neg, dir, depth, height, 
+                            col.p0, col.p1, col.p2, col.normal, intersect_neg, m_neg))
+                        {
+                            if(DotProduct(Vector3(0, 0, -1), col.normal) != 0 && -velocity.z >= origin_neg.z - intersect_neg.z)
+                            {
+                                position.z = intersect_neg.z + actor_w;
+                                velocity.z = 0;
+                            }
+                        }
+                    }
                 }
             }
         }

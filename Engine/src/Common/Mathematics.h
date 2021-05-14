@@ -12,13 +12,13 @@ float Vector2Magnitude(Vector2 a);
 float Vector3Magnitude(Vector3 a);
 Vector2 NormalizeVector2(Vector2 a);
 Vector3 NormalizeVector3(Vector3 a);
-Vector3 Intersect3DSegments(Vector3 a0, Vector3 a1, Vector3 b0, Vector3 b1, bool intersected);
+Vector3 Intersect3DSegments(const Vector3 a0, const Vector3 a1, const Vector3 b0, const Vector3 b1, bool& intersected);
 bool InSegment(Vector2 p, Vector2 s0, Vector2 s1);
 bool InsideOutTest(Vector3 point, Vector3 t0, Vector3 t1, Vector3 t2, Vector3 n);
 bool IntersectRayTriangle(const Vector3 origin, const Vector3 dir, const Vector3 t0, const Vector3 t1, const Vector3 t2, 
     const Vector3 n, Vector3& intersect, float& t);
-bool IntersectParallelpipedTriangle(const Vector3 b, const Vector3 dir, const Vector3 width, const Vector3 height, 
-const Vector3 t0, const Vector3 t1, const Vector3 t2, const Vector3 n, Vector3& intersect, float& m);
+bool IntersectParallelpipedTriangle(const Vector3 origin, const Vector3 dir, const Vector3 width, const Vector3 height, 
+    const Vector3 t0, const Vector3 t1, const Vector3 t2, const Vector3 n, Vector3& intersect, float& m);
 
 enum IntersectResults
 {

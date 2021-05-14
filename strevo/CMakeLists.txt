@@ -1,13 +1,11 @@
-set(GAME CatAndMouse)
+set(GAME Strevo)
 find_package(Engine64 REQUIRED)
 
 add_executable(
     ${GAME}
-    Cat.cpp
-    Cat.h
+    Strevo.cpp
+    Strevo.h
     Main.cpp
-    Mouse.cpp
-    Mouse.h
 )
 
 target_link_libraries(

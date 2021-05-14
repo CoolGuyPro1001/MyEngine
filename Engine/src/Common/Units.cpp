@@ -8,6 +8,12 @@ Vector2::Vector2(float x, float y) : x(x), y(y)
 {
 }
 
+Vector2::Vector2(const Vector2& v) 
+{
+    x = v.x;
+    y = v.y;
+}
+
 bool Vector2::operator==(const Vector2& v) const
 {
     return v.x == x && v.y == y;
@@ -112,7 +118,13 @@ Vector3::Vector3()
 
 Vector3::Vector3(float x, float y, float z) : x(x), y(y), z(z)
 {
+}
 
+Vector3::Vector3(const Vector3& v) 
+{
+    x = v.x;
+    y = v.y;
+    z = v.z;
 }
 
 bool Vector3::operator==(const Vector3& v) const
@@ -225,6 +237,14 @@ Color::Color(u8 r, u8 g, u8 b, u8 a) : r(r), g(g), b(b), a(a)
 {
 }
 
+Color::Color(const Color& c) 
+{
+    r = c.r;
+    g = c.g;
+    b = c.b;
+    a = c.a;
+}
+
 bool Color::operator==(const Color& c) const
 {
     return c.r == r && c.g == g && c.b == b && c.a == a;
@@ -330,6 +350,12 @@ TextureCoords::TextureCoords(float u, float v) : u(u), v(v)
 {
 }
 
+TextureCoords::TextureCoords(const TextureCoords& t) 
+{
+    u = t.u;
+    v = t.v;
+}
+
 bool TextureCoords::operator==(const TextureCoords& t) const
 {
     return u == t.u && v == t.v;
@@ -419,6 +445,13 @@ TextureCoords TextureCoords::operator/(const TextureCoords& t) const
 
 Vertex::Vertex()
 {
+}
+
+Vertex::Vertex(const Vertex& v)
+{
+    vector = v.vector;
+    color = v.color;
+    texture_coords = v.texture_coords;
 }
 
 Vertex::Vertex(Vector3 vector, Color color) : color(color), vector(vector)

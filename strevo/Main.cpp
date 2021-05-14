@@ -1,5 +1,4 @@
-#include "Cat.h"
-#include "Mouse.h"
+#include "Strevo.h"
 
 #include <Level.h>
 #include <Actor.h>
@@ -25,21 +24,13 @@ int main()
     Shared<Model> box = CreateShared<Model>("../../res/cube.emodel", colors);
 
     //Actors
-    Shared<Cat> cat = CreateShared<Cat>(box);
-    cat->position = Vector3(0, 1.01f, 0);
-    cat->rotation = Vector3(0, 0, 0);
-    cat->scale = Vector3(1.0f, 1.0f, 1.0f);
-    cat->position_velocity = Vector3(0, 0, 0);
-    cat->can_fall = false;
-    cat->CreateHitBox(2, 2, 2);
-
-    Shared<Mouse> mouse = CreateShared<Mouse>(box);
-    mouse->position = Vector3(5, 0, 20);
-    mouse->rotation = Vector3(0, 0, 0);
-    mouse->scale = Vector3(1.0f, 1.0f, 1.0f);
-    mouse->position_velocity = Vector3(0, 0, 0);
-    mouse->can_fall = false;
-    mouse->CreateHitBox(2, 2, 2);
+    Shared<Strevo> strevo = CreateShared<Strevo>(box);
+    strevo->position = Vector3(0, 1.01f, 0);
+    strevo->rotation = Vector3(0, 0, 0);
+    strevo->scale = Vector3(1.0f, 1.0f, 1.0f);
+    strevo->position_velocity = Vector3(0, 0, 0);
+    strevo->can_fall = true;
+    strevo->CreateHitBox(2, 2, 2);
 
     Shared<Graphics::Camera> camera = CreateShared<Graphics::Camera>(50, false, 50);
     camera->forward_throttle = 0.0000001f;
@@ -51,7 +42,7 @@ int main()
     camera->rod_yaw_throttle = -0.00000005f;
     camera->rod_pitch_throttle = 0.00000005f;
     camera->fov = 70.0f;
-    camera->AttachRod(cat, 10.0f, Vector3(0, -PI / 2, 0), true);
+    camera->AttachRod(strevo, 10.0f, Vector3(0, -PI / 2, 0), true);
 
     Controller controller = Controller();
 
@@ -81,40 +72,33 @@ int main()
     camera_rotate.right_key = SDLK_RIGHT;
     camera_rotate.left_key = SDLK_LEFT;
 
-    ButtonAction move_down;
-    move_down.key = SDLK_q;
-
-    ButtonAction move_up;
-    move_up.key = SDLK_e; 
+    ButtonAction jump;
+    jump.key = SDLK_SPACE;
     
-    BindStickX(move, cat, &Cat::OnRight);
-    BindStickY(move, cat, &Cat::OnForwards);
+    BindStickX(move, strevo, &Strevo::OnRight);
+    BindStickY(move, strevo, &Strevo::OnForwards);
     BindStickX(camera_rod, camera, &Graphics::Camera::RodYaw);
     BindStickY(camera_rod, camera, &Graphics::Camera::RodPitch);
     BindStickY(camera_vertical, camera, &Graphics::Camera::MoveVertical);
     BindStickX(camera_roll, camera, &Graphics::Camera::Roll);
     BindStickX(camera_rotate, camera, &Graphics::Camera::Yaw);
     BindStickY(camera_rotate, camera, &Graphics::Camera::Pitch);
-    BindButtonPress(move_up, cat, &Cat::OnUpPressed);
-    BindButtonPress(move_down, cat, &Cat::OnDownPressed);
-    BindButtonRelease(move_up, cat, &Cat::OnReleased);
-    BindButtonRelease(move_down, cat, &Cat::OnReleased);
+    BindButtonPress(jump, strevo, &Strevo::OnJumpPressed);
+    BindButtonRelease(jump, strevo, &Strevo::OnJumpReleased);
 
     controller.AddStickAction(move);
     controller.AddStickAction(camera_rod);
     controller.AddStickAction(camera_vertical);
     controller.AddStickAction(camera_roll);
     controller.AddStickAction(camera_rotate);
-    controller.AddButtonAction(move_up);
-    controller.AddButtonAction(move_down);
+    controller.AddButtonAction(jump);
 
     Level lvl = Level();
-    lvl.AddActor(mouse);
     lvl.sky_block = CreateShared<Model>("../../res/sky.emodel", sky);
     lvl.terrain = CreateShared<Model>("../../res/terrain.emodel", grass);
-    lvl.gravity = -0.15625f;
+    lvl.gravity = -0.001f;
     lvl.AddModel(box);
-    lvl.AddActor(cat);
+    lvl.AddActor(strevo);
     lvl.AddCamera(camera);
     lvl.AddTexture(colors);
     lvl.AddTexture(sky);
