@@ -34,6 +34,11 @@ namespace Graphics
         void RollRight(ButtonEvent e);
         void RollLeft(ButtonEvent e);
 
+        void Zoom(StickYEvent e);
+        void ZoomIn(ButtonEvent e);
+        void ZoomOut(ButtonEvent e);
+        void View(StickXEvent e);
+
         void PrintLocation();
 
         void Tick();
@@ -49,15 +54,27 @@ namespace Graphics
         void RodRollRight(ButtonEvent e);
         void RodRollLeft(ButtonEvent e);
 
+        void RodDistance(StickYEvent);
+        void RodDistanceIn(ButtonEvent e);
+        void RodDistanceOut(ButtonEvent e);
+
+        void ToggleFreeCam();
+
         Vector3 position;
         Vector3 rotation;
         Vector3 position_velocity;
         Vector3 relative_position_velocity;
-        Vector3 up;
+        
         Vector3 rotation_velocity;
         Vector3 rod_rotation;
         Vector3 rod_rotation_velocity;
+        
+        Vector3 up;
         Vector3 looking_at;
+
+        float zoom_velocity;
+        float view_velocity;
+        float rod_length_velocity;
 
         float forward_throttle;
         float sideways_throttle;
@@ -67,11 +84,16 @@ namespace Graphics
         float yaw_throttle;
         float roll_throttle;
 
+        float zoom_throttle;
+        float view_throttle;
+
         Shared<Actor> attached_actor;
+        bool free_cam;
 
         float rod_pitch_throttle;
         float rod_yaw_throttle;
         float rod_roll_throttle;
+        float rod_length_throttle;
         bool rod_lock;
 
         int log_delay;

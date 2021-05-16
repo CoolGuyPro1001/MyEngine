@@ -16,7 +16,11 @@ namespace Graphics
         rod_rotation = Vector3(0, 0, 0);
         rod_rotation_velocity = Vector3(0, 0, 0);
         up = Vector3(0, 1.0f, 0);
+        zoom_velocity = 0;
+        view_velocity = 0;
+        rod_length_velocity = 0;
         fov = 70.0f;
+        free_cam = true;
         
         log_on_tick = enable_logging;
         if(log_on_tick) this->log_delay = log_delay;
@@ -31,7 +35,7 @@ namespace Graphics
         float sin_yaw_half;
         float cos_yaw_half;
 
-        if(attached_actor)
+        if(attached_actor && !free_cam)
         {
             Vector3 actor_pos = attached_actor->position;
             float pitch_velocity = rod_rotation_velocity.pitch * Engine::Delay();
@@ -53,7 +57,7 @@ namespace Graphics
             position.z = rod_cos_yaw * rod_cos_pitch * rod_length + actor_pos.z;
         }
 
-        if(rod_lock && attached_actor)
+        if(rod_lock && attached_actor && !free_cam)
         {
             looking_at = attached_actor->position;
             if(rod_rotation.yaw >= 0)
@@ -67,7 +71,6 @@ namespace Graphics
 
             rotation.pitch = (pitch >= 0 && pitch <= PI) ? pitch - PI : pitch + PI;
             rotation.yaw = (yaw >= 0 && yaw <= PI) ? yaw - PI : yaw + PI;
-            rotation.roll = (roll >= 0 && roll <= PI) ? roll - PI : roll + PI;
         }
         else
         {
@@ -99,7 +102,7 @@ namespace Graphics
             up.z = cos_yaw * sin_roll;
         }
 
-        if(!attached_actor)
+        if(!attached_actor || free_cam)
         {
             //Move Camera
             float direct = relative_position_velocity.direct * Engine::Delay();
@@ -113,6 +116,13 @@ namespace Graphics
             position += position_velocity;
             looking_at += position_velocity;
         }
+
+        focal_distance += zoom_velocity;
+        fov += view_velocity;
+        if(fov > 180) fov = 180;
+        if(fov < 0) fov = 0;
+        rod_length += rod_length_velocity;
+
 
         if(--log_delay == 0 && log_on_tick)
         {
@@ -248,14 +258,34 @@ namespace Graphics
         rotation_velocity.roll = -e.value * yaw_throttle;
     }
 
+    void Camera::Zoom(StickYEvent e)
+    {
+        zoom_velocity = e.value * zoom_throttle;
+    }
+
+    void Camera::ZoomIn(ButtonEvent e)
+    {
+        zoom_velocity = e.value * zoom_throttle;
+    }
+
+    void Camera::ZoomOut(ButtonEvent e)
+    {
+        zoom_velocity = -e.value * zoom_throttle;
+    }
+
+    void Camera::View(StickXEvent e)
+    {
+        view_velocity = e.value * view_throttle;
+    }
+
     void Camera::AttachRod(Shared<Actor> actor, float length, Vector3 rotation, bool lock_on_actor)
     {
         attached_actor = actor;
         rod_length = length;
         rod_rotation = rotation;
         looking_at = attached_actor->position;
-        rotation = rod_rotation * -1;
         rod_lock = lock_on_actor;
+        free_cam = false;
     }
 
     void Camera::RodPitch(StickYEvent e)
@@ -302,5 +332,25 @@ namespace Graphics
     void Camera::RodRollLeft(ButtonEvent e)
     {
         rod_rotation_velocity.roll = -e.value * rod_roll_throttle;
+    }
+
+    void Camera::RodDistance(StickYEvent e)
+    {
+        rod_length_velocity = e.value * rod_length_throttle;
+    }
+
+    void Camera::RodDistanceIn(ButtonEvent e)
+    {
+        rod_length_velocity = e.value * rod_length_throttle;
+    }
+
+    void Camera::RodDistanceOut(ButtonEvent e)
+    {
+        rod_length_velocity = -e.value * rod_length_throttle;
+    }
+
+    void Camera::ToggleFreeCam()
+    {
+        free_cam = !free_cam;
     }
 }

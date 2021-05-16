@@ -13,6 +13,12 @@
 #include <string>
 #include <vector>
 
+void FreeCam(Shared<Controller> player, Shared<Controller> camera)
+{
+    player->enabled = !player->enabled;
+    camera->enabled = !camera->enabled;
+};
+
 int main()
 {
     //Textures
@@ -24,14 +30,17 @@ int main()
     Shared<Model> box = CreateShared<Model>("../../res/cube.emodel", colors);
 
     Shared<Graphics::Camera> camera = CreateShared<Graphics::Camera>(50, false, 50);
-    camera->forward_throttle = 0.0000001f;
-    camera->sideways_throttle = 0.0000001f;
-    camera->vertical_throttle = 0.0000001f;
-    camera->pitch_throttle = 0.00000001f;
-    camera->yaw_throttle = 0.00000001f;
-    camera->roll_throttle = 0.00000005f;
+    camera->forward_throttle = 0.000001f;
+    camera->sideways_throttle = 0.000001f;
+    camera->vertical_throttle = 0.000001f;
+    camera->pitch_throttle = 0.0000001f;
+    camera->yaw_throttle = 0.0000001f;
+    camera->roll_throttle = 0.0000001f;
     camera->rod_yaw_throttle = -0.00000005f;
-    camera->rod_pitch_throttle = -0.00000005f;
+    camera->rod_pitch_throttle = 0.00000005f;
+    camera->zoom_throttle = 0.00001f;
+    camera->view_throttle = 0.000001f;
+    camera->rod_length_throttle = 0.0000001f;
     camera->fov = 70.0f;
 
     //Actors
@@ -45,7 +54,8 @@ int main()
 
     camera->AttachRod(strevo, 10.0f, Vector3(0, -PI / 2, 0), true);
 
-    Controller controller = Controller();
+    Shared<Controller> player_control = CreateShared<Controller>();
+    Shared<Controller> camera_control = CreateShared<Controller>();
 
     StickAction move;
     move.down_key = SDLK_s;
@@ -68,13 +78,32 @@ int main()
     camera_roll.right_key = SDLK_x;
 
     StickAction camera_rotate;
-    camera_rotate.up_key = SDLK_UP;
-    camera_rotate.down_key = SDLK_DOWN;
-    camera_rotate.right_key = SDLK_RIGHT;
-    camera_rotate.left_key = SDLK_LEFT;
+    camera_rotate.up_key = SDLK_i;
+    camera_rotate.down_key = SDLK_k;
+    camera_rotate.right_key = SDLK_l;
+    camera_rotate.left_key = SDLK_j;
+
+    StickAction camera_move;
+    camera_move.up_key = SDLK_w;
+    camera_move.down_key = SDLK_s;
+    camera_move.right_key = SDLK_d;
+    camera_move.left_key = SDLK_a;
 
     ButtonAction jump;
     jump.key = SDLK_SPACE;
+
+    ButtonAction free_cam;
+    free_cam.key = SDLK_e;
+
+    StickAction zoom_view;
+    zoom_view.up_key = SDLK_UP;
+    zoom_view.down_key = SDLK_DOWN;
+    zoom_view.right_key = SDLK_RIGHT;
+    zoom_view.left_key = SDLK_LEFT;
+
+    StickAction rod_length;
+    rod_length.up_key = SDLK_o;
+    rod_length.down_key = SDLK_u;
     
     BindStickX(move, strevo, &Strevo::OnRight);
     BindStickY(move, strevo, &Strevo::OnForwards);
@@ -86,13 +115,29 @@ int main()
     BindStickY(camera_rotate, camera, &Graphics::Camera::Pitch);
     BindButtonPress(jump, strevo, &Strevo::OnJumpPressed);
     BindButtonRelease(jump, strevo, &Strevo::OnJumpReleased);
+    BindButtonPress(free_cam, camera, &Graphics::Camera::ToggleFreeCam);
+    BindButtonPress(free_cam, &FreeCam, player_control, camera_control);
+    BindStickX(camera_move, camera, &Graphics::Camera::MoveSideways);
+    BindStickY(camera_move, camera, &Graphics::Camera::MoveDirectly);
+    BindStickX(zoom_view, camera, &Graphics::Camera::View);
+    BindStickY(zoom_view, camera, &Graphics::Camera::Zoom);
+    BindStickY(rod_length, camera, &Graphics::Camera::RodDistance);
 
-    controller.AddStickAction(move);
-    controller.AddStickAction(camera_rod);
-    controller.AddStickAction(camera_vertical);
-    controller.AddStickAction(camera_roll);
-    controller.AddStickAction(camera_rotate);
-    controller.AddButtonAction(jump);
+    player_control->AddStickAction(move);
+    player_control->AddStickAction(camera_rod);
+    player_control->AddButtonAction(jump);
+    player_control->AddStickAction(rod_length );
+    player_control->AddButtonAction(free_cam);
+    
+    camera_control->AddStickAction(camera_vertical);
+    camera_control->AddStickAction(camera_roll);
+    camera_control->AddStickAction(camera_rotate);
+    camera_control->AddStickAction(camera_move);
+    camera_control->AddStickAction(zoom_view);
+    camera_control->AddButtonAction(free_cam);
+
+    player_control->enabled = true;
+    camera_control->enabled = false;
 
     Level lvl = Level();
     lvl.sky_block = CreateShared<Model>("../../res/sky.emodel", sky);
@@ -104,7 +149,8 @@ int main()
     lvl.AddTexture(colors);
     lvl.AddTexture(sky);
     lvl.AddTexture(grass);
-    lvl.AddController(controller);
+    lvl.AddController(player_control);
+    lvl.AddController(camera_control);
     lvl.ReadCollisionFile("../../res/landcollision.ecol");
 
     Engine::Start(500, 500, "Strevo");

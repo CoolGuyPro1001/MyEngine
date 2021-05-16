@@ -27,7 +27,7 @@ void Level::AddCamera(Shared<Graphics::Camera> camera)
     cameras.push_back(camera);
 }
 
-void Level::AddController(Controller controller)
+void Level::AddController(Shared<Controller> controller)
 {
     controllers.push_back(controller);
 }

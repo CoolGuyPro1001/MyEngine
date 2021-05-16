@@ -23,7 +23,7 @@ namespace Engine
         return delay.count();
     }
 
-    void PollEvents(std::vector<Controller>& controllers)
+    void PollEvents(std::vector<Shared<Controller>>& controllers)
     {
         SDL_Event event;
         while(SDL_PollEvent(&event))
@@ -50,40 +50,53 @@ namespace Engine
                     break;
                 case SDL_KEYDOWN:
                 {
-                    for(Controller controller : controllers)
+                    for(Shared<Controller> controller : controllers)
                     {
-                        for(ButtonAction action : controller.button_actions)
+                        if(!controller->enabled)
+                            continue;
+
+                        for(ButtonAction action : controller->button_actions)
                         {
                             if(event.key.keysym.sym == action.key)
                             {
-                                action.down_function();
+                                for(std::function<void()> function : action.down_functions)
+                                    function();
+
                                 return;
                             }
                         }
                         
-                        for(StickAction action : controller.stick_actions)
+                        for(StickAction action : controller->stick_actions)
                         {
                             if(event.key.keysym.sym == action.right_key)
                             {
-                                action.x_function(StickXEvent(SHRT_MAX));
+                                for(std::function<void(StickXEvent)> function : action.x_functions)
+                                    function(StickXEvent(SHRT_MAX));
+
                                 return;
                             }
                             
                             if(event.key.keysym.sym == action.left_key)
                             {
-                                action.x_function(StickXEvent(SHRT_MIN));
+                                for(std::function<void(StickXEvent)> function : action.x_functions)
+                                    function(StickXEvent(SHRT_MIN));
+
                                 return;
                             }
                             
                             if(event.key.keysym.sym == action.down_key)
                             {
-                                action.y_function(StickYEvent(SHRT_MIN));
+                                for(std::function<void(StickYEvent)> function : action.y_functions)
+                                    function(StickYEvent(SHRT_MIN));
+
                                 return;
                             }
                             
                             if(event.key.keysym.sym == action.up_key)
                             {
-                                action.y_function(StickYEvent(SHRT_MAX));
+                                for(std::function<void(StickYEvent)> function : action.y_functions)
+                                    function(StickYEvent(SHRT_MAX));
+                                    
                                 return;
                             }
                         }
@@ -92,28 +105,37 @@ namespace Engine
                 }
                 case SDL_KEYUP:
                 {
-                    for(Controller controller : controllers)
+                    for(Shared<Controller> controller : controllers)
                     {
-                        for(ButtonAction action : controller.button_actions)
+                        if(!controller->enabled)
+                            continue;
+
+                        for(ButtonAction action : controller->button_actions)
                         {
                             if(event.key.keysym.sym == action.key)
                             {
-                                action.up_function();
+                                for(std::function<void()> function : action.up_functions)
+                                    function();
+
                                 return;
                             }
                         }
                         
-                        for(StickAction action : controller.stick_actions)
+                        for(StickAction action : controller->stick_actions)
                         {
                             if(event.key.keysym.sym == action.right_key || event.key.keysym.sym == action.left_key)
                             {
-                                action.x_function(StickXEvent(0));
+                                for(std::function<void(StickXEvent)> function : action.x_functions)
+                                    function(StickXEvent(0));
+
                                 return;
                             }
                             
                             if(event.key.keysym.sym == action.up_key || event.key.keysym.sym == action.down_key)
                             {
-                                action.y_function(StickYEvent(0));
+                                for(std::function<void(StickYEvent)> function : action.y_functions)
+                                    function(StickYEvent(0));
+
                                 return;
                             }
                         }
@@ -122,12 +144,18 @@ namespace Engine
                 }
                 case SDL_CONTROLLERBUTTONDOWN:
                 {
-                    Controller controller = controllers[event.cbutton.which];
-                    for(ButtonAction action : controller.button_actions)
+                    Shared<Controller> controller = controllers[event.cbutton.which];
+
+                    if(!controller->enabled)
+                        break;
+
+                    for(ButtonAction action : controller->button_actions)
                     {
                         if(event.cbutton.button == action.button)
                         {
-                            action.down_function();
+                            for(std::function<void()> function : action.down_functions)
+                                function();
+
                             return;
                         }
                     }
@@ -135,12 +163,18 @@ namespace Engine
                 }
                 case SDL_CONTROLLERBUTTONUP:
                 {
-                    Controller controller = controllers[event.cbutton.which];
-                    for(ButtonAction action : controller.button_actions)
+                    Shared<Controller> controller = controllers[event.cbutton.which];
+
+                    if(!controller->enabled)
+                        break;
+
+                    for(ButtonAction action : controller->button_actions)
                     {
                         if(event.cbutton.button == action.button)
                         {
-                            action.up_function();
+                            for(std::function<void()> function : action.up_functions)
+                                function();
+
                             return;
                         }
                     }
@@ -148,18 +182,26 @@ namespace Engine
                 }
                 case SDL_CONTROLLERAXISMOTION:
                 {
-                    Controller controller = controllers[event.caxis.which];
-                    for(StickAction action : controller.stick_actions)
+                    Shared<Controller> controller = controllers[event.caxis.which];
+
+                    if(!controller->enabled)
+                        break;
+
+                    for(StickAction action : controller->stick_actions)
                     {
                         if(event.caxis.axis == action.x_axis)
                         {
-                            action.x_function(StickXEvent(event.caxis.value));
+                            for(std::function<void(StickXEvent)> function : action.x_functions)
+                                function(StickXEvent(event.caxis.value));
+
                             return;
                         }
                         
                         if(event.caxis.axis == action.y_axis)
                         {
-                            action.y_function(StickYEvent(event.caxis.value));
+                            for(std::function<void(StickYEvent)> function : action.y_functions)
+                                function(StickYEvent(event.caxis.value));
+
                             return;
                         }
                     }
@@ -167,13 +209,18 @@ namespace Engine
                 }
                 case SDL_MOUSEBUTTONDOWN:
                 {
-                    for(Controller controller : controllers)
+                    for(Shared<Controller> controller : controllers)
                     {
-                        for(ButtonAction action : controller.button_actions)
+                        if(!controller->enabled)
+                            continue;
+
+                        for(ButtonAction action : controller->button_actions)
                         {
                             if(event.button.button == action.mouse_button)
                             {
-                                action.down_function();
+                                for(std::function<void()> function : action.down_functions)
+                                    function();
+
                                 return;
                             }
                         }
@@ -182,13 +229,18 @@ namespace Engine
                 }
                 case SDL_MOUSEBUTTONUP:
                 {
-                    for(Controller controller : controllers)
+                    for(Shared<Controller> controller : controllers)
                     {
-                        for(ButtonAction action : controller.button_actions)
+                        if(!controller->enabled)
+                            continue;
+                            
+                        for(ButtonAction action : controller->button_actions)
                         {
                             if(event.button.button == action.mouse_button)
                             {
-                                action.up_function();
+                                for(std::function<void()> function : action.up_functions)
+                                    function();
+
                                 return;
                             }
                         }
@@ -197,9 +249,9 @@ namespace Engine
                 }/*
                 case SDL_MOUSEMOTION:
                 {
-                    for(Controller controller : controllers)
+                    for(Shared<Controller> controller : controllers)
                     {
-                        for(StickAction action : controller.stick_actions)
+                        for(StickAction action : controller->stick_actions)
                         {
                             action.x_function(StickXEvent(event.motion.xrel));
                             action.y_function(StickYEvent(event.motion.yrel));

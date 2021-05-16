@@ -8,6 +8,11 @@ struct Event
     virtual std::string ToString() = 0;
 };
 
+struct EventArgs
+{
+
+};
+
 struct ButtonEvent
 {
     ushort value;

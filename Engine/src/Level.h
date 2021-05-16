@@ -17,14 +17,14 @@ public:
     void AddModel(Shared<Model> model);
     void AddActor(Shared<Actor> actor);
     void AddCamera(Shared<Graphics::Camera> camera);
-    void AddController(Controller controller);
+    void AddController(Shared<Controller> controller);
     void ReadCollisionFile(std::string file);
     
     std::vector<Shared<Graphics::Texture>> textures;
     std::vector<Shared<Model>> models;
     std::vector<Shared<Actor>> actors;
     std::vector<Shared<Graphics::Camera>> cameras;
-    std::vector<Controller> controllers;
+    std::vector<Shared<Controller>> controllers;
 
     std::function<void()> script;
 
