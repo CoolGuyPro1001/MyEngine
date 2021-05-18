@@ -13,6 +13,16 @@ struct ButtonAction
     Uint8 mouse_button;
 };
 
+//Bitwise Masks For StickAction State
+constexpr u8 up_key_mask = 1 << 0;
+constexpr u8 down_key_mask = 1 << 1;
+constexpr u8 right_key_mask = 1 << 2;
+constexpr u8 left_key_mask = 1 << 3;
+constexpr u8 x_axis_mask = 1 << 4;
+constexpr u8 y_axis_mask = 1 << 5;
+constexpr u8 mouse_x_mask = 1 << 6;
+constexpr u8 mouse_y_mask = 1 << 7;
+
 struct StickAction
 {
     std::vector<std::function<void(StickXEvent)>> x_functions;
@@ -25,6 +35,8 @@ struct StickAction
 
     SDL_GameControllerAxis x_axis;
     SDL_GameControllerAxis y_axis;
+
+    u8 state;
 };
 
 

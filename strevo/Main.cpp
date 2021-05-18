@@ -9,6 +9,7 @@
 #include <Graphics/Camera.h>
 
 #include <SDL2/SDL_keycode.h>
+#include <SDL2/SDL_mouse.h>
 
 #include <string>
 #include <vector>
@@ -33,8 +34,8 @@ int main()
     camera->forward_throttle = 0.000001f;
     camera->sideways_throttle = 0.000001f;
     camera->vertical_throttle = 0.000001f;
-    camera->pitch_throttle = 0.0000001f;
-    camera->yaw_throttle = 0.0000001f;
+    camera->pitch_throttle = 0.001f;
+    camera->yaw_throttle = 0.001f;
     camera->roll_throttle = 0.0000001f;
     camera->rod_yaw_throttle = -0.00000005f;
     camera->rod_pitch_throttle = 0.00000005f;
@@ -78,10 +79,6 @@ int main()
     camera_roll.right_key = SDLK_x;
 
     StickAction camera_rotate;
-    camera_rotate.up_key = SDLK_i;
-    camera_rotate.down_key = SDLK_k;
-    camera_rotate.right_key = SDLK_l;
-    camera_rotate.left_key = SDLK_j;
 
     StickAction camera_move;
     camera_move.up_key = SDLK_w;
@@ -93,7 +90,7 @@ int main()
     jump.key = SDLK_SPACE;
 
     ButtonAction free_cam;
-    free_cam.key = SDLK_e;
+    free_cam.mouse_button = SDL_BUTTON_LEFT;
 
     StickAction zoom_view;
     zoom_view.up_key = SDLK_UP;

@@ -25,9 +25,11 @@ namespace Engine
 
     void PollEvents(std::vector<Shared<Controller>>& controllers)
     {
+        bool mouse_moved = false;
         SDL_Event event;
         while(SDL_PollEvent(&event))
         {
+            no_event = false;
             switch(event.type)
             {
                 case SDL_QUIT:
@@ -62,7 +64,7 @@ namespace Engine
                                 for(std::function<void()> function : action.down_functions)
                                     function();
 
-                                return;
+                                break;
                             }
                         }
                         
@@ -72,8 +74,9 @@ namespace Engine
                             {
                                 for(std::function<void(StickXEvent)> function : action.x_functions)
                                     function(StickXEvent(SHRT_MAX));
-
-                                return;
+                                
+                                action.state |= right_key_mask;
+                                break;
                             }
                             
                             if(event.key.keysym.sym == action.left_key)
@@ -81,7 +84,8 @@ namespace Engine
                                 for(std::function<void(StickXEvent)> function : action.x_functions)
                                     function(StickXEvent(SHRT_MIN));
 
-                                return;
+                                action.state |= left_key_mask;
+                                break;
                             }
                             
                             if(event.key.keysym.sym == action.down_key)
@@ -89,15 +93,17 @@ namespace Engine
                                 for(std::function<void(StickYEvent)> function : action.y_functions)
                                     function(StickYEvent(SHRT_MIN));
 
-                                return;
+                                action.state |= down_key_mask;
+                                break;
                             }
                             
                             if(event.key.keysym.sym == action.up_key)
                             {
                                 for(std::function<void(StickYEvent)> function : action.y_functions)
                                     function(StickYEvent(SHRT_MAX));
-                                    
-                                return;
+                                
+                                action.state = up_key_mask;
+                                break;
                             }
                         }
                     }
@@ -117,7 +123,7 @@ namespace Engine
                                 for(std::function<void()> function : action.up_functions)
                                     function();
 
-                                return;
+                                break;
                             }
                         }
                         
@@ -125,18 +131,20 @@ namespace Engine
                         {
                             if(event.key.keysym.sym == action.right_key || event.key.keysym.sym == action.left_key)
                             {
-                                for(std::function<void(StickXEvent)> function : action.x_functions)
-                                    function(StickXEvent(0));
+                                for(std::function<void(StickXEvent)> x_function : action.x_functions)
+                                    x_function(StickXEvent(0));
 
-                                return;
+                                action.state &= ~(right_key_mask | left_key_mask);
+                                break;
                             }
                             
                             if(event.key.keysym.sym == action.up_key || event.key.keysym.sym == action.down_key)
                             {
-                                for(std::function<void(StickYEvent)> function : action.y_functions)
-                                    function(StickYEvent(0));
+                                for(std::function<void(StickYEvent)> y_function : action.y_functions)
+                                    y_function(StickYEvent(0));
 
-                                return;
+                                action.state &= ~(up_key_mask | down_key_mask);
+                                break;
                             }
                         }
                     }
@@ -156,7 +164,7 @@ namespace Engine
                             for(std::function<void()> function : action.down_functions)
                                 function();
 
-                            return;
+                            break;
                         }
                     }
                     break;
@@ -175,7 +183,7 @@ namespace Engine
                             for(std::function<void()> function : action.up_functions)
                                 function();
 
-                            return;
+                            break;
                         }
                     }
                     break;
@@ -194,15 +202,25 @@ namespace Engine
                             for(std::function<void(StickXEvent)> function : action.x_functions)
                                 function(StickXEvent(event.caxis.value));
 
-                            return;
+                            if(event.caxis.value == 0)
+                                action.state &= ~x_axis_mask;
+                            else
+                                action.state |= x_axis_mask;
+
+                            break;
                         }
                         
                         if(event.caxis.axis == action.y_axis)
                         {
                             for(std::function<void(StickYEvent)> function : action.y_functions)
                                 function(StickYEvent(event.caxis.value));
+                            
+                            if(event.caxis.value == 0)
+                                action.state &= ~y_axis_mask;
+                            else
+                                action.state |= y_axis_mask;
 
-                            return;
+                            break;
                         }
                     }
                     break;
@@ -221,7 +239,7 @@ namespace Engine
                                 for(std::function<void()> function : action.down_functions)
                                     function();
 
-                                return;
+                                break;
                             }
                         }
                     }
@@ -241,24 +259,63 @@ namespace Engine
                                 for(std::function<void()> function : action.up_functions)
                                     function();
 
-                                return;
+                                break;
                             }
                         }
                     }
                     break;
-                }/*
+                }
                 case SDL_MOUSEMOTION:
                 {
                     for(Shared<Controller> controller : controllers)
                     {
                         for(StickAction action : controller->stick_actions)
                         {
-                            action.x_function(StickXEvent(event.motion.xrel));
-                            action.y_function(StickYEvent(event.motion.yrel));
+                            Log("X:%d, Y:%d\n", event.motion.xrel, event.motion.yrel);
+                            for(std::function<void(StickXEvent)> x_function : action.x_functions)
+                                x_function(StickXEvent(event.motion.xrel));
+                            
+                            for(std::function<void(StickYEvent)> y_function : action.y_functions)
+                                y_function(StickYEvent(event.motion.yrel));
+
+                            if(event.motion.xrel == 0)
+                                action.state &= ~mouse_x_mask;
+                            else
+                                action.state |= mouse_x_mask;
+
+                            if(event.motion.yrel == 0)
+                                action.state &= ~mouse_y_mask;
+                            else
+                                action.state |= mouse_y_mask;
+                            
+                            mouse_moved = true;
                         }
                     }
                     break;
-                }*/
+                }
+            }
+        }
+
+        
+
+        if(no_event)
+        {
+            for(Shared<Controller> controller : controllers)
+            {
+                for(StickAction action : controller->stick_actions) 
+                {
+                    if(!action.x_key_active && !action.x_axis_active)
+                    {
+                        for(std::function<void(StickXEvent)> x_function : action.x_functions)
+                            x_function(StickXEvent(0));
+                    }
+                    
+                    if(!action.y_key_active && !action.y_axis_active)
+                    {
+                        for(std::function<void(StickYEvent)> y_function : action.y_functions)
+                            y_function(StickYEvent(0));
+                    }
+                }
             }
         }
     }

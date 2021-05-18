@@ -19,7 +19,7 @@ void Strevo::Tick()
         cos(camera->rotation.yaw - PI / 2.0f) * side;
     
     Actor::Tick();
-    Engine::Log("X:%f Y:%f Z:%f\n", position.x, position.y, position.z);
+    //Engine::Log("X:%f Y:%f Z:%f\n", position.x, position.y, position.z);
 }
 
 void Strevo::OnJumpReleased()

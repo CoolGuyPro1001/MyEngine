@@ -25,6 +25,9 @@ namespace Engine
             exit(EXIT_FAILURE);
         }
 
+        //SDL_ShowCursor(SDL_DISABLE);
+        //SDL_SetRelativeMouseMode(SDL_TRUE);
+
         if(!Graphics::InitWindow(window_width, window_height, window_name) || !Graphics::Initialize())
         {
             exit(EXIT_FAILURE);
