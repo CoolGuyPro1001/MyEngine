@@ -28,6 +28,8 @@ namespace Engine
         //SDL_ShowCursor(SDL_DISABLE);
         //SDL_SetRelativeMouseMode(SDL_TRUE);
 
+        SDL_GameControllerEventState(SDL_ENABLE);
+
         if(!Graphics::InitWindow(window_width, window_height, window_name) || !Graphics::Initialize())
         {
             exit(EXIT_FAILURE);

@@ -11,7 +11,7 @@ void Strevo::Tick()
 {
     float direct = relative_velocity.direct;
     float side = relative_velocity.side;
-
+    
     position_velocity.x = sin(camera->rotation.yaw) * direct + 
         sin(camera->rotation.yaw - PI / 2.0f) * side;
 
@@ -19,7 +19,7 @@ void Strevo::Tick()
         cos(camera->rotation.yaw - PI / 2.0f) * side;
     
     Actor::Tick();
-    //Engine::Log("X:%f Y:%f Z:%f\n", position.x, position.y, position.z);
+    //Engine::Log("X:%f Y:%f Z:%f\n", position.x, position.y, position.z);  
 }
 
 void Strevo::OnJumpReleased()
@@ -40,7 +40,7 @@ void Strevo::OnForwards(StickYEvent e)
     }
     else
     {
-        relative_velocity.direct = 0.02 * (e.value / SHRT_MAX) * Engine::Delay();
+        relative_velocity.direct = 0.1 * ((float)e.value / (float)SHRT_MAX) * Engine::Delay();
     }
 }
 
@@ -52,6 +52,6 @@ void Strevo::OnRight(StickXEvent e)
     }
     else
     {
-        relative_velocity.side = 0.02 * (e.value / SHRT_MAX) * Engine::Delay();
+        relative_velocity.side = 0.1 * ((float)e.value / (float)SHRT_MAX) * Engine::Delay();
     }
 }

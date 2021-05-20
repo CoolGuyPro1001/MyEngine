@@ -26,10 +26,16 @@ namespace Engine
     void PollEvents(std::vector<Shared<Controller>>& controllers)
     {
         bool mouse_moved = false;
+        std::vector<SDL_Event> event_list = std::vector<SDL_Event>();
+
         SDL_Event event;
         while(SDL_PollEvent(&event))
         {
-            no_event = false;
+            event_list.push_back(event);
+        }
+        for(SDL_Event event : event_list)
+        {
+            //no_event = false;
             switch(event.type)
             {
                 case SDL_QUIT:
@@ -50,6 +56,16 @@ namespace Engine
                             glViewport(0, 0, Graphics::window_width, Graphics::window_height);
                     }
                     break;
+                case SDL_CONTROLLERDEVICEADDED:
+                {
+                    SDL_GameControllerOpen(event.cdevice.which);
+                    break;
+                }
+                case SDL_CONTROLLERDEVICEREMOVED:
+                {
+                    SDL_GameControllerClose(SDL_GameControllerFromInstanceID(event.cdevice.which));
+                    break;
+                }
                 case SDL_KEYDOWN:
                 {
                     for(Shared<Controller> controller : controllers)
@@ -152,75 +168,154 @@ namespace Engine
                 }
                 case SDL_CONTROLLERBUTTONDOWN:
                 {
-                    Shared<Controller> controller = controllers[event.cbutton.which];
-
-                    if(!controller->enabled)
-                        break;
-
-                    for(ButtonAction action : controller->button_actions)
+                    for(Shared<Controller> controller : controllers)
                     {
-                        if(event.cbutton.button == action.button)
-                        {
-                            for(std::function<void()> function : action.down_functions)
-                                function();
+                        if(!controller->enabled || controller->id != event.cbutton.which)
+                            continue;
 
-                            break;
+                        for(ButtonAction action : controller->button_actions)
+                        {
+                            if(event.cbutton.button == action.button)
+                            {
+                                for(std::function<void()> function : action.down_functions)
+                                    function();
+
+                                goto NextEvent;
+                            }
+                        }
+
+                        for(StickAction action : controller->stick_actions)
+                        {
+                            if(event.cbutton.button == action.right_button)
+                            {
+                                for(std::function<void(StickXEvent)> function : action.x_functions)
+                                    function(StickXEvent(SHRT_MAX));
+                                
+                                action.state |= right_button_mask;
+                                break;
+                            }
+                            
+                            if(event.cbutton.button == action.left_button)
+                            {
+                                for(std::function<void(StickXEvent)> function : action.x_functions)
+                                    function(StickXEvent(SHRT_MIN));
+
+                                action.state |= left_button_mask;
+                                break;
+                            }
+                            
+                            if(event.cbutton.button== action.down_button)
+                            {
+                                for(std::function<void(StickYEvent)> function : action.y_functions)
+                                    function(StickYEvent(SHRT_MIN));
+
+                                action.state |= down_button_mask;
+                                break;
+                            }
+                            
+                            if(event.cbutton.button == action.up_button)
+                            {
+                                for(std::function<void(StickYEvent)> function : action.y_functions)
+                                    function(StickYEvent(SHRT_MAX));
+                                
+                                action.state = up_button_mask;
+                                break;
+                            }
                         }
                     }
                     break;
                 }
                 case SDL_CONTROLLERBUTTONUP:
                 {
-                    Shared<Controller> controller = controllers[event.cbutton.which];
-
-                    if(!controller->enabled)
-                        break;
-
-                    for(ButtonAction action : controller->button_actions)
+                    for(Shared<Controller> controller : controllers)
                     {
-                        if(event.cbutton.button == action.button)
-                        {
-                            for(std::function<void()> function : action.up_functions)
-                                function();
+                        if(!controller->enabled || controller->id != event.cbutton.which)
+                            continue;
 
-                            break;
+                        for(ButtonAction action : controller->button_actions)
+                        {
+                            if(event.cbutton.button == action.button)
+                            {
+                                for(std::function<void()> function : action.up_functions)
+                                    function();
+
+                                break;
+                            }
+                        }
+
+                        for(StickAction action : controller->stick_actions)
+                        {
+                            if(event.cbutton.button == action.right_button || event.cbutton.button == action.left_button)
+                            {
+                                for(std::function<void(StickXEvent)> x_function : action.x_functions)
+                                    x_function(StickXEvent(0));
+
+                                action.state &= ~(right_button_mask | left_button_mask);
+                                break;
+                            }
+                            
+                            if(event.cbutton.button == action.up_button || event.cbutton.button == action.down_button)
+                            {
+                                for(std::function<void(StickYEvent)> y_function : action.y_functions)
+                                    y_function(StickYEvent(0));
+
+                                action.state &= ~(up_button_mask | down_button_mask);
+                                break;
+                            }
                         }
                     }
                     break;
                 }
                 case SDL_CONTROLLERAXISMOTION:
                 {
-                    Shared<Controller> controller = controllers[event.caxis.which];
-
-                    if(!controller->enabled)
-                        break;
-
-                    for(StickAction action : controller->stick_actions)
+                    if(event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY)
+                        Log("X:%d\n", event.caxis.value);
+                    else
+                        Log("Y:%d\n", event.caxis.value);
+                    for(Shared<Controller> controller : controllers)
                     {
-                        if(event.caxis.axis == action.x_axis)
-                        {
-                            for(std::function<void(StickXEvent)> function : action.x_functions)
-                                function(StickXEvent(event.caxis.value));
+                        if(!controller->enabled || controller->id != event.caxis.which)
+                            continue;
 
-                            if(event.caxis.value == 0)
-                                action.state &= ~x_axis_mask;
-                            else
-                                action.state |= x_axis_mask;
-
-                            break;
-                        }
-                        
-                        if(event.caxis.axis == action.y_axis)
+                        for(StickAction action : controller->stick_actions)
                         {
-                            for(std::function<void(StickYEvent)> function : action.y_functions)
-                                function(StickYEvent(event.caxis.value));
                             
-                            if(event.caxis.value == 0)
-                                action.state &= ~y_axis_mask;
-                            else
-                                action.state |= y_axis_mask;
+                            if(event.caxis.axis == action.x_axis)
+                            {
+                                if(event.caxis.value < 10000 && event.caxis.value > -10000)
+                                {
+                                    for(std::function<void(StickXEvent)> function : action.x_functions)
+                                        function(StickXEvent(0));
+                                    action.state &= ~x_axis_mask;
+                                }
+                                else
+                                {
+                                    for(std::function<void(StickXEvent)> function : action.x_functions)
+                                        function(StickXEvent(event.caxis.value));
+                                    action.state |= x_axis_mask;
+                                }
 
-                            break;
+                                break;
+                            }
+                            
+                            if(event.caxis.axis == action.y_axis)
+                            {
+                                if(event.caxis.value < 10000 && event.caxis.value > -10000)
+                                {
+                                    for(std::function<void(StickYEvent)> function : action.y_functions)
+                                        function(StickYEvent(0));
+                                    action.state &= ~y_axis_mask;
+                                }
+                                else
+                                {
+                                    for(std::function<void(StickYEvent)> function : action.y_functions)
+                                        function(StickYEvent(-event.caxis.value));
+                                    action.state |= y_axis_mask;
+                                }
+
+                                break;
+                            }
+                            
                         }
                     }
                     break;
@@ -265,7 +360,7 @@ namespace Engine
                     }
                     break;
                 }
-                case SDL_MOUSEMOTION:
+                /*case SDL_MOUSEMOTION:
                 {
                     for(Shared<Controller> controller : controllers)
                     {
@@ -292,13 +387,13 @@ namespace Engine
                         }
                     }
                     break;
-                }
+                }*/
             }
+            NextEvent:
+            float a = 5;
         }
 
-        
-
-        if(no_event)
+        /*if(no_event)
         {
             for(Shared<Controller> controller : controllers)
             {
@@ -317,7 +412,7 @@ namespace Engine
                     }
                 }
             }
-        }
+        }*/
     }
 
     void SetFlatCollisionNormals(std::vector<CollisionTri>& collisions)
