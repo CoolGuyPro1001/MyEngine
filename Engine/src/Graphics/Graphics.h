@@ -30,7 +30,7 @@ namespace Graphics
     bool WindowClosed();
     void CloseWindow();
     
-    void Draw(std::vector<std::vector<Shared<Actor>>>& total_actors, Shared<Camera> camera, Shared<Model> sky_block, Shared<Model> terrain);
+    void Draw(std::map<Shared<Model>, std::vector<Shared<Object>>>& instances, Shared<Camera> camera, Shared<Model> sky_block, Shared<Model> terrain);
 
     Shader ParseShader(const std::string& file_path);
     void UseShader(const std::string shader_file_path);

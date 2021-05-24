@@ -5,6 +5,8 @@ add_executable(
     ${GAME}
     Strevo.cpp
     Strevo.h
+    Sword.h
+    Sword.cpp
     Main.cpp
 )
 

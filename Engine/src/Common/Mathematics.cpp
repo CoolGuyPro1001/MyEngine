@@ -110,7 +110,7 @@ bool GaussJordan(std::vector<std::vector<float>>& a)
 
 Vector3 Intersect3DSegments(const Vector3 a0, const Vector3 a1, const Vector3 b0, const Vector3 b1, bool& intersected)
 {
-    /*Vector3 intersect;
+    Vector3 intersect;
     std::vector<std::vector<float>> equations = std::vector<std::vector<float>>(3);
 
     Vector3 a1a0 = a1 - a0;
@@ -128,7 +128,7 @@ Vector3 Intersect3DSegments(const Vector3 a0, const Vector3 a1, const Vector3 b0
         intersected = true;
     }
 
-    intersected = false;*/
+    intersected = false;
     return Vector3(0, 0, 0);
 }
 

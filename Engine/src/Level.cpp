@@ -18,6 +18,9 @@ void Level::AddModel(Shared<Model> model)
 
 void Level::AddActor(Shared<Actor> actor)
 {
+    if(typeid(actor) == typeid(Shared<Component>) || typeid(actor) == typeid(Component))
+        return;
+
     actor->current_level = this;
     actors.push_back(actor);
 }

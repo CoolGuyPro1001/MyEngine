@@ -187,7 +187,7 @@ namespace Graphics
     }
 
     ///@brief Draws To Screen
-    void Draw(std::vector<std::vector<Shared<Actor>>>& total_actors, Shared<Camera> camera, Shared<Model> sky_block, Shared<Model> terrain)
+    void Draw(std::map<Shared<Model>, std::vector<Shared<Object>>>& instances ,Shared<Camera> camera, Shared<Model> sky_block, Shared<Model> terrain)
     {
         if(!initialized) //|| shader_program == NULL_ID)
         {
@@ -221,27 +221,25 @@ namespace Graphics
         offset += terrain->vertices.size();
 
         //Draw Actors
-        for(int model = 0; model < total_actors.size(); model++)
+        for (auto const& [model, objects] : instances)
         {
             std::vector<glm::mat4> mvps = std::vector<glm::mat4>();
-            for(Shared<Actor> actor : total_actors[model])
-            {
-                mvps.push_back(to_3d * TransformationMatrix(actor->position, actor->rotation, actor->scale));
-            }
+            
+            for(Shared<Object> object : objects)
+                mvps.push_back(to_3d * TransformationMatrix(object->position, object->rotation, object->scale));
 
-            if(total_actors[model][0]->model->texture)
+            if(model->texture)
             {
-                total_actors[model][0]->model->texture->Use(shader_program);
+                model->texture->Use(shader_program);
             }
             
-            glUniformMatrix4fv(mvps_id, total_actors[model].size(), GL_FALSE, &mvps[0][0][0]);
+            glUniformMatrix4fv(mvps_id, objects.size(), GL_FALSE, &mvps[0][0][0]);
 
-            int size = total_actors[model][0]->model->vertices.size();
-            glDrawArraysInstanced(GL_TRIANGLES, offset, size, total_actors[model].size());
-
-            offset += size;
+            uint size = model->vertices.size();
+            uint index = model->offset / sizeof(Vertex);
+            glDrawArraysInstanced(GL_TRIANGLES, index, size, objects.size());
         }
-
+        
         if(window)
         {
             SDL_GL_SwapWindow(window);

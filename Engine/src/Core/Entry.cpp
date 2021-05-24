@@ -14,6 +14,7 @@
 namespace Engine
 {
     static Level current_level = Level();
+    static std::map<Shared<Model>, std::vector<Shared<Object>>> instances;
 
     void Start(int window_width, int window_height, const char* window_name)
     {
@@ -69,9 +70,28 @@ namespace Engine
         for(Shared<Model> model : level.models)
         {
             Graphics::AddDataToBuffer(model->vertices);
+            model->offset = offset;
             offset += model->vertices.size() * sizeof(Vertex);
         }
         Graphics::FormatData(offset);
+
+        for(Shared<Actor> actor : level.actors)
+        {
+            if(!instances.contains(actor->model))
+                instances.insert(std::pair<Shared<Model>, 
+                    std::vector<Shared<Object>>>(actor->model, std::vector<Shared<Object>>()));
+
+            instances[actor->model].push_back(actor);
+
+            for(Shared<Component> component : actor->components)
+            {
+                if(!instances.contains(component->model))
+                    instances.insert(std::pair<Shared<Model>, 
+                        std::vector<Shared<Object>>>(component->model, std::vector<Shared<Object>>()));
+
+                instances[component->model].push_back(component);
+            }
+        }
 
         SetFlatCollisionNormals(level.flat_collisions);
 
@@ -83,17 +103,13 @@ namespace Engine
         TIME last_time;
         bool running = true;
 
-        //if(current_level.sky_block->collision) collisions.push_back(current_level.sky_block->collision);
-        //if(current_level.terrain->collision) collisions.push_back(current_level.terrain->collision);
-
         while(running)
         {
             TIME current_time = std::chrono::high_resolution_clock::now();
             delay = current_time - last_time;
             last_time = current_time;
 
-            //Model      Actors in Model
-            std::vector<std::vector<Shared<Actor>>> total_actors = std::vector<std::vector<Shared<Actor>>>(current_level.models.size());
+            //Model Actors in Model
             Shared<Graphics::Camera> world_camera;
             
             PollEvents(current_level.controllers);
@@ -101,14 +117,6 @@ namespace Engine
             for(Shared<Actor> actor : current_level.actors)
             {
                 actor->Tick();
-                
-                for(int i = 0; i < current_level.models.size(); i++)
-                {
-                    if(actor->model == current_level.models[i])
-                    {
-                        total_actors[i].push_back(actor);
-                    }
-                }
             }
 
             DoCollision(current_level.actors, current_level.flat_collisions);
@@ -119,7 +127,7 @@ namespace Engine
                 world_camera = camera;
             }
 
-            Draw(total_actors, world_camera, current_level.sky_block, current_level.terrain);
+            Draw(instances, world_camera, current_level.sky_block, current_level.terrain);
 
             if(log_delay)
             {

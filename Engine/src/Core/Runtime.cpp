@@ -431,7 +431,7 @@ namespace Engine
         {
             Vector3& velocity = actor->position_velocity;
 
-            if(velocity == Vector3(0, 0, 0))
+            if(velocity == Vector3(0, 0, 0) || !actor->collision)
                 continue;
 
             Vector3& position = actor->position;
@@ -498,11 +498,11 @@ namespace Engine
                         if(IntersectParallelpipedTriangle(origin_pos, dir, depth_n, height_n, 
                             col.p0, col.p1, col.p2, col.normal, intersect_pos, m_pos))
                         {
-                           if(DotProduct(Vector3(1, 0, 0), col.normal) != 0 && velocity.x >= intersect_pos.x - origin_pos.x)
-                           {
-                               position.x = intersect_pos.x - actor_d;
-                               velocity.x = 0;
-                           }
+                            if(DotProduct(Vector3(1, 0, 0), col.normal) != 0 && velocity.x >= intersect_pos.x - origin_pos.x)
+                            {
+                                position.x = intersect_pos.x - actor_d;
+                                velocity.x = 0;
+                            }
                         }
                     }
                     else if(velocity.x < 0)

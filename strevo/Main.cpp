@@ -1,4 +1,5 @@
 #include "Strevo.h"
+#include "Sword.h"
 
 #include <Level.h>
 #include <Actor.h>
@@ -22,6 +23,8 @@ void FreeCam(Shared<Controller> player, Shared<Controller> camera)
 
 int main()
 {
+    Level lvl = Level();
+
     //Textures
     Shared<Graphics::Texture> colors = Graphics::Texture::BMPToTexture("../../res/strevo.bmp", 0);
     Shared<Graphics::Texture> sky = Graphics::Texture::BMPToTexture("../../res/sky.bmp", 1);
@@ -46,12 +49,13 @@ int main()
 
     //Actors
     Shared<Strevo> strevo = CreateShared<Strevo>(box, camera);
-    strevo->position = Vector3(0, 1.01f, 0);
-    strevo->rotation = Vector3(0, 0, 0);
-    strevo->scale = Vector3(1.0f, 1.0f, 1.0f);
-    strevo->position_velocity = Vector3(0, 0, 0);
-    strevo->can_fall = false;
+    strevo->position = Vector3(0, 2.0f, 0);
     strevo->CreateHitBox(2, 2, 2);
+
+    //Components
+    Shared<Sword> sword = CreateShared<Sword>(box, strevo);
+    sword->r_position = Vector3(2.0f, 0, 0);
+    strevo->AddComponent(sword);
 
     camera->AttachRod(strevo, 10.0f, Vector3(0, -PI / 2, 0), true);
 
@@ -152,7 +156,6 @@ int main()
     player_control->enabled = true;
     camera_control->enabled = false;
 
-    Level lvl = Level();
     lvl.sky_block = CreateShared<Model>("../../res/sky.emodel", sky);
     lvl.terrain = CreateShared<Model>("../../res/terrain.emodel", grass);
     lvl.gravity = -0.001f;
