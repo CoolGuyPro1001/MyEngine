@@ -2,7 +2,7 @@
 
 Edit 64 is a simplistic game engine and editor.
 It was originally going to be a tool used to create *Super Mario 64 PC* mods, but I decided to just make it a game engine as well.
-Hence why there is "64" at the end of each name.
+Hence why there is "64" at the end of each name. (Please don't sue me).
 
 It's designed to be lightweight. You can run games on a potato. This doesn't mean games will look awful, it just allows complete customization of the memory layout.
 
@@ -12,12 +12,29 @@ It has two main parts:
 2. Engine64
 
 
-**THE FOLDER cat_and_mouse IS A TARGET FOR TEST ENVIRONMENT. THE GOAL IS TO MAKE A GAME WHERE THE PLAYER IS A CAT CHASING A MOUSE.**
+**THE FOLDER** *strevo* **IS A TARGET FOR TEST ENVIRONMENT.**
+
+**BOTH THE ENGINE AND EDITOR HAVEN'T BEEN TESTED FOR PORTABILITY**
 
 ## Engine64
 A library to help in game development. It has everything already with it. Just link the library, nothing else.
 
 Current Version: v0.2.8 (The World Update)
+
+Current Features:
+* 3D Rendering
+* Game Controller/Keyboard Input
+* Simple Collision
+* Textures (Supports .bmp)
+* Camera Management
+* Actors
+
+*Coming Soon*:
+* 2D GUI
+* Debugging Errors
+* Documentation
+* Post Processing
+* Lighting
 
 ## Editor64
 A visual game editor that uses the Engine64 Library
