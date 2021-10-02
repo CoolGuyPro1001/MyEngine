@@ -1,27 +1,32 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include "Common/Units.h"
-namespace Graphics
+#include "Common/Color.h"
+
+class Texture
 {
-    class Texture
-    {
-    public:
-        Texture(std::string image_path, uint slot);
-        Texture(std::vector<Color> data, u16 width, u16 height, uint slot);
-        ~Texture();
+public:
+    Texture();
+    Texture(std::string image_path);
+    Texture(std::vector<Color> data);
+    ~Texture();
+    
+    uint GetID();
+    std::vector<Color> GetColorData();
 
-        static Shared<Texture> BMPToTexture(std::string bmp_path, uint slot);
-        
-        void Load();
-        void Use(uint shader_program);
+    static Shared<Texture> BMPToTexture(std::string bmp_path);
+    static void SetParameter(uint pname, int param);
+    static void Use(uint shader_program);
+    static void InitArray(const std::vector<Shared<Texture>>& textures);
+    static void DeleteArray();
 
-        u16 width;
-        u16 height;
-    private:
-        std::vector<Color> texture_data;
-        uint texture_id;
-        uint slot;
-    };
-}
+    static u16 width;
+    static u16 height;
+    static uint texture_array_id;
+    static uint texture_object_count;
+
+private:
+    std::vector<Color> texture_data;
+    uint id;
+};
 #endif

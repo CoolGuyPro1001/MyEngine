@@ -1,6 +1,6 @@
 #include "Shader.h"
 #include "GLDebug.h"
-#include "Core/Log.h"
+#include "Common/Error.h"
 
 #include "File.h"
 
@@ -11,38 +11,52 @@ namespace Graphics
         fragment_source("")
     {}
 
-    Shader::Shader(std::string v_source, std::string f_source) :
-        vertex_source(v_source),
-        fragment_source(f_source)
-    {}
+    Shader::Shader(std::string v_file, std::string f_file) :
+        vertex_file(v_file),
+        fragment_file(f_file)
+    {
+        vertex_source = File::ReadFile(vertex_file);
+        fragment_source = File::ReadFile(fragment_file);
+    }
+
+    Shared<char> Shader::ProgramLog(uint program)
+    {
+        int length = 0;
+        GLCall(glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length));
+        Shared<char> message = CreateShared<char>();
+        GLCall(glGetProgramInfoLog(program, length, &length, message.get()));
+        return message;
+    }
 
     ///@brief Compiles The Shader Source
     ///@param type The Type Of Shader To Compile To. GL_VERTEX_SHADER Or GL_FRAGMENT_SHADER
     ///@return The ID Of Vertex/Fragment Shader Program
-    unsigned int Shader::Compile(unsigned int type)
+    uint Shader::Compile(uint type)
     {
         std::string source = (type == GL_VERTEX_SHADER) ? vertex_source : fragment_source;
 
-        unsigned int id = glCreateShader(type);
+        uint id = glCreateShader(type);
         const char* src = source.c_str();
-        glShaderSource(id, 1, &src, nullptr);
-        glCompileShader(id);
+        GLCall(glShaderSource(id, 1, &src, nullptr));
+        GLCall(glCompileShader(id));
 
         int result;
-        glGetShaderiv(id, GL_COMPILE_STATUS, &result);
+        GLCall(glGetShaderiv(id, GL_COMPILE_STATUS, &result));
         if(result == GL_FALSE)
         {
             int length = 0;
-            glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
-            std::unique_ptr<char[]> message = std::make_unique<char[]>(length);
-            glGetShaderInfoLog(id, length, &length, message.get());
+            GLCall(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length));
+            Local<char[]> message = CreateLocal<char[]>(length);
+            GLCall(glGetShaderInfoLog(id, length, &length, message.get()));
 
-            std::string s = (type == GL_VERTEX_SHADER ? "vertex" : "fragment");
-            Engine::Log("%d", 1);
-            Engine::Log("Failed to compile %s\n", s);
-            Engine::Log("%s\n", std::string(message.get()));
+            std::string s;
 
-            glDeleteShader(id);
+            if(type == GL_VERTEX_SHADER)
+                s = std::string("vertex ") + vertex_file + "\n" + std::string(message.get()) + "\n";
+            else
+                s = std::string("fragment ") + fragment_file + "\n" + std::string(message.get()) + "\n";
+
+            CriticalErrorArgs(GLSL_ERROR, "Failed to compile %s\n", s.c_str())
             return 0;
         }
         return id;
@@ -50,26 +64,26 @@ namespace Graphics
 
     ///@brief Creates The Shader Program. Includes Both Vertex And Fragment
     ///@return ID Of Shader Program
-    unsigned int Shader::CreateProgram()
+    uint Shader::CreateProgram()
     {
-        unsigned int program = glCreateProgram();
-        unsigned int vs = Compile(GL_VERTEX_SHADER);
-        unsigned int fs = Compile(GL_FRAGMENT_SHADER);
+        uint program = glCreateProgram();
+        uint vs = Compile(GL_VERTEX_SHADER);
+        uint fs = Compile(GL_FRAGMENT_SHADER);
 
-        glAttachShader(program, vs);
-        glAttachShader(program, fs);
-        glLinkProgram(program);
-        glValidateProgram(program);
+        GLCall(glAttachShader(program, vs));
+        GLCall(glAttachShader(program, fs));
 
-        int valid;
-        glGetProgramiv(program, GL_VALIDATE_STATUS, &valid);
-        if(valid == false)
+        GLCall(glLinkProgram(program));
+        int linked;
+        GLCall(glGetProgramiv(program, GL_LINK_STATUS, &linked));
+        if(linked == false)
         {
-            exit(EXIT_FAILURE);
+            Shared<char> msg = ProgramLog(program);
+            FatalErrorArgs(GLSL_ERROR, "Failed to link program %d\n%s\n", program, msg.get())
         }
 
-        glDeleteShader(vs);
-        glDeleteShader(fs);
+        GLCall(glDeleteShader(vs));
+        GLCall(glDeleteShader(fs));
         return program;
     }
 }

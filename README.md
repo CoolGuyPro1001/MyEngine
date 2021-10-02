@@ -12,12 +12,12 @@ It has two main parts:
 2. Engine64
 
 
-**THE FOLDER cat_and_mouse IS A TARGET FOR TEST ENVIRONMENT. THE GOAL IS TO MAKE A GAME WHERE THE PLAYER IS A CAT CHASING A MOUSE.**
+**Strevo Is A Testing Game. Have Fun Playing It! :)**
 
 ## Engine64
 A library to help in game development. It has everything already with it. Just link the library, nothing else.
 
-Current Version: v0.2.8 (The World Update)
+Current Version: v0.4.8 (The Graphics Update)
 
 ## Editor64
 A visual game editor that uses the Engine64 Library
@@ -40,3 +40,6 @@ Windowing, input, and audio for *Engine64*
 
 ### GLM
 OpenGL mathematics library for 3D projection and vertex transformations.
+
+### FreeType
+TrueType font rendering

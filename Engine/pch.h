@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <array>
 #include <memory>
 #include <functional>
 #include <map>
@@ -16,6 +17,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <algorithm>
+#include <utility>
 
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_keyboard.h>
@@ -27,6 +29,9 @@
 
 #include <GL/glew.h>
 
+#if _WIN32
+#include <windows.h>
+#endif
 
 typedef unsigned char uchar;
 typedef unsigned int uint;
@@ -55,6 +60,8 @@ typedef int s16;
 #endif
 
 #define TIME std::chrono::high_resolution_clock::time_point
+#define TIME_NOW std::chrono::high_resolution_clock::now()
+#define TIME_DURATION std::chrono::duration<double, std::milli>
 
 template<typename T>
 using Local = std::unique_ptr<T>;

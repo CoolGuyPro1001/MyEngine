@@ -1,7 +1,13 @@
 #ifndef SHAPES_H
 #define SHAPES_H
 
-#include "Common/Units.h"
+#include "Common/Color.h"
+#include "Common/TextureCoords.h"
+#include "Common/Vector2.h"
+#include "Common/Vector3.h"
+#include "Common/Vertex.h"
+
+#include "Actor.h"
 
 //Shape and shape_index are for setting triangles of different vertices
 //ColTex Color + TextureCoords
@@ -28,25 +34,20 @@ std::vector<Vertex> Triangle(V a, V b, V c, ColTex coltex, std::vector<Vertex>& 
     return vertices;
 };
 
-template<class ColTex>
-Shared<Model> Square(float size, ColTex coltex, Vector3 origin)
-{
-    if(typeid(ColTex) != typeid(Color) && typeid(ColTex) != typeid(TextureCoords))
-    {
-        return nullptr;
-    }
+std::array<Vertex, 6> Square(Vector2 origin, float size, float z_depth, Color color);
+std::array<Vertex, 6> Square(Vector2 origin, float size, float z_depth, TextureCoords tex_coords, uint tex_id);
+std::array<Vertex, 6> Square(Vector2 origin, float size, float z_depth, std::array<Color, 6> colors);
+std::array<Vertex, 6> Square(Vector2 origin, float size, float z_depth, std::array<TextureCoords, 6> tex_coords, uint tex_id);
+std::array<Vertex, 6> Square(Vector2 origin, float size, float z_depth, Color color, std::array<TextureCoords, 6> tex_coords, 
+    u16 tex_id);
 
-    std::vector<Vertex> vertices = std::vector<Vertex>(6);
-    vertices[0] = Vertex(origin, coltex);
-    vertices[1] = Vertex(origin + Vector3(size, 0), coltex);
-    vertices[2] = Vertex(origin + Vector3(size, size), coltex);
-    vertices[3] = Vertex(origin, coltex);
-    vertices[4] = Vertex(origin + Vector3(0, size), coltex);
-    vertices[5] = Vertex(origin + Vector3(size, size), coltex);
-
-    Shared<Model> square = CreateShared<Model>(vertices);
-    return square;
-};
+std::array<Vertex, 6> Rectangle(Vector2 origin, float width, float height, float z_depth, Color color);
+std::array<Vertex, 6> Rectangle(Vector2 origin, float width, float height, float z_depth, TextureCoords tex_coords, uint tex_id);
+std::array<Vertex, 6> Rectangle(Vector2 origin, float width, float height, float z_depth, std::array<Color, 6> colors);
+std::array<Vertex, 6> Rectangle(Vector2 origin, float width, float height, float z_depth,
+    std::array<TextureCoords, 6> tex_coords, uint tex_id);
+std::array<Vertex, 6> Rectangle(Vector2 origin, float width, float height, float z_depth, Color color, 
+    std::array<TextureCoords, 6> tex_coords, u16 tex_id);
 
 template<class ColTex>
 std::vector<Vertex> Circle(float radius, int triangles, ColTex coltex, std::vector<Vertex>& shape, size_t shape_index)

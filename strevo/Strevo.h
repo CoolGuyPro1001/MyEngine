@@ -9,9 +9,9 @@ class Strevo : public Actor
 {
 public:
     Vector3 relative_velocity;
-    Shared<Graphics::Camera> camera;
+    Shared<Camera> camera;
 
-    Strevo(Shared<Model> model, Shared<Graphics::Camera> camera);
+    Strevo(Shared<Model> model, Shared<Camera> camera);
 
     void Tick() override;
     void OnForwards(StickYEvent e);

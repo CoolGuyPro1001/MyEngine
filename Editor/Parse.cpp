@@ -82,7 +82,7 @@ Level Parse::OpenLevelFile(std::string file_path)
     i = 0;
     while(i < camera_buffer_size)
     {
-        Graphics::Camera camera = Graphics::Camera();
+        Camera camera = Camera();
         
         fread(&camera.position, sizeof(Vector3), 1, file);
         fread(&camera.looking_at, sizeof(Vector3), 1, file);

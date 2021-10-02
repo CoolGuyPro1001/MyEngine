@@ -1,8 +1,7 @@
 #include "IndexBuffer.h"
 #include "GLDebug.h"
-#include <iostream>
 
-namespace Graphics
+/*namespace Graphics
 {
     ///@brief Default Constuctor. The data points to null
     IndexBuffer::IndexBuffer() : data(nullptr)
@@ -59,4 +58,4 @@ namespace Graphics
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, data.get()->size() * sizeof(unsigned short), &(*data.get())[0], GL_STATIC_DRAW));
         UnBind();
     }
-}
+}*/

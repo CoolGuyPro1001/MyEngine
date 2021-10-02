@@ -1,5 +1,8 @@
 set(CMAKE_STATIC_LIBRARY_PREFIX "")
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(FREETYPE_PKG REQUIRED IMPORTED_TARGET freetype2)
+
 #OS Stuff
 if(WIN32)
     set(OS "Win32")
@@ -71,6 +74,7 @@ target_link_libraries(
     OpenGL::GL
     GLEW::GLEW
     SDL2::SDL2
+    PkgConfig::FREETYPE_PKG
 )
 
 target_include_directories(

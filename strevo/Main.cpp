@@ -3,17 +3,17 @@
 
 #include <Level.h>
 #include <Actor.h>
+#include <Component.h>
 #include <Controller.h>
 #include <Shapes.h>
-#include <Common/Units.h>
+#include <Common/Vector3.h>
 #include <Core/Entry.h>
 #include <Graphics/Camera.h>
+#include <GUI/GUI.h>
+#include <GUI/Text.h>
 
 #include <SDL2/SDL_keycode.h>
 #include <SDL2/SDL_mouse.h>
-
-#include <string>
-#include <vector>
 
 void FreeCam(Shared<Controller> player, Shared<Controller> camera)
 {
@@ -23,17 +23,22 @@ void FreeCam(Shared<Controller> player, Shared<Controller> camera)
 
 int main()
 {
+    Texture::width = 512;
+    Texture::height = 512;
+    
+    AddFont("../../res/comic.ttf", "../../res/comicbd.ttf", "../../res/comici.ttf", "../../res/comicz.ttf", 0, 48);
+    
     Level lvl = Level();
 
     //Textures
-    Shared<Graphics::Texture> colors = Graphics::Texture::BMPToTexture("../../res/strevo.bmp", 0);
-    Shared<Graphics::Texture> sky = Graphics::Texture::BMPToTexture("../../res/sky.bmp", 1);
-    Shared<Graphics::Texture> grass = Graphics::Texture::BMPToTexture("../../res/grass.bmp", 2);
+    Shared<Texture> strevo_tex = Texture::BMPToTexture("../../res/strevo.bmp");
+    Shared<Texture> sky = Texture::BMPToTexture("../../res/sky.bmp");
+    Shared<Texture> grass = Texture::BMPToTexture("../../res/grass.bmp");
 
     //Models
-    Shared<Model> box = CreateShared<Model>("../../res/cube.emodel", colors);
+    Shared<Model> box = CreateShared<Model>("../../res/cube.emodel", std::vector{strevo_tex});
 
-    Shared<Graphics::Camera> camera = CreateShared<Graphics::Camera>(50, false, 50);
+    Shared<Camera> camera = CreateShared<Camera>(50, false, 50);
     camera->forward_throttle = 0.000001f;
     camera->sideways_throttle = 0.000001f;
     camera->vertical_throttle = 0.000001f;
@@ -49,12 +54,16 @@ int main()
 
     //Actors
     Shared<Strevo> strevo = CreateShared<Strevo>(box, camera);
-    strevo->position = Vector3(0, 2.0f, 0);
+    strevo->SetPosition(0, 1, 0);
     strevo->CreateHitBox(2, 2, 2);
+
+    Shared<Strevo> strebro = CreateShared<Strevo>(box, camera);
+    strebro->SetPosition(0, 1, 5);
+    strebro->CreateHitBox(2, 2, 2);
 
     //Components
     Shared<Sword> sword = CreateShared<Sword>(box, strevo);
-    sword->r_position = Vector3(2.0f, 0, 0);
+    sword->SetRelativePosition(2.0f, 0, 0);
     strevo->AddComponent(sword);
 
     camera->AttachRod(strevo, 10.0f, Vector3(0, -PI / 2, 0), true);
@@ -122,21 +131,21 @@ int main()
     
     BindStickX(move, strevo, &Strevo::OnRight);
     BindStickY(move, strevo, &Strevo::OnForwards);
-    BindStickX(camera_rod, camera, &Graphics::Camera::RodYaw);
-    BindStickY(camera_rod, camera, &Graphics::Camera::RodPitch);
-    BindStickY(camera_vertical, camera, &Graphics::Camera::MoveVertical);
-    BindStickX(camera_roll, camera, &Graphics::Camera::Roll);
-    BindStickX(camera_rotate, camera, &Graphics::Camera::Yaw);
-    BindStickY(camera_rotate, camera, &Graphics::Camera::Pitch);
+    BindStickX(camera_rod, camera, &Camera::RodYaw);
+    BindStickY(camera_rod, camera, &Camera::RodPitch);
+    BindStickY(camera_vertical, camera, &Camera::MoveVertical);
+    BindStickX(camera_roll, camera, &Camera::Roll);
+    BindStickX(camera_rotate, camera, &Camera::Yaw);
+    BindStickY(camera_rotate, camera, &Camera::Pitch);
     BindButtonPress(jump, strevo, &Strevo::OnJumpPressed);
     BindButtonRelease(jump, strevo, &Strevo::OnJumpReleased);
-    BindButtonPress(free_cam, camera, &Graphics::Camera::ToggleFreeCam);
+    BindButtonPress(free_cam, camera, &Camera::ToggleFreeCam);
     BindButtonPress(free_cam, &FreeCam, player_control, camera_control);
-    BindStickX(camera_move, camera, &Graphics::Camera::MoveSideways);
-    BindStickY(camera_move, camera, &Graphics::Camera::MoveDirectly);
-    BindStickX(zoom_view, camera, &Graphics::Camera::View);
-    BindStickY(zoom_view, camera, &Graphics::Camera::Zoom);
-    BindStickY(rod_length, camera, &Graphics::Camera::RodDistance);
+    BindStickX(camera_move, camera, &Camera::MoveSideways);
+    BindStickY(camera_move, camera, &Camera::MoveDirectly);
+    BindStickX(zoom_view, camera, &Camera::View);
+    BindStickY(zoom_view, camera, &Camera::Zoom);
+    BindStickY(rod_length, camera, &Camera::RodDistance);
 
     player_control->AddStickAction(move);
     player_control->AddStickAction(camera_rod);
@@ -156,22 +165,46 @@ int main()
     player_control->enabled = true;
     camera_control->enabled = false;
 
-    lvl.sky_block = CreateShared<Model>("../../res/sky.emodel", sky);
-    lvl.terrain = CreateShared<Model>("../../res/terrain.emodel", grass);
-    lvl.gravity = -0.001f;
-    lvl.AddModel(box);
-    lvl.AddActor(strevo);
-    lvl.AddCamera(camera);
-    lvl.AddTexture(colors);
-    lvl.AddTexture(sky);
-    lvl.AddTexture(grass);
-    lvl.AddController(player_control);
-    lvl.AddController(camera_control);
-    lvl.ReadCollisionFile("../../res/landcollision.ecol");
+    //Fonts
 
-    Engine::Start(500, 500, "Strevo");
-    Engine::LoadLevel(lvl);
-    Engine::Run(false);
+    //Widgets
+    uint test_widget = GUI::CreateWidget();
+    GUI::SetWidgetPosition(test_widget, -0.5, 0);
+    GUI::SetWidgetZDepth(test_widget, 0.5f);
+    GUI::SetWidgetSize(test_widget, Vector2(0.1f, 0.1f));
+    GUI::SetWidgetColor(test_widget, 0xff, 0x00, 0x00, 0xff);
+    GUI::SetWidgetTexture(test_widget, strevo_tex);
+    GUI::SetWidgetText(test_widget, "Text");
+    GUI::SetWidgetFont(test_widget, GetFont("comic"));
+    GUI::SetWidgetTextColor(test_widget, 0xff, 0xff, 0, 0xff);
+    GUI::SetWidgetTextScale(test_widget, 1.0f);
+    GUI::SetWidgetTextZDepth(test_widget, 0.4f);
+    GUI::SetWidgetLineSpacing(test_widget, 1.0f);
+    GUI::SetWidgetHorizontalAlignment(test_widget, TextAlignHorizontal::LEFT);
+    GUI::SetWidgetVerticalAllignment(test_widget, TextAlignVertical::BOTTOM);
+    GUI::SetWidgetWordWrap(test_widget, false);
+    GUI::SetWidgetTextStyle(test_widget, TextStyle::REGULAR);
+
+    uint other_widget = GUI::CopyWidget(test_widget);
+    GUI::SetWidgetZDepth(other_widget, 0.4f);
+    GUI::SetWidgetTextZDepth(other_widget, 0.1f);
+    GUI::SetWidgetPosition(other_widget, 0.5f, 0);
+
+    lvl.sky_block = CreateShared<Object>(CreateShared<Model>("../../res/sky.emodel", std::vector{sky}));
+    lvl.sky_block->locked = true;
+    lvl.terrain = CreateShared<Object>(CreateShared<Model>("../../res/terrain.emodel", std::vector{grass}));
+    lvl.terrain->locked = true;
+    lvl.gravity = -0.05f;
+
+    lvl.models = {box};
+    lvl.actors = {strevo, strebro};
+    lvl.cameras = {camera};
+    lvl.textures = {strevo_tex, sky, grass};
+    lvl.controllers = {player_control, camera_control};
+
+    Start(500, 500, "Strevo");
+    lvl.flat_collisions = ReadCollisionFile("../../res/landcollision.ecol");
+    StartLevel(lvl);
 
     return 0;
 }

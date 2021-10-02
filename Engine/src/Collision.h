@@ -1,7 +1,11 @@
 #ifndef COLLISION_H
 #define COLLISION_H
 
-#include "Common/Units.h"
+#include "Actor.h"
+
+#include "Common/Vector3.h"
+
+class Actor;
 
 struct Collision
 {
@@ -16,6 +20,8 @@ struct CollisionTri
 {
     CollisionTri();
     CollisionTri(Vector3 p0, Vector3 p1, Vector3 p2);
+    CollisionTri(const CollisionTri& other_col);
+    
     Vector3 p0, p1, p2;
     Vector3 normal;
 };
@@ -43,4 +49,7 @@ struct CollisionSphere : public Collision
     void Print() override;
     float radius;
 };
+
+void SetFlatCollisionNormals(std::vector<CollisionTri>& flat_collisions);
+void DoCollision(std::vector<Shared<Actor>>& all_actors, std::vector<CollisionTri>& flat_collisions);
 #endif

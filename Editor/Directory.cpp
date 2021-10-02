@@ -28,7 +28,7 @@ namespace Directory
             return DirectoryStatus::NOT_EMPTY;
         }
 
-        unsigned int files_removed = std::filesystem::remove_all(path, error);
+        uint files_removed = std::filesystem::remove_all(path, error);
         return DirectoryStatus::SUCCESS;
     }
 }

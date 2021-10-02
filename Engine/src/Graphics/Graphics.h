@@ -3,39 +3,39 @@
 
 #include "Graphics/Shader.h"
 #include "Graphics/VertexBuffer.h"
-#include "Common/Units.h"
+#include "Common/Vector3.h"
 #include "Camera.h"
 #include "Actor.h"
+#include "GUI/Widget.h"
+
+#include <glm/glm.hpp>
 
 namespace Graphics
 {
-    extern uint transfrom_uniform_id;
-    extern uint shader_program;
-    extern bool initialized;
+    extern std::vector<uint> g_shader_programs;
+    extern bool g_initialized;
 
-    //Rendering Information
-    extern uint buffer_id;
-    extern uint vao_id;
+    extern SDL_Window* g_window;
+    extern int g_window_width;
+    extern int g_window_height;
 
-    extern SDL_Window* window;
-    extern int window_width;
-    extern int window_height;
-
-    uint* BufferId();
-    uint* VaoId();
-
-    bool Initialize();
+    void Initialize();
     bool InitWindow(int width, int height, const char* name);
 
     bool WindowClosed();
     void CloseWindow();
     
-    void Draw(std::map<Shared<Model>, std::vector<Shared<Object>>>& instances, Shared<Camera> camera, Shared<Model> sky_block, Shared<Model> terrain);
+    void ClearDrawBuffers();
+    void Draw2D(std::vector<uint> textures_now);
+    void Draw3D(std::vector<size_t> sizes, std::vector<size_t> instance_counts);
+    void UpdateGraphics();
 
-    Shader ParseShader(const std::string& file_path);
-    void UseShader(const std::string shader_file_path);
+    void AddShader(const std::string vertex_path, const std::string fragment_path);
     
     glm::vec3 Vector3GLM(const Vector3 v);
+    glm::mat4 Generate3DMatrix(float fov, Vector3 position, Vector3 looking_at, Vector3 up);
+    glm::mat4 GenerateModelMatrix(Vector3 position, Vector3 rotation, Vector3 scale);
+
     glm::mat4 TransformationMatrix(Vector3 position, Vector3 rotation, Vector3 scale);
 }
 

@@ -1,43 +1,20 @@
 #ifndef ACTOR_H
 #define ACTOR_H
 
-#include "Common/Units.h"
-#include "Events.h"
-#include "Graphics/Texture.h"
+#include "Object.h"
 #include "Collision.h"
+#include "Component.h"
 
 struct Level;
 class Component;
+struct Collision;
 
-struct Model
-{
-    Model(std::vector<Vertex> vertices);
-    Model(std::vector<Vertex> vertices, Shared<Graphics::Texture> texture);
-    Model(std::string file_path, Shared<Graphics::Texture> texture);
-    
-    uint offset;
-    std::vector<Vertex> vertices;
-    Shared<Graphics::Texture> texture;
-};
-
-struct Object
-{
-    Object();
-    Object(Vector3 position, Vector3 rotation, Vector3 scale);
-    Object(Shared<Model> model);
-    Object(Shared<Model> model, Vector3 position, Vector3 rotation, Vector3 scale);
-
-    Shared<Model> model;
-    bool visible;
-
-    Vector3 position;
-    Vector3 rotation;
-    Vector3 scale;
-
-    Vector3 position_velocity;
-    Vector3 rotation_velocity;
-    Vector3 scale_velocity;
-};
+/*
+Model: The Geometry In Model Space
+Object: Geometry In World Space With Transformations And Velocities
+Actor: A Child Of Object. Has The Power Of TICK
+Component: Also A Child Of Object. Can Be Attached To Actor
+*/
 
 class Actor : public Object
 {
@@ -64,24 +41,5 @@ public:
 
     Level* current_level;
     bool can_fall;
-};
-
-class Component : public Object
-{
-public:
-    
-    //r_position, r_rotation, r_scale are relative values of actor
-
-    Component(Shared<Actor> actor);
-    Component(Shared<Actor> actor, Vector3 r_position, Vector3 r_rotation, Vector3 r_scale);
-    Component(Shared<Actor> actor, Shared<Model> model);
-    Component(Shared<Actor> actor, Shared<Model> model, Vector3 r_position, Vector3 r_rotation, Vector3 r_scale);
-    ~Component();
-
-    Shared<Actor> actor;
-
-    Vector3 r_position;
-    Vector3 r_rotation;
-    Vector3 r_scale;
 };
 #endif

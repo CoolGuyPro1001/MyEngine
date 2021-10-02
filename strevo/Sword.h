@@ -1,7 +1,7 @@
 #ifndef SWORD_H
 #define SWORD_H
 
-#include <Actor.h>
+#include <Component.h>
 
 class Sword : public Component
 {

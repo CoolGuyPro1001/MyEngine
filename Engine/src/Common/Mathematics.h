@@ -1,7 +1,8 @@
 #ifndef MATH_H
 #define MATH_H
 
-#include "Units.h"
+struct Vector2;
+struct Vector3;
 
 bool GaussJordan(std::vector<std::vector<float>>& a);
 float DotProduct(Vector2 a, Vector2 b);
@@ -19,6 +20,8 @@ bool IntersectRayTriangle(const Vector3 origin, const Vector3 dir, const Vector3
     const Vector3 n, Vector3& intersect, float& t);
 bool IntersectParallelpipedTriangle(const Vector3 origin, const Vector3 dir, const Vector3 width, const Vector3 height, 
     const Vector3 t0, const Vector3 t1, const Vector3 t2, const Vector3 n, Vector3& intersect, float& m);
+
+float Normalize(int num, int low, int high);
 
 enum IntersectResults
 {

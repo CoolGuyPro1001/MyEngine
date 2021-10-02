@@ -1,6 +1,10 @@
 #ifndef EVENTS_H
 #define EVENTS_H
 
+#include "Controller.h"
+
+class Controller;
+
 struct Event
 {
     bool handled;
@@ -31,5 +35,7 @@ struct StickYEvent
     short value;
     StickYEvent(short val);
 };
+
+void PollEvents(std::vector<Shared<Controller>>& controllers);
 
 #endif

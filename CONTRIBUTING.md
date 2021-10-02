@@ -9,6 +9,7 @@ You Will Need The Following
 * Qt 5.15
 * GLM : https://github.com/g-truc/glm
 * SDL2 (Click on MinGW) : https://www.libsdl.org/download-2.0.php
+* FreeType : https://www.freetype.org/download.html
 
 CMake Setup Generator
 * open cmakegui.exe
@@ -48,7 +49,7 @@ MyClass
 
 ## If Statements
 
-Single lines should go in new line
+Single lines should go in new line, unless you stack together one lined if statements;
 
 **Yay**
 ```cpp
@@ -56,7 +57,7 @@ if(condition)
     code
 ```
 
-**Boo**
+**Optional**
 ```cpp
 if(condition) code
 ```

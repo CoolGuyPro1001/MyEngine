@@ -221,8 +221,8 @@ namespace Ui
         //    return;
         //}
 
-        //Graphics::Camera.TurnCameraY(sensitivity * (e->x() - mouse_x));
-        //Graphics::Camera.TurnCameraP(-sensitivity * (e->y() - mouse_y));
+        //Camera.TurnCameraY(sensitivity * (e->x() - mouse_x));
+        //Camera.TurnCameraP(-sensitivity * (e->y() - mouse_y));
 
         //Graphics::camera.PrintCameraLocation();
 

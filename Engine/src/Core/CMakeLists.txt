@@ -3,10 +3,8 @@ target_sources(
     PRIVATE
 
     Entry.h
-    Log.h
-    Runtime.h
+    Clock.h
 
     Entry.cpp
-    Log.cpp
-    Runtime.cpp
+    Clock.cpp
 )

@@ -1,5 +1,8 @@
 #include "Mathematics.h"
-#include "Core/Log.h"
+#include "Log.h"
+#include "Vector2.h"
+#include "Vector3.h"
+#include "Common/Error.h"
 
 float DotProduct(Vector2 a, Vector2 b)
 {
@@ -38,12 +41,20 @@ float Vector3Magnitude(Vector3 a)
 Vector2 NormalizeVector2(Vector2 a)
 {
     float mag = Vector2Magnitude(a);
+
+    if(mag == 0)
+        CriticalError(ENGINE_ERROR, "Magnitude Is 0 (Will Generate A Divide By 0 Error)\n");
+
     return Vector2(a.x / mag, a.y / mag);
 }
 
 Vector3 NormalizeVector3(Vector3 a)
 {
     float mag = Vector3Magnitude(a);
+
+    if(mag == 0)
+        CriticalError(ENGINE_ERROR, "Magnitude Is 0 (Will Generate A Divide By 0 Error)\n");
+
     return Vector3(a.x / mag, a.y / mag, a.z / mag);
 }
 
@@ -132,7 +143,6 @@ Vector3 Intersect3DSegments(const Vector3 a0, const Vector3 a1, const Vector3 b0
     return Vector3(0, 0, 0);
 }
 
-//Ctrl C + Ctrl V FTW
 //Credits To http://geomalgorithms.com/a05-_intersect-1.html
 
 IntersectResults IntersectSegments(Vector2 a0, Vector2 a1, Vector2 b0, Vector2 b1, Vector2 p0, Vector2 p1)
@@ -290,10 +300,6 @@ bool IntersectRayTriangle(const Vector3 origin, const Vector3 dir, const Vector3
 bool IntersectParallelpipedTriangle(const Vector3 origin, const Vector3 dir, const Vector3 width, const Vector3 height, 
     const Vector3 t0, const Vector3 t1, const Vector3 t2, const Vector3 n, Vector3& intersect, float& m)
 {
-    intersect = Vector3(1, 5, 3);
-    //Vector3* intersect_ptr = &intersect;
-    //const Vector3* origin_ptr = &origin;
-
     //Is Parallel?
     float direction = DotProduct(NormalizeVector3(n), dir); 
     if (fabs(direction) < EPSILON)
@@ -377,4 +383,14 @@ bool IntersectParallelpipedTriangle(const Vector3 origin, const Vector3 dir, con
     //If Two Edges Intersect
     
     return overlap;
+}
+
+float Normalize(int num, int low, int high)
+{
+    if(num < low || num > high)
+    {
+        return 0;
+    }
+
+    return (num - low) / (high - low);
 }

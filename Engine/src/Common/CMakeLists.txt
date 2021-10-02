@@ -3,13 +3,26 @@ target_sources(
     PRIVATE
 
     Binary.h
+    Color.h
+    Error.h
+    Console.h
     Hex.h
+    Log.h
     Mathematics.h
+    TextureCoords.h
     Tree.h
-    Units.h
+    Vector2.h
+    Vector3.h
+    Vertex.h
 
     Binary.cpp
+    Color.cpp
+    Console.cpp
     Hex.cpp
+    Log.cpp
     Mathematics.cpp
-    Units.cpp
+    TextureCoords.cpp
+    Vector2.cpp
+    Vector3.cpp
+    Vertex.cpp
 )

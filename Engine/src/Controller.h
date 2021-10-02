@@ -3,6 +3,8 @@
 
 #include "Events.h"
 
+struct StickXEvent;
+struct StickYEvent;
 
 struct ButtonAction
 {
