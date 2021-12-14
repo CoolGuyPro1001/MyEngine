@@ -18,6 +18,8 @@
 #include <string.h>
 #include <algorithm>
 #include <utility>
+#include <unordered_map>
+#include <typeindex>
 
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_keyboard.h>
@@ -28,6 +30,9 @@
 #include <SDL2/SDL_video.h>
 
 #include <GL/glew.h>
+
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
 
 #if _WIN32
 #include <windows.h>
@@ -58,10 +63,6 @@ typedef long s32;
 typedef int s16;
 #error Unexpected INT_MAX
 #endif
-
-#define TIME std::chrono::high_resolution_clock::time_point
-#define TIME_NOW std::chrono::high_resolution_clock::now()
-#define TIME_DURATION std::chrono::duration<double, std::milli>
 
 template<typename T>
 using Local = std::unique_ptr<T>;

@@ -10,17 +10,17 @@ set(
     openglwidget.h
 )
 
-target_sources(
-    ${EDITOR_NAME}
-    PRIVATE
+#target_sources(
+    #${EDITOR_NAME}
+    #PRIVATE
 
-    mainwindow.h
-    tree.h
-    openglwidget.h
+    #mainwindow.h
+    #tree.h
+    #openglwidget.h
 
-    mainwindow.cpp
-    openglwidget.cpp
-    tree.cpp
+    #mainwindow.cpp
+    #openglwidget.cpp
+    #tree.cpp
 
-    mainwindow.ui
-)
+    #mainwindow.ui
+#)

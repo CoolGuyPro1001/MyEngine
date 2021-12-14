@@ -1,4 +1,4 @@
-#ifndef GUI_H
+/*#ifndef GUI_H
 #define GUI_H
 
 #include "Widget.h"
@@ -13,7 +13,7 @@ namespace GUI
     static Shared<Widget> GetWidget(uint handle);
     void DeleteWidget(uint handle);
     void Load();
-    void Render();
+    void TextRender();
 
     Vector2 GetWidgetPosition(uint handle);
     float GetWidgetWidth(uint handle);
@@ -21,7 +21,7 @@ namespace GUI
     float GetWidgetZDepth(uint handle);
     Vector2 GetWidgetSize(uint handle);
     Color GetWidgetColor(uint handle);
-    TextureCoords GetWidgetUV(uint handle);
+    TextureCoord GetWidgetUV(uint handle);
     Texture GetWidgetTexture(uint handle);
     std::string GetWidgetText(uint handle);
     TextAlignHorizontal GetWidgetHorizontalAlignment(uint handle);
@@ -42,7 +42,7 @@ namespace GUI
     void SetWidgetSize(uint handle, Vector2 size);
     void SetWidgetColor(uint handle, Color color);
     void SetWidgetColor(uint handle, u8 red, u8 green, u8 blue, u8 alpha);
-    void SetWidgetUV(uint handle, TextureCoords uv);
+    void SetWidgetUV(uint handle, TextureCoord uv);
     void SetWidgetUV(uint handle, float u, float v);
     void SetWidgetTexture(uint handle, Shared<Texture> texture);
     void SetWidgetText(uint handle, std::string text);
@@ -58,4 +58,4 @@ namespace GUI
     void SetWidgetTextStyle(uint handle, TextStyle style);
 }
     
-#endif
+#endif*/

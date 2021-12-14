@@ -1,12 +1,13 @@
 #ifndef SWORD_H
 #define SWORD_H
 
-#include <Component.h>
+#include <Actor.h>
 
-class Sword : public Component
+class Sword : public Actor
 {
 public:
-    Sword(Shared<Model> model, Shared<Actor> actor);
+    Sword();
+    void Tick() override;
 };
 
 #endif

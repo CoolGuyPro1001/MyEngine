@@ -1,44 +1,54 @@
 #ifndef LEVEL_H
 #define LEVEL_H
 
-#include "Graphics/Texture.h"
-#include "Graphics/Camera.h"
-#include "Controller.h"
-#include "GUI/Widget.h"
 
-class Model;
 class Actor;
+struct CModel;
+class Controller;
+struct Component;
+struct CCamera;
+struct ModelTexture;
+struct CCollision;
 
-void AddTextureToCurrentLevel(Shared<Texture> texture);
-void AddModelToCurrentLevel(Shared<Model> model);
-void AddActorToCurrentLevel(Shared<Actor> actor);
-void AddCameraToCurrentLevel(Shared<Camera> camera);
-void AddControllerToCurrentLevel(Shared<Controller> controller);
-void AddWidgetToCurrentLevel(Widget widget);
+//void AddWidgetToCurrentLevel(Widget widget);
 
-std::vector<CollisionTri> ReadCollisionFile(std::string file);
-void StartLevel(Level& level);
-void Run();
+//std::vector<CollisionTri> ReadCollisionFile(std::string file);
+//void StartLevel(Level& level);
+//void Run();
 
 struct Level
 {
-    Level();
+    Level(Shared<ModelTexture> sky);
     
-    std::vector<Shared<Texture>> textures;
-    std::vector<Shared<Model>> models;
-    std::vector<Shared<Actor>> actors;
-    std::vector<Shared<Component>> components;
-    std::vector<Shared<Camera>> cameras;
+    //Level();
     std::vector<Shared<Controller>> controllers;
+    std::vector<Shared<Actor>> actors;
 
-    std::function<void()> script;
+    template<class C, typename... Args> Shared<C> CreateComponent(Args&&... args);
 
-    Shared<Object> sky_block;
-    Shared<Object> terrain;
-    std::vector<CollisionTri> flat_collisions;
+    std::vector<Shared<ModelTexture>> model_textures;
 
-    std::vector<Widget> widgets;
+    //Components
+    std::vector<Shared<CModel>> model_components;
+    std::vector<Shared<CCamera>> camera_components;
+    std::vector<Shared<CCollision>> collision_components;
+    /*std::vector<Shared<CollisionComponent>> model_components;*/
 
-    float gravity;
+    void AddActor(Shared<Actor> actor);
+    void Init();
+
+    //std::function<void()> script;
+    //std::vector<CollisionTri> flat_collisions;
+    //std::vector<Widget> widgets;
+
+    //float gravity;
 };
+
+template<class C, typename... Args> Shared<C> Level::CreateComponent(Args&&... args)
+{
+    Shared<C> component = CreateShared<C>(std::forward<Args>(args)...);
+    component->AttachToLevel(*this);
+    return component;
+}
+
 #endif

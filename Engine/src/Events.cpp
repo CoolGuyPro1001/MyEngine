@@ -1,8 +1,9 @@
 #include "Events.h"
 #include "Common/Log.h"
 #include "Core/Entry.h"
-#include "Graphics/Graphics.h"
-#include "Graphics/GLDebug.h"
+#include "Core/Graphics/Graphics.h"
+#include "Core/Graphics/GLDebug.h"
+#include "Controller.h"
 
 ButtonEvent::ButtonEvent()
 {
@@ -267,10 +268,6 @@ void PollEvents(std::vector<Shared<Controller>>& controllers)
             }
             case SDL_CONTROLLERAXISMOTION:
             {
-                if(event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY)
-                    Log("X:%d\n", event.caxis.value);
-                else
-                    Log("Y:%d\n", event.caxis.value);
                 for(const Shared<Controller>& controller : controllers)
                 {
                     if(!controller->enabled || controller->id != event.caxis.which)

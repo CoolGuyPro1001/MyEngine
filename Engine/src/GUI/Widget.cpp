@@ -1,6 +1,7 @@
-#include "Widget.h"
-#include "Shapes.h"
+/*#include "Widget.h"
+//#include "Common/Shapes.h"
 #include "Actor.h"
+#include "Core/Graphics/Graphics.h"
 
 Widget::Widget()
 {
@@ -50,7 +51,7 @@ void Widget::Render(std::vector<Vertex>& all_widget_vertices,
 //After all text_vertices have been inserted, they are split into batches based on texture id
 
 {
-    std::array<TextureCoords, 6> coords;
+    /*std::array<TextureCoords, 6> coords;
     coords[0] = {0.0f, 0.0f};
     coords[1] = {1.0f, 0.0f};
     coords[2] = {1.0f, 1.0f};
@@ -122,17 +123,17 @@ void Widget::Render(std::vector<Vertex>& all_widget_vertices,
 
     auto is_equal = [&](Vertex v)
     {
-        return batch_number == floor((v.texture_id - 2) / 32) + 1;
+        return batch_number == floor((v.texture_id - 2) / Graphics::g_max_texture_units);
     };
 
     auto is_higher = [&](Vertex v)
     {
-        return batch_number < floor((v.texture_id - 2) / 32) + 1;
+        return batch_number < floor((v.texture_id - 2) / Graphics::g_max_texture_units);
     };
 
     for(Vertex v : text_vertices)
     {
-        batch_number = floor((v.texture_id - 2) / 32) + 1; //Math Pog
+        batch_number = floor((v.texture_id - 2) / Graphics::g_max_texture_units); //Math Pog
 
         auto batch_begin = std::find_if(all_text_vertices.begin(), all_text_vertices.end(), is_equal);
         auto batch_end = std::find_if(batch_begin, all_text_vertices.end(), is_higher);
@@ -153,5 +154,5 @@ void Widget::Render(std::vector<Vertex>& all_widget_vertices,
         int texture = v.texture_id;
         if(std::find(textures_now.begin(), textures_now.end(), texture) == textures_now.end())
             textures_now.push_back(texture);
-    }
-}
+    }*/
+}*/

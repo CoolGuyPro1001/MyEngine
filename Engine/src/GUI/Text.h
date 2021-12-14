@@ -1,7 +1,7 @@
-#ifndef TEXT_H
+/*#ifndef TEXT_H
 #define TEXT_H
 
-#include "Graphics/Texture.h"
+#include "Core/Graphics/Texture.h"
 #include "Common/Vector2.h"
 #include "Common/Vertex.h"
 #include "Common/Color.h"
@@ -29,6 +29,20 @@ struct Font
     std::vector<TextChar> characters_both;
 };
 
+struct GText
+{
+    std::string text;
+    TextAlignHorizontal horizontal_alignment;
+    TextAlignVertical vertical_alignment;
+    Color text_color;
+    float text_scale;
+    float text_z_depth;
+    bool word_wrap;
+    float line_spacing;
+    Font* font;
+    TextStyle text_style;
+};
+
 std::vector<Vertex> RenderText(std::string& text, Font* font, TextStyle s, Vector2 position, 
     float scale, float z_depth, Color color);
 void AddFont(const std::string ttf_file, const std::string ttf_bold_file, const std::string ttf_italic_file,
@@ -36,4 +50,4 @@ void AddFont(const std::string ttf_file, const std::string ttf_bold_file, const 
 bool LoadFonts();
 Font* GetFont(std::string name);
 
-#endif
+#endif*/

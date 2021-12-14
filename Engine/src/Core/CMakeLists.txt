@@ -3,8 +3,12 @@ target_sources(
     PRIVATE
 
     Entry.h
-    Clock.h
+    Time.h
+    Systems.h
 
     Entry.cpp
-    Clock.cpp
+    Time.cpp
+    Systems.cpp
 )
+
+add_subdirectory(Graphics)

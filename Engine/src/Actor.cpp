@@ -1,67 +1,74 @@
 #include "Actor.h"
-#include "Core/Clock.h"
-#include "Common/Hex.h"
-#include "Common/Log.h"
+#include "Components/Component.h"
+#include "Core/Time.h"
+#include "Core/Graphics/Graphics.h"
 #include "Level.h"
 
-Actor::Actor() : Object()
+Actor::Actor()
 {
-    can_fall = true;
     current_level = nullptr;
-    collision = nullptr;
+    components = ComponentMap();
+
+    position = Vector3();
+    rotation = Vector3();
+    scale = Vector3(1, 1, 1);
+
+    position_velocity = Vector3();
+    rotation_velocity = Vector3();
+    scale_velocity = Vector3();
+
+    position_acceleration = Vector3();
+    rotation_acceleration = Vector3();
+    scale_acceleration = Vector3();
 }
 
-Actor::Actor(Vector3 position, Vector3 rotation, Vector3 scale) : Object(position, rotation, scale)
+Actor::Actor(Vector3 position)
 {
-    can_fall = true;
-    current_level = nullptr;
-    collision = nullptr;
+    Actor();
+    this->position = position;
 }
 
-Actor::Actor(Shared<Model> model) : Object(model)
+Actor::Actor(Vector3 position, Vector3 rotation, Vector3 scale) : position(position), rotation(rotation), scale(scale)
 {
-    can_fall = true;
-    current_level = nullptr;
-    collision = nullptr;
+    Actor();
+
+    this->position = position;
+    this->rotation = rotation;
+    this->scale = scale;
 }
 
-Actor::Actor(Shared<Model> model, Vector3 position, Vector3 rotation, Vector3 scale) : 
-    Object(model, position, rotation, scale)
+Actor::Actor(const Actor& a)
 {
-    can_fall = true;
-    current_level = nullptr;
-    collision = nullptr;
+    current_level = a.current_level;
+    components = a.components;
+
+    position = a.position;
+    rotation = a.rotation;
+    scale = a.scale;
+
+    position_velocity = a.position_velocity;
+    rotation_velocity = a.rotation_velocity;
+    scale_velocity = a.scale_velocity;
+
+    position_acceleration = a.position_acceleration;
+    rotation_acceleration = a.rotation_acceleration;
+    scale_acceleration = a.scale_acceleration;
 }
 
 Actor::~Actor()
 {
-    delete collision;
+    //delete collision; Delete All Linked Components
     delete current_level;
 }
 
 void Actor::Tick()
 {
-    if(can_fall && current_level)
-        ChangePositionVelocity(0, (Delay() > 1) ? current_level->gravity : current_level->gravity * Delay(), 0);
+    position += position_velocity;
+    rotation += rotation_velocity;
+    scale += scale_velocity;
 
-    ChangePosition(GetPositionVelocity());
-    ChangeRotation(GetRotationVelocity());
-    ChangeScale(GetScaleVelocity());
+    model_matrix = Graphics::GenerateModelMatrix(position, rotation, scale);
 
-    for(Shared<Component> component : components)
-    {
-        component->SetPosition(GetPosition() + component->GetRelativePosition());
-        component->SetRotation(GetRotation() + component->GetRelativeRotation());
-        component->SetScale(GetScale() + component->GetRelativeScale());
-    }
-}  
-
-void Actor::CreateHitBox(float depth, float height, float width)
-{
-    collision = new CollisionBox(GetPosition(), depth, height, width);
-}
-
-void Actor::AddComponent(Shared<Component> component)
-{
-    components.push_back(component);
+    //if(can_fall && current_level)
+    //    ChangePositionVelocity(0, (Delay() > 1) ? current_level->gravity : current_level->gravity * Delay(), 0);
 }

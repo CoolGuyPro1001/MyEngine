@@ -1,14 +1,35 @@
+# Task Queue
+
+Below Are The Current Goals For This Repository By Priority
+* [Engine] Mouse Input
+* Documention Update
+* [Engine] OBJ And Level File Parser
+* [Engine] Lighting And Materials
+* [Engine] Audio
+* Documentation Update
+* [Engine] GUI Component System
+* Documentation Update
+* [Engine] Skeletons
+* [Engine] Animation
+* [Engine] Physics (Momentum, Terminal Velocity, Etc)
+* Documentation Update
+* [Engine] Transparency
+* [Engine] Reflection And Refration
+* [Engine] Shadows
+
 # Setup
 
 Note that I am still learning CMake CLI
 
-You Will Need The Following
-* An IDE for C++ (Or Not If Like Using Terminal)
-* GNU Compiler (For Windows Users Download MSYS2) : https://www.msys2.org/
+**This Will Be Automated In The Future**
+
+Dependencies (Download Links For Windows)
+* An IDE for C++ (Or Not If You Like Using Terminal)
+* A Compiler (Originally Made Using GCC)
 * Cmake 3.17.0 : https://cmake.org/download/
 * Qt 5.15
 * GLM : https://github.com/g-truc/glm
-* SDL2 (Click on MinGW) : https://www.libsdl.org/download-2.0.php
+* SDL2 (MinGW) : https://www.libsdl.org/download-2.0.php
 * FreeType : https://www.freetype.org/download.html
 
 CMake Setup Generator

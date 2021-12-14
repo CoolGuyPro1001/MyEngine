@@ -1,8 +1,6 @@
 #ifndef VECTOR3_H
 #define VECTOR3_H
 
-#include "Vector2.h"
-
 struct Vector2;
 
 struct Vector3

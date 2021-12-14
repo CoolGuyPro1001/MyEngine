@@ -1,9 +1,9 @@
-#include "Text.h"
+/*#include "Text.h"
 #include "Common/Color.h"
-#include "Graphics/Graphics.h"
-#include "Graphics/GLDebug.h"
+#include "Core/Graphics.h"
+#include "Core/Graphics/GLDebug.h"
 #include "Common/Error.h"
-#include "Shapes.h"
+#include "Common/Shapes.h"
 
 FT_Library ft;
 static std::map<std::string, Font> fonts;
@@ -54,7 +54,7 @@ std::vector<Vertex> RenderText(std::string& text, Font* font, TextStyle s, Vecto
         coords[5] = {1, 0};
 
         //Create Quad
-        std::array<Vertex, 6> text_rectangle = Rectangle(Vector2(xpos, ypos), w, h, z_depth, coords, ch.tex);
+        std::array<Vertex, 6> text_rectangle = Rectangle(Vector2(xpos, ypos), w, h, z_depth, color, coords, ch.tex);
         vertices.insert(vertices.end(), text_rectangle.begin(), text_rectangle.end());
         
         // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
@@ -168,4 +168,4 @@ bool LoadFonts()
 Font* GetFont(std::string name)
 {
     return &fonts[name];
-}
+}*/

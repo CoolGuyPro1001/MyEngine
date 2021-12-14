@@ -3,11 +3,11 @@ find_package(Engine64 REQUIRED)
 
 add_executable(
     ${GAME}
+    Main.cpp
     Strevo.cpp
     Strevo.h
     Sword.h
     Sword.cpp
-    Main.cpp
 )
 
 target_link_libraries(

@@ -1,8 +1,8 @@
 #include "Strevo.h"
-#include <Core/Clock.h>
 #include <Common/Log.h>
+#include <Core/Time.h>
 
-Strevo::Strevo(Shared<Model> model, Shared<Camera> camera) : Actor(model), camera(camera)
+Strevo::Strevo() : Actor()
 {
     relative_velocity = Vector3(0, 0, 0);
 }
@@ -11,17 +11,16 @@ void Strevo::Tick()
 {
     float direct = relative_velocity.direct;
     float side = relative_velocity.side;
+
+    Shared<CCamera> camera = GetComponent<CCamera>();
     
-    Vector3 position_velocity = GetPositionVelocity();
-    position_velocity.x = sin(camera->rotation.yaw) * direct + 
+    position_velocity.x = sin(camera->rotation.yaw) * direct +
         sin(camera->rotation.yaw - PI / 2.0f) * side;
 
-    position_velocity.z = cos(camera->rotation.yaw) * direct + 
+    position_velocity.z = cos(camera->rotation.yaw) * direct +
         cos(camera->rotation.yaw - PI / 2.0f) * side;
     
-    SetPositionVelocity(position_velocity);
     Actor::Tick();
-    //Log("X:%f Y:%f Z:%f\n", position.x, position.y, position.z);  
 }
 
 void Strevo::OnJumpReleased()
@@ -31,9 +30,9 @@ void Strevo::OnJumpReleased()
 
 void Strevo::OnJumpPressed()
 {
-    Vector3 position_velocity = GetPositionVelocity();
-    position_velocity.y = 0.1f * Delay();
-    SetPositionVelocity(position_velocity);
+    //Vector3 position_velocity = GetPositionVelocity();
+    //position_velocity.y = 0.1f * Delay();
+    //SetPositionVelocity(position_velocity);
 }
 
 void Strevo::OnForwards(StickYEvent e)

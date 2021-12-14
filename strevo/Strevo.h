@@ -2,16 +2,15 @@
 #define STREVO_H
 
 #include <Actor.h>
+#include <Components/CameraComponent.h>
 #include <Events.h>
-#include <Graphics/Camera.h>
 
 class Strevo : public Actor
 {
 public:
     Vector3 relative_velocity;
-    Shared<Camera> camera;
 
-    Strevo(Shared<Model> model, Shared<Camera> camera);
+    Strevo();
 
     void Tick() override;
     void OnForwards(StickYEvent e);

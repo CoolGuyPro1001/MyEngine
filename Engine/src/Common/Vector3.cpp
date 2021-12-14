@@ -1,8 +1,11 @@
 #include "Vector3.h"
+#include "Vector2.h"
 
 Vector3::Vector3()
 {
-    x, y, z = 0;
+    x = 0;
+    y = 0;
+    z = 0;
 }
 
 Vector3::Vector3(float x, float y, float z) : x(x), y(y), z(z)

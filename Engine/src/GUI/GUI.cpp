@@ -1,15 +1,15 @@
-#include "GUI.h"
+/*#include "GUI.h"
 
-#include "Graphics/VertexBuffer.h"
-#include "Graphics/Graphics.h"
+#include "Core/Graphics/VertexBuffer.h"
+#include "Core/Graphics/Graphics.h"
 #include "Common/Error.h"
 
-#include "Graphics/GLDebug.h"
+#include "Core/Graphics/GLDebug.h"
 
 namespace GUI
 {  
     static std::vector<Shared<Widget>> widgets;
-    static std::vector<uint> textures2d;
+    static std::vector<uint> text_textures;
 
     uint CreateWidget()
     {
@@ -58,35 +58,39 @@ namespace GUI
 
         for(Shared<Widget> w : widgets)
         {
-            w->Render(widget_vertices, text_vertices, textures2d);
+            w->Render(widget_vertices, text_vertices, text_textures);
         }
 
-        std::sort(textures2d.begin(), textures2d.end());
+        std::sort(text_textures.begin(), text_textures.end());
 
         Graphics::buffer2d.AddData(widget_vertices);
 
-        int batch_num = floor((text_vertices[0].texture_id - 2) / 32) + 1;
+        if(text_vertices.size() == 0)
+            return;
+        
+        int batch_num = floor((text_vertices[0].texture_id - 2) / Graphics::g_max_texture_units);
         auto from = text_vertices.begin();
         std::vector<Vertex> temp;
         
         auto it = text_vertices.begin(); 
         for(; it != text_vertices.end(); it++)
         {
-            if(floor((it->texture_id - 2) / 32) + 1 > batch_num)
+            if(floor((it->texture_id - 2) / Graphics::g_max_texture_units) > batch_num)
             {
                 temp.insert(temp.end(), from, it);
-                Graphics::batch_2d_buffers[batch_num - 1].AddData(temp);
+                Graphics::batch_2d_buffers[batch_num].AddData(temp);
                 batch_num++;
+                from = it;
                 temp.clear();
             }
         }
         temp.insert(temp.end(), from, it);
-        Graphics::batch_2d_buffers[batch_num - 1].AddData(temp);
+        Graphics::batch_2d_buffers[batch_num].AddData(temp);
     }
 
-    void Render()
+    void TextRender()
     {
-        Graphics::Draw2D(textures2d);
+        Graphics::DrawText(text_textures);
     }
 
     Vector2 GetWidgetPosition(uint handle)
@@ -289,4 +293,4 @@ namespace GUI
     {
         GetWidget(handle)->text_style = style;
     }
-}
+}*/
