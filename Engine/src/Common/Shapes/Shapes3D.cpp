@@ -1,9 +1,9 @@
 #include "Common/Shapes.h"
 
-#include "Common/TextureCoord.h"
-#include "Common/Vertex.h"
-#include "Common/Vector3.h"
 #include "Common/Color.h"
+#include "Common/TextureCoord.h"
+#include "Common/Vector3.h"
+#include "Common/Vertex.h"
 
 #include "Components/ModelComponent.h"
 

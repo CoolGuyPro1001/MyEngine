@@ -11,4 +11,3 @@ void main()
 {
     fragment_color = texture(model_textures, uvw) * color;
 }
-

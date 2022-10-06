@@ -1,8 +1,8 @@
 #include "Mathematics.h"
-#include "Log.h"
+
+#include "Error.h"
 #include "Vector2.h"
 #include "Vector3.h"
-#include "Common/Error.h"
 
 float DotProduct(Vector2 a, Vector2 b)
 {
@@ -21,11 +21,6 @@ Vector3 CrossProduct(Vector3 a, Vector3 b)
     cross.y = -(a.x * b.z - a.z * b.x);
     cross.z = (a.x * b.y - a.y * b.x);
     return cross;
-}
-
-float PerpProduct(Vector2 a, Vector2 b)
-{
-    return DotProduct(a, b);
 }
 
 float Vector2Magnitude(Vector2 a)
@@ -150,13 +145,13 @@ IntersectResults IntersectSegments(Vector2 a0, Vector2 a1, Vector2 b0, Vector2 b
     Vector2 u = a1 - a0;
     Vector2 v = b1 - b0;
     Vector2 w = a0 - b0;
-    float D = PerpProduct(u, v);
+    float D = DotProduct(u, v);
 
 
     // test if  they are parallel (includes either being a point)
     if (fabs(D) < 0.00000001) 
     {           // S1 and S2 are parallel
-        if (PerpProduct(u,w) != 0 || PerpProduct(v,w) != 0)  
+        if (DotProduct(u,w) != 0 || DotProduct(v,w) != 0)
         {
             return NOT;                    // they are NOT collinear
         }
@@ -232,12 +227,12 @@ IntersectResults IntersectSegments(Vector2 a0, Vector2 a1, Vector2 b0, Vector2 b
 
     // the segments are skew and may intersect in a point
     // get the intersect parameter for S1
-    float sI = PerpProduct(v,w) / D;
+    float sI = DotProduct(v,w) / D;
     if (sI < 0 || sI > 1)                // no intersect with S1
         return NOT;
 
     // get the intersect parameter for S2
-    float tI = PerpProduct(u,w) / D;
+    float tI = DotProduct(u,w) / D;
     if (tI < 0 || tI > 1)                // no intersect with S2
         return NOT;
 
@@ -385,12 +380,18 @@ bool IntersectParallelpipedTriangle(const Vector3 origin, const Vector3 dir, con
     return overlap;
 }
 
-float Normalize(int num, int low, int high)
+float Normalize(float num, float low, float high)
 {
-    if(num < low || num > high)
-    {
+    if(num < low)
         return 0;
-    }
+
+    if(num > high)
+        return 1;
 
     return (num - low) / (high - low);
+}
+
+float DegreesToRadians(float degrees)
+{
+    return degrees * (PI / 180);
 }

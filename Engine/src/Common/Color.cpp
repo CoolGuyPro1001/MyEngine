@@ -1,5 +1,5 @@
 #include "Color.h"
-#include "Common/Log.h"
+
 #include "Common/Error.h"
 
 Color::Color()

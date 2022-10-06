@@ -13,7 +13,7 @@
 enum class TextAlignHorizontal{LEFT, MIDDLE, RIGHT};
 enum class TextAlignVertical{UPPER, MIDDLE, BOTTOM};
 
-typedef std::unordered_map<std::type_index, Shared<GUIComponent>> GUIComponentMap;
+typedef std::unordered_map<std::type_index, GUIComponent> GUIComponentMap;
 
 class Widget
 {
@@ -28,6 +28,7 @@ public:
     template<class G> Shared<G> GetGUIComponent();
 
     GUIComponentMap components;
+    std::vector<Widget> child_widgets;
 
     Vector2 position;
     float width;
@@ -36,18 +37,20 @@ public:
     Color color;
     TextureCoord uv;
     Shared<Texture> texture;
-
-
 };
 
-template<class G> void Widget::AddComponent(Shared<G> component)
+template<class G, typename... Args>
+G Widget::CreateComponent(Args&&... args)
 {
+    G component = G(std::forward<Args>(args)...);
     components[typeid(G)] = component;
-    component->widget = shared_from_this();
+    component->widget = this;
+
+    return component;
 }
 
 template<class G> Shared<G> Widget::GetComponent()
 {
-    return std::static_pointer_cast<G>(components[typeid(G)]);
+    return components[typeid(G)];
 }
 #endif

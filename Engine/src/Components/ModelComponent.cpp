@@ -1,9 +1,21 @@
 #include "ModelComponent.h"
 
 #include "Level.h"
-#include "Common/Vertex.h"
+
 #include "Common/Error.h"
-#include "Core/Graphics/Texture.h"
+#include "Common/Vertex.h"
+
+#include "Core/Media/Graphics/Texture.h"
+
+CModel::CModel()
+{
+}
+
+CModel::CModel(Shared<CModel> other)
+{
+    vertices = other->vertices;
+    buffer_size = other->buffer_size;
+}
 
 CModel::CModel(std::vector<Vertex> vertices) : vertices(vertices)
 {

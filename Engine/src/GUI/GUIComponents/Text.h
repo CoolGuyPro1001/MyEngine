@@ -1,13 +1,14 @@
-/*#ifndef TEXT_H
-#define TEXT_H
+#ifndef TEXTCOMPONENT_H
+#define TEXTCOMPONENT_H
+
+#include "GUI/GUIComponent.h"
+
+#include "Core/Media/Font.h"
 
 #include "Core/Graphics/Texture.h"
 #include "Common/Vector2.h"
 #include "Common/Vertex.h"
 #include "Common/Color.h"
-
-#include <ft2build.h>
-#include FT_FREETYPE_H
 
 extern FT_Library ft;
 
@@ -29,7 +30,7 @@ struct Font
     std::vector<TextChar> characters_both;
 };
 
-struct GText
+struct GText :
 {
     std::string text;
     TextAlignHorizontal horizontal_alignment;
@@ -50,4 +51,4 @@ void AddFont(const std::string ttf_file, const std::string ttf_bold_file, const 
 bool LoadFonts();
 Font* GetFont(std::string name);
 
-#endif*/
+#endif

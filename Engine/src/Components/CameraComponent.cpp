@@ -2,15 +2,22 @@
 
 #include "Level.h"
 #include "Actor.h"
+
 #include "Common/Log.h"
+#include "Common/Mathematics.h"
+
 #include "Core/Time.h"
-#include "Events.h"
+
+#include "Events/InputEvents.h"
+
+#define FULL_ROTATION 360
+#define HALF_ROTATION 180
+#define QUARTER_ROTATION 90
 
 CCamera::CCamera(float focal_distance, bool enable_logging, int log_delay)
 {
     position = Vector3(0, 0, 0);
-    this->focal_distance = focal_distance;
-    looking_at = Vector3(0, 0, focal_distance);
+    looking_at = Vector3(0, 0, 0);
     rotation = Vector3(0, 0, 0);
     position_velocity = Vector3(0, 0, 0);
     relative_position_velocity = Vector3(0, 0, 0);
@@ -23,9 +30,12 @@ CCamera::CCamera(float focal_distance, bool enable_logging, int log_delay)
     rod_length_velocity = 0;
     fov = 70.0f;
     free_cam = true;
+    rod_length = 0;
+    this->focal_distance = focal_distance;
 
-    log_on_tick = enable_logging;
-    if(log_on_tick) this->log_delay = log_delay;
+    m_log_on_tick = enable_logging;
+    m_log_delay = log_delay;
+    m_log_cooldown = 0;
 }
 
 CCamera::CCamera(const CCamera& c)
@@ -45,9 +55,10 @@ CCamera::CCamera(const CCamera& c)
     rod_length_velocity = c.rod_length_velocity;
     fov = c.fov;
     free_cam = c.free_cam;
+    rod_length = c.rod_length;
 
-    log_on_tick = c.log_on_tick;
-    if(log_on_tick) log_delay = c.log_delay;
+    m_log_on_tick = c.m_log_on_tick;
+    if(m_log_on_tick) m_log_delay = c.m_log_delay;
 }
 
 void CCamera::Tick()
@@ -62,57 +73,75 @@ void CCamera::Tick()
     if(attached_actor && !free_cam)
     {
         Vector3 actor_pos = attached_actor->position;
-        float pitch_velocity = rod_rotation_velocity.pitch * Delay();
-        float yaw_velocity = rod_rotation_velocity.yaw * Delay();
-        float roll_velocity = rod_rotation_velocity.roll * Delay();
+
+        float rod_pitch_velocity = rod_rotation_velocity.pitch * Delay();
+        float rod_yaw_velocity = rod_rotation_velocity.yaw * Delay();
+        float rod_roll_velocity = rod_rotation_velocity.roll * Delay();
 
         //Rotate Rod
-        AddToOrientation(rod_rotation.pitch, pitch_velocity, false);
-        AddToOrientation(rod_rotation.yaw, yaw_velocity, true);
-        AddToOrientation(rod_rotation.roll, roll_velocity, true);
+        AddToRotation(rod_rotation.pitch, rod_pitch_velocity, false);
+        AddToRotation(rod_rotation.yaw, rod_yaw_velocity, true);
+        AddToRotation(rod_rotation.roll, rod_roll_velocity, true);
 
-        float rod_sin_yaw = sin(rod_rotation.yaw);
-        float rod_sin_pitch = sin(rod_rotation.pitch);
-        float rod_cos_yaw = cos(rod_rotation.yaw);
-        float rod_cos_pitch = cos(rod_rotation.pitch);
+        float rod_pitch_radians = DegreesToRadians(rod_rotation.pitch);
+        float rod_yaw_radians = DegreesToRadians(rod_rotation.yaw);
 
+        float rod_sin_yaw = sin(rod_yaw_radians);
+        float rod_sin_pitch = sin(rod_pitch_radians);
+        float rod_cos_yaw = cos(rod_yaw_radians);
+        float rod_cos_pitch = cos(rod_pitch_radians);
+
+        //Move Camera With Rod
         position.x = rod_sin_yaw * rod_cos_pitch * rod_length + actor_pos.x;
         position.y = rod_sin_pitch * rod_length + actor_pos.y;
         position.z = rod_cos_yaw * rod_cos_pitch * rod_length + actor_pos.z;
     }
 
+    //Update Camera's Rotation
     if(rod_lock && attached_actor && !free_cam)
     {
+        //Lock Camera To Face Actor
         looking_at = attached_actor->position;
 
         float& pitch = rod_rotation.pitch;
         float& yaw = rod_rotation.yaw;
         float& roll = rod_rotation.roll;
 
-        rotation.pitch = (pitch >= 0 && pitch <= PI) ? pitch - PI : pitch + PI;
-        rotation.yaw = (yaw >= 0 && yaw <= PI) ? yaw - PI : yaw + PI;
+        //Update Camera Rotation
+        rotation.pitch = (pitch >= 0 && pitch <= HALF_ROTATION) ? pitch - HALF_ROTATION : pitch + HALF_ROTATION;
+        rotation.yaw = (yaw >= 0 && yaw <= HALF_ROTATION) ? yaw - HALF_ROTATION : yaw + HALF_ROTATION;
+
+        //Update Camera Rotation view_velocity
+        rotation_velocity.pitch = -rod_rotation_velocity.pitch * Delay();
+        rotation_velocity.yaw = -rod_rotation_velocity.yaw * Delay();
+        rotation_velocity.roll = rod_rotation_velocity.roll * Delay();
     }
     else
     {
-        //Rotate CCamera
+        //Rotate Camera
         float pitch_velocity = rotation_velocity.pitch * Delay();
         float yaw_velocity = rotation_velocity.yaw * Delay();
         float roll_velocity = rotation_velocity.roll * Delay();
 
-        AddToOrientation(rotation.pitch, pitch_velocity, false);
-        AddToOrientation(rotation.yaw, yaw_velocity, true);
-        AddToOrientation(rotation.roll, roll_velocity, true);
+        AddToRotation(rotation.pitch, pitch_velocity, false);
+        AddToRotation(rotation.yaw, yaw_velocity, true);
+        AddToRotation(rotation.roll, roll_velocity, true);
 
-        sin_yaw = sin(rotation.yaw);
-        sin_pitch = sin(rotation.pitch);
-        cos_yaw = cos(rotation.yaw);
-        cos_pitch = cos(rotation.pitch);
-        sin_yaw_half = sin(rotation.yaw - PI / 2.0f);
-        cos_yaw_half = cos(rotation.yaw - PI / 2.0f);
+        float pitch_radians = DegreesToRadians(rotation.pitch);
+        float yaw_radians = DegreesToRadians(rotation.yaw);
+        float roll_radians = DegreesToRadians(rotation.roll);
+
+        sin_yaw = sin(yaw_radians);
+        sin_pitch = sin(pitch_radians);
+        cos_yaw = cos(yaw_radians);
+        cos_pitch = cos(pitch_radians);
+        sin_yaw_half = sin(yaw_radians - PI / 2.0f);
+        cos_yaw_half = cos(yaw_radians - PI / 2.0f);
 
         float sin_roll = sin(rotation.roll);
         float cos_roll = cos(rotation.roll);
 
+        //Calculate The Point Camera Is Looking At Based On Rotation And Focal Distance
         looking_at.x = sin_yaw * (cos_pitch * focal_distance) + position.x;
         looking_at.y = sin_pitch * focal_distance + position.y;
         looking_at.z = cos_yaw * (cos_pitch * focal_distance) + position.z;
@@ -124,7 +153,7 @@ void CCamera::Tick()
 
     if(!attached_actor || free_cam)
     {
-        //Move CCamera
+        //Move Camera
         float direct = relative_position_velocity.direct * Delay();
         float vertical = relative_position_velocity.vertical * Delay();
         float side = relative_position_velocity.side * Delay();
@@ -143,159 +172,160 @@ void CCamera::Tick()
     if(fov < 0) fov = 0;
     rod_length += rod_length_velocity;
 
-
-    if(--log_delay == 0 && log_on_tick)
+    ++m_log_cooldown;
+    if(m_log_on_tick && m_log_cooldown == m_log_delay)
     {
-        PrintLocation();
-        log_delay = 500;
+        PrintInformation();
+        m_log_cooldown = 0;
     }
 }
 
-void CCamera::AddToOrientation(float& axis, float deg, bool full_circle)
+void CCamera::AddToRotation(float& axis, float deg, bool full_circle)
 {
     axis += deg;
 
     if(full_circle)
     {
-        if(axis > PI)
+        if(axis > HALF_ROTATION)
         {
-            axis = axis - 2.0f * PI;
+            axis = axis - FULL_ROTATION;
         }
-        else if(axis < -PI)
+        else if(axis < -HALF_ROTATION)
         {
-            axis = axis + 2.0f * PI;
+            axis = axis + FULL_ROTATION;
         }
     }
     else
     {
-        if(axis > PI / 2.0f)
+        if(axis > QUARTER_ROTATION)
         {
-            axis = PI / 2.0f;
+            axis = QUARTER_ROTATION;
         }
-        else if(axis < -PI / 2.0f)
+        else if(axis < -QUARTER_ROTATION)
         {
-            axis = -PI / 2;
+            axis = -QUARTER_ROTATION;
         }
     }
 }
 
-void CCamera::PrintLocation()
+void CCamera::PrintInformation()
 {
-    Log("At| X: %f Y: %f Z: %f\n", position.x, position.y, position.z);
+    Log("Position At| X: %f Y: %f Z: %f\n", position.x, position.y, position.z);
     Log("Looking At| X: %f Y: %f Z: %f\n", looking_at.x, looking_at.y, looking_at.z);
     Log("Orientation| P: %f Y: %f R: %f\n", rotation.pitch, rotation.yaw, rotation.roll);
     Log("Rod Orientation| P: %f Y: %f R: %f\n", rod_rotation.pitch, rod_rotation.yaw, rod_rotation.roll);
     Log("Up| X: %f Y: %f Z; %f\n\n", up.x, up.y, up.z);
 }
 
-void CCamera::MoveSideways(StickXEvent e)
+
+void CCamera::MoveSideways(EAnalogInput* e)
 {
-    relative_position_velocity.side = e.value * sideways_throttle;
+    relative_position_velocity.side = e->value * sideways_throttle;
 }
 
-void CCamera::MoveDirectly(StickYEvent e)
+void CCamera::MoveDirectly(EAnalogInput* e)
 {
-    relative_position_velocity.direct = e.value * forward_throttle;
+    relative_position_velocity.direct = e->value * forward_throttle;
 }
 
-void CCamera::MoveVertical(StickYEvent e)
+void CCamera::MoveVertical(EAnalogInput* e)
 {
-    relative_position_velocity.vertical = e.value * vertical_throttle;
+    relative_position_velocity.vertical = e->value * vertical_throttle;
 }
 
-void CCamera::MoveUpwards(ButtonEvent e)
+void CCamera::MoveUpwards(EButtonInput* e)
 {
-    relative_position_velocity.vertical = e.value * vertical_throttle;
+    relative_position_velocity.vertical = vertical_throttle;
 }
 
-void CCamera::MoveDownwards(ButtonEvent e)
+void CCamera::MoveDownwards(EButtonInput* e)
 {
-    relative_position_velocity.vertical = -e.value * vertical_throttle;
+    relative_position_velocity.vertical = e->pressed * -vertical_throttle;
 }
 
-void CCamera::MoveRight(ButtonEvent e)
+void CCamera::MoveRight(EButtonInput* e)
 {
-    relative_position_velocity.side = e.value * sideways_throttle;
+    relative_position_velocity.side = e->pressed * sideways_throttle;
 }
 
-void CCamera::MoveLeft(ButtonEvent e)
+void CCamera::MoveLeft(EButtonInput* e)
 {
-    relative_position_velocity.side = -e.value * sideways_throttle;
+    relative_position_velocity.side = e->pressed * -sideways_throttle;
 }
 
-void CCamera::MoveForwards(ButtonEvent e)
+void CCamera::MoveForwards(EButtonInput* e)
 {
-    relative_position_velocity.direct = e.value * forward_throttle;
+    relative_position_velocity.direct = e->pressed * forward_throttle;
 }
 
-void CCamera::MoveBackwards(ButtonEvent e)
+void CCamera::MoveBackwards(EButtonInput* e)
 {
-    relative_position_velocity.direct = -e.value * forward_throttle;
+    relative_position_velocity.direct = e->pressed * -forward_throttle;
 }
 
-void CCamera::Pitch(StickYEvent e)
+void CCamera::Pitch(EAnalogInput* e)
 {
-    rotation_velocity.pitch = e.value * pitch_throttle;
+    rotation_velocity.pitch = e->value * pitch_throttle;
 }
 
-void CCamera::PitchUp(ButtonEvent e)
+void CCamera::PitchUp(EButtonInput* e)
 {
-    rotation_velocity.pitch = e.value * pitch_throttle;
+    rotation_velocity.pitch = e->pressed * pitch_throttle;
 }
 
-void CCamera::PitchDown(ButtonEvent e)
+void CCamera::PitchDown(EButtonInput* e)
 {
-    rotation_velocity.pitch = -e.value * pitch_throttle;
+    rotation_velocity.pitch = e->pressed * -pitch_throttle;
 }
 
-void CCamera::Yaw(StickXEvent e)
+void CCamera::Yaw(EAnalogInput* e)
 {
-    rotation_velocity.yaw = -e.value * yaw_throttle;
+    rotation_velocity.yaw = -e->value * yaw_throttle;
 }
 
-void CCamera::YawRight(ButtonEvent e)
+void CCamera::YawRight(EButtonInput* e)
 {
-    rotation_velocity.yaw = -e.value * yaw_throttle;
+    rotation_velocity.yaw = e->pressed * -yaw_throttle;
 }
 
-void CCamera::YawLeft(ButtonEvent e)
+void CCamera::YawLeft(EButtonInput* e)
 {
-    rotation_velocity.yaw = e.value * yaw_throttle;;
+    rotation_velocity.yaw = e->pressed * yaw_throttle;;
 }
 
-void CCamera::Roll(StickXEvent e)
+void CCamera::Roll(EAnalogInput* e)
 {
-    rotation_velocity.roll = e.value * yaw_throttle;
+    rotation_velocity.roll = e->value * yaw_throttle;
 }
 
-void CCamera::RollRight(ButtonEvent e)
+void CCamera::RollRight(EButtonInput* e)
 {
-    rotation_velocity.roll = e.value * yaw_throttle;
+    rotation_velocity.roll = e->pressed * yaw_throttle;
 }
 
-void CCamera::RollLeft(ButtonEvent e)
+void CCamera::RollLeft(EButtonInput* e)
 {
-    rotation_velocity.roll = -e.value * yaw_throttle;
+    rotation_velocity.roll = e->pressed * -yaw_throttle;
 }
 
-void CCamera::Zoom(StickYEvent e)
+void CCamera::Zoom(EAnalogInput* e)
 {
-    zoom_velocity = e.value * zoom_throttle;
+    zoom_velocity = e->value * zoom_throttle;
 }
 
-void CCamera::ZoomIn(ButtonEvent e)
+void CCamera::ZoomIn(EButtonInput* e)
 {
-    zoom_velocity = e.value * zoom_throttle;
+    zoom_velocity = e->pressed * zoom_throttle;
 }
 
-void CCamera::ZoomOut(ButtonEvent e)
+void CCamera::ZoomOut(EButtonInput* e)
 {
-    zoom_velocity = -e.value * zoom_throttle;
+    zoom_velocity = e->pressed * -zoom_throttle;
 }
 
-void CCamera::View(StickXEvent e)
+void CCamera::View(EAnalogInput* e)
 {
-    view_velocity = e.value * view_throttle;
+    view_velocity = e->value * view_throttle;
 }
 
 void CCamera::AttachRod(Shared<Actor> actor, float length, Vector3 rotation, bool lock_on_actor)
@@ -308,64 +338,64 @@ void CCamera::AttachRod(Shared<Actor> actor, float length, Vector3 rotation, boo
     free_cam = false;
 }
 
-void CCamera::RodPitch(StickYEvent e)
+void CCamera::RodPitch(EAnalogInput* e)
 {
-    rod_rotation_velocity.pitch = e.value * rod_pitch_throttle;
+    rod_rotation_velocity.pitch = e->value * rod_pitch_throttle;
 }
 
-void CCamera::RodPitchUp(ButtonEvent e)
+void CCamera::RodPitchUp(EButtonInput* e)
 {
-    rod_rotation_velocity.pitch = e.value * rod_pitch_throttle;
+    rod_rotation_velocity.pitch = e->pressed * rod_pitch_throttle;
 }
 
-void CCamera::RodPitchDown(ButtonEvent e)
+void CCamera::RodPitchDown(EButtonInput* e)
 {
-    rod_rotation_velocity.pitch = -e.value * rod_pitch_throttle;
+    rod_rotation_velocity.pitch = e->pressed * -rod_pitch_throttle;
 }
 
-void CCamera::RodYaw(StickXEvent e)
+void CCamera::RodYaw(EAnalogInput* e)
 {
-    rod_rotation_velocity.yaw = e.value * rod_yaw_throttle;
+    rod_rotation_velocity.yaw = e->value * rod_yaw_throttle;
 }
 
-void CCamera::RodYawRight(ButtonEvent e)
+void CCamera::RodYawRight(EButtonInput* e)
 {
-    rod_rotation_velocity.yaw = e.value * rod_yaw_throttle;
+    rod_rotation_velocity.yaw = e->pressed * rod_yaw_throttle;
 }
 
-void CCamera::RodYawLeft(ButtonEvent e)
+void CCamera::RodYawLeft(EButtonInput* e)
 {
-    rod_rotation_velocity.yaw = -e.value * rod_yaw_throttle;
+    rod_rotation_velocity.yaw = e->pressed * -rod_yaw_throttle;
 }
 
-void CCamera::RodRoll(StickXEvent e)
+void CCamera::RodRoll(EAnalogInput* e)
 {
-    rod_rotation_velocity.roll = e.value * rod_roll_throttle;
+    rod_rotation_velocity.roll = e->value * rod_roll_throttle;
 }
 
-void CCamera::RodRollRight(ButtonEvent e)
+void CCamera::RodRollRight(EButtonInput* e)
 {
-    rod_rotation_velocity.roll = e.value * rod_roll_throttle;
+    rod_rotation_velocity.roll = e->pressed * rod_roll_throttle;
 }
 
-void CCamera::RodRollLeft(ButtonEvent e)
+void CCamera::RodRollLeft(EButtonInput* e)
 {
-    rod_rotation_velocity.roll = -e.value * rod_roll_throttle;
+    rod_rotation_velocity.roll = e->pressed * -rod_roll_throttle;
 }
 
-void CCamera::RodDistance(StickYEvent e)
+void CCamera::RodDistance(EAnalogInput* e)
 {
-    rod_length_velocity = e.value * rod_length_throttle;
+    rod_length_velocity = e->value * rod_length_throttle;
 }
 
-void CCamera::RodDistanceIn(ButtonEvent e)
+void CCamera::RodDistanceIn(EButtonInput* e)
 {
-    rod_length_velocity = e.value * rod_length_throttle;
+    rod_length_velocity = e->pressed * rod_length_throttle;
 }
 
-void CCamera::RodDistanceOut(ButtonEvent e)
+void CCamera::RodDistanceOut(EButtonInput* e)
 {
-    rod_length_velocity = -e.value * rod_length_throttle;
+    rod_length_velocity = e->pressed * -rod_length_throttle;
 }
 
 void CCamera::ToggleFreeCam()

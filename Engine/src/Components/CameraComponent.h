@@ -4,13 +4,33 @@
 #include "Component.h"
 #include "Common/Vector3.h"
 
-struct Level;
 struct Actor;
-struct ButtonEvent;
-struct StickXEvent;
-struct StickYEvent;
+struct Level;
 
-//The Power Of Sight
+struct EAnalogInput;
+struct EButtonInput;
+
+/*
+ * The Power Of Sight
+ * Velocity Is Measured In Units/Frame
+ * Velocity Is Converted To Units/Frame Every Tick
+ * Throttle is the maximum (positive) and minimum velocity (negative)
+ * See Common/Vector.h For More Details On Coordinates And Rotation
+ */
+
+/*
+ * AttachRod() Will Attach An Imaginary Rod To An Actor
+ * The Camera's Position Will Be Based On The Rod's Angle
+ * Toggle [rod_lock] To Lock The Camera's Angle Towards The Actor's Position
+ * Toggle [free_cam] To Free The Camera Even When Connected To Actor
+ */
+
+/*
+ * [zoom_velocity] Affects [focal_distance]
+ * [view_velocity] Affects [fov]
+ */
+
+
 struct CCamera : public Component, public std::enable_shared_from_this<CCamera>
 {
 public:
@@ -19,50 +39,50 @@ public:
 
     void AttachToLevel(Level& lvl);
 
-    void MoveDirectly(StickYEvent e);
-    void MoveSideways(StickXEvent e);
-    void MoveVertical(StickYEvent e);
-    void MoveUpwards(ButtonEvent e);
-    void MoveDownwards(ButtonEvent e);
-    void MoveRight(ButtonEvent e);
-    void MoveLeft(ButtonEvent e);
-    void MoveDown(ButtonEvent e);
-    void MoveForwards(ButtonEvent e);
-    void MoveBackwards(ButtonEvent e);
+    void MoveDirectly(EAnalogInput* e);
+    void MoveSideways(EAnalogInput* e);
+    void MoveVertical(EAnalogInput* e);
+    void MoveUpwards(EButtonInput* e);
+    void MoveDownwards(EButtonInput* e);
+    void MoveRight(EButtonInput* e);
+    void MoveLeft(EButtonInput* e);
+    void MoveDown(EButtonInput* e);
+    void MoveForwards(EButtonInput* e);
+    void MoveBackwards(EButtonInput* e);
 
-    void Pitch(StickYEvent e);
-    void PitchUp(ButtonEvent e);
-    void PitchDown(ButtonEvent e);
-    void Yaw(StickXEvent e);
-    void YawRight(ButtonEvent e);
-    void YawLeft(ButtonEvent e);
-    void Roll(StickXEvent e);
-    void RollRight(ButtonEvent e);
-    void RollLeft(ButtonEvent e);
+    void Pitch(EAnalogInput* e);
+    void PitchUp(EButtonInput* e);
+    void PitchDown(EButtonInput* e);
+    void Yaw(EAnalogInput* e);
+    void YawRight(EButtonInput* e);
+    void YawLeft(EButtonInput* e);
+    void Roll(EAnalogInput* e);
+    void RollRight(EButtonInput* e);
+    void RollLeft(EButtonInput* e);
 
-    void Zoom(StickYEvent e);
-    void ZoomIn(ButtonEvent e);
-    void ZoomOut(ButtonEvent e);
-    void View(StickXEvent e);
+    void Zoom(EAnalogInput* e);
+    void ZoomIn(EButtonInput* e);
+    void ZoomOut(EButtonInput* e);
+    void View(EAnalogInput* e);
 
-    void PrintLocation();
+    void PrintInformation();
 
     void Tick();
 
     void AttachRod(Shared<Actor> actor, float length, Vector3 rotation, bool lock_on_actor);
-    void RodPitch(StickYEvent e);
-    void RodPitchUp(ButtonEvent e);
-    void RodPitchDown(ButtonEvent e);
-    void RodYaw(StickXEvent e);
-    void RodYawRight(ButtonEvent e);
-    void RodYawLeft(ButtonEvent e);
-    void RodRoll(StickXEvent e);
-    void RodRollRight(ButtonEvent e);
-    void RodRollLeft(ButtonEvent e);
+    void RodPitch(EAnalogInput* e);
+    void RodPitchUp(EButtonInput* e);
+    void RodPitchDown(EButtonInput* e);
+    void RodYaw(EAnalogInput* e);
+    void RodYawRight(EButtonInput* e);
+    void RodYawLeft(EButtonInput* e);
+    void RodRoll(EAnalogInput* e);
+    void RodRollRight(EButtonInput* e);
+    void RodRollLeft(EButtonInput* e);
 
-    void RodDistance(StickYEvent);
-    void RodDistanceIn(ButtonEvent e);
-    void RodDistanceOut(ButtonEvent e);
+    void RodDistance(EAnalogInput*);
+    void RodDistanceIn(EButtonInput* e);
+    void RodDistanceOut(EButtonInput* e);
 
     void ToggleFreeCam();
 
@@ -102,16 +122,16 @@ public:
     float rod_length_throttle;
     bool rod_lock;
 
-    int log_delay;
-    bool log_on_tick;
+    float focal_distance;
+    float rod_length;
 
     float fov;
 
 private:
+    int m_log_delay;
+    int m_log_cooldown;
+    bool m_log_on_tick;
 
-    float focal_distance;
-    float rod_length;
-
-    void AddToOrientation(float& axis, float deg, bool doNegative);
+    void AddToRotation(float& axis, float deg, bool doNegative);
 };
 #endif

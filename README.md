@@ -1,5 +1,7 @@
 # Oh Hello There
 
+I am changing the name of the engine and editor in the future.
+
 Edit 64 is a simplistic game engine and editor.
 It was originally going to be a tool used to create *Super Mario 64 PC* mods, but I decided to just make it a game engine as well.
 Hence why there is "64" at the end of each name. (Please don't sue me).
@@ -17,7 +19,7 @@ It has two main parts:
 ## Engine64
 A library to help in game development. It has everything already with it. Just link the library, nothing else.
 
-Current Version: v0.4.8 (The Graphics Update)
+Current Version: v0.5.5 (Media Update)
 
 Current Features:
 * 3D Rendering
@@ -27,12 +29,16 @@ Current Features:
 * Camera Management
 * Actors
 
-*Coming Soon*:
+*Still In Development*
 * 2D GUI
-* Debugging Errors
+* Debuggin Errors
 * Documentation
+
+*Coming Soon*:
 * Post Processing
 * Lighting
+* Audio
+* Skeletal Animation
 
 ## Editor64
 A visual game editor that uses the Engine64 Library
@@ -45,6 +51,9 @@ Current Version: v0.0.1
 ### Qt
 Just simply Qt libraries and Qt interface classes
 It is part of *Edit64*
+
+These Libraries (Called Media Backends) Are Optional Depending On CMake Configurations
+Here Are Some Media Backends
 
 ### OpenGL
 A part of *Engine64* that is for graphics rendering.

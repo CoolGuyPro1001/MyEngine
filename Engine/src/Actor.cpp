@@ -1,7 +1,6 @@
 #include "Actor.h"
-#include "Components/Component.h"
+#include "Component.h"
 #include "Core/Time.h"
-#include "Core/Graphics/Graphics.h"
 #include "Level.h"
 
 Actor::Actor()
@@ -20,18 +19,18 @@ Actor::Actor()
     position_acceleration = Vector3();
     rotation_acceleration = Vector3();
     scale_acceleration = Vector3();
+
+    enable_tick = true;
+    can_fall = false;
 }
 
-Actor::Actor(Vector3 position)
+Actor::Actor(Vector3 position) : Actor()
 {
-    Actor();
     this->position = position;
 }
 
-Actor::Actor(Vector3 position, Vector3 rotation, Vector3 scale) : position(position), rotation(rotation), scale(scale)
+Actor::Actor(Vector3 position, Vector3 rotation, Vector3 scale) : Actor()
 {
-    Actor();
-
     this->position = position;
     this->rotation = rotation;
     this->scale = scale;
@@ -57,7 +56,6 @@ Actor::Actor(const Actor& a)
 
 Actor::~Actor()
 {
-    //delete collision; Delete All Linked Components
     delete current_level;
 }
 
@@ -67,8 +65,17 @@ void Actor::Tick()
     rotation += rotation_velocity;
     scale += scale_velocity;
 
-    model_matrix = Graphics::GenerateModelMatrix(position, rotation, scale);
+    auto restrict_angle = [&](float angle)
+    {
+        float num_revolutions = floor((angle - 180) / 360) + 1;
+        angle = angle - 360 * num_revolutions;
+    };
 
-    //if(can_fall && current_level)
-    //    ChangePositionVelocity(0, (Delay() > 1) ? current_level->gravity : current_level->gravity * Delay(), 0);
+    //Restrict Rotation To The Interval [-180, 180]
+    if(rotation.pitch < -180 || rotation.pitch > 180) restrict_angle(rotation.pitch);
+    if(rotation.yaw < -180 || rotation.yaw > 180) restrict_angle(rotation.yaw);
+    if(rotation.roll < -180 || rotation.roll > 180) restrict_angle(rotation.roll);
+
+    if(can_fall && current_level)
+        position_velocity.y = current_level->gravity * Delay();
 }

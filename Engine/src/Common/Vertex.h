@@ -1,9 +1,9 @@
 #ifndef VERTEX_H
 #define VERTEX_H
 
-#include "Vector3.h"
 #include "Color.h"
 #include "TextureCoord.h"
+#include "Vector3.h"
 
 struct Vector2;
 

@@ -1,8 +1,17 @@
 #ifndef COLLISIONCOMPONENT_H
 #define COLLISIONCOMPONENT_H
 
-#include "Components/Component.h"
+#include "Component.h"
+
 struct Level;
+
+/*
+ * AABB Collision Between Actors
+ * [depth] Is Size Along X Direction
+ * [height] Is Size Along Y Direction
+ * [width] Is Size Along Z Direction
+ * See Common/Vector3.h For More Details About Coordinates
+ */
 
 struct CCollision : public Component, public std::enable_shared_from_this<CCollision>
 {

@@ -23,15 +23,14 @@ struct ModelTexture
     std::vector<Color> color_data;
 };
 
-namespace Texture
+std::vector<Shared<ModelTexture>> LoadTextureFile(std::string image_path, uint slice_size);
+
+class GraphicsTextureManager
 {
-    using ::ModelTexture;
-
-    std::vector<Shared<ModelTexture>> LoadTextureFile(std::string image_path, uint slice_size);
-    void InitModelTextureArray(std::vector<Shared<ModelTexture>> textures, uint common_size);
-
-    void Use(uint shader_program);
-}
+public:
+    virtual void InitModelTextureArray(std::vector<Shared<ModelTexture>> textures, uint common_size) = 0;
+    virtual void Use(uint shader_program) = 0;
+};
 
 /*class FontTexture : public Texture
 {

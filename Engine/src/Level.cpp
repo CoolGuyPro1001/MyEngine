@@ -1,16 +1,18 @@
 #include "Level.h"
 #include "Actor.h"
+
 #include "Components/ModelComponent.h"
 #include "Common/Shapes.h"
-#include "Core/Graphics/Texture.h"
+#include "Core/Media/Graphics/Texture.h"
 
-//static std::vector<Shared<Object>> objects;
-//static std::vector<size_t> sizes;
-//static std::vector<size_t> instances;
+Level::Level()
+{
+}
 
 Level::Level(Shared<ModelTexture> sky)
 {
-    //gravity = 30;
+    model_textures.push_back(sky);
+    gravity = 30;
 }
 
 void Level::AddActor(Shared<Actor> actor)
@@ -23,7 +25,6 @@ void Level::Init()
 {
     Shared<ModelTexture> sky = model_textures[0];
     Shared<CModel> sky_box = Cube(2, sky, sky, sky, sky, sky, sky, Vector3(-1.0, -1.0, -1.0));
-    sky_box->actors.push_back(CreateShared<Actor>());
     model_components.push_back(sky_box);
 }
 
@@ -70,28 +71,6 @@ std::vector<CollisionTri> ReadCollisionFile(std::string file_path)
     }
 
     return flat_collisions;
-}
-
-void StartLevel(Level& level)
-{
-    current_level = &level;
-    std::vector<uint> batch_texture_ids;
-
-    Graphics::ClearUniformBuffers();
-
-    Texture::FillArray(level.textures);
-
-    SetFlatCollisionNormals(level.flat_collisions);
-
-    while(running)
-    {
-
-        DoCollision(level.actors, level.flat_collisions);
-
-
-        Graphics::ClearDrawBuffers();
-        Graphics::Draw(sizes, instances);
-        //GUI::TextRender();
-        Graphics::UpdateGraphics();
-    }
 }*/
+
+//SetFlatCollisionNormals(level.flat_collisions);

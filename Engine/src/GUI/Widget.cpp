@@ -1,4 +1,4 @@
-/*#include "Widget.h"
+#include "Widget.h"
 //#include "Common/Shapes.h"
 #include "Actor.h"
 #include "Core/Graphics/Graphics.h"
@@ -15,13 +15,6 @@ Widget::Widget()
     text = "";
     horizontal_alignment = TextAlignHorizontal::MIDDLE;
     vertical_alignment = TextAlignVertical::MIDDLE;
-    text_color = Color();
-    text_scale = 1;
-    text_z_depth = 0;
-    word_wrap = false;
-    line_spacing = 1;
-    font = nullptr;
-    text_style = TextStyle::REGULAR;
 }
 
 Widget::Widget(const Widget& other)
@@ -36,13 +29,6 @@ Widget::Widget(const Widget& other)
     text = other.text;
     horizontal_alignment = other.horizontal_alignment;
     vertical_alignment = other.vertical_alignment;
-    text_color = other.text_color;
-    text_scale = other.text_scale;
-    text_z_depth = other.text_z_depth;
-    word_wrap = other.word_wrap;
-    line_spacing = other.line_spacing;
-    font = other.font;
-    text_style = other.text_style;
 }
 
 void Widget::Render(std::vector<Vertex>& all_widget_vertices,
@@ -51,7 +37,7 @@ void Widget::Render(std::vector<Vertex>& all_widget_vertices,
 //After all text_vertices have been inserted, they are split into batches based on texture id
 
 {
-    /*std::array<TextureCoords, 6> coords;
+    std::array<TextureCoords, 6> coords;
     coords[0] = {0.0f, 0.0f};
     coords[1] = {1.0f, 0.0f};
     coords[2] = {1.0f, 1.0f};
@@ -154,5 +140,5 @@ void Widget::Render(std::vector<Vertex>& all_widget_vertices,
         int texture = v.texture_id;
         if(std::find(textures_now.begin(), textures_now.end(), texture) == textures_now.end())
             textures_now.push_back(texture);
-    }*/
-}*/
+    }
+}

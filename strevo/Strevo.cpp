@@ -1,8 +1,14 @@
 #include "Strevo.h"
 #include <Common/Log.h>
 #include <Core/Time.h>
+#include <Common/Mathematics.h>
 
 Strevo::Strevo() : Actor()
+{
+    relative_velocity = Vector3(0, 0, 0);
+}
+
+Strevo::Strevo(Vector3 position) : Actor(position)
 {
     relative_velocity = Vector3(0, 0, 0);
 }
@@ -12,49 +18,69 @@ void Strevo::Tick()
     float direct = relative_velocity.direct;
     float side = relative_velocity.side;
 
-    Shared<CCamera> camera = GetComponent<CCamera>();
-    
-    position_velocity.x = sin(camera->rotation.yaw) * direct +
-        sin(camera->rotation.yaw - PI / 2.0f) * side;
 
-    position_velocity.z = cos(camera->rotation.yaw) * direct +
-        cos(camera->rotation.yaw - PI / 2.0f) * side;
+    Shared<CCamera> camera = GetComponent<CCamera>();
+
+    if(camera)
+    {
+        float yaw = DegreesToRadians(camera->rotation.yaw);
+        float sin_yaw = sin(yaw);
+        float cos_yaw = cos(yaw);
+
+        position_velocity.x = sin_yaw * direct + -cos_yaw * side;
+        position_velocity.z = cos_yaw * direct + sin_yaw * side;
+
+        rotation_velocity.yaw = camera->rod_rotation_velocity.yaw * Delay();
+    }
     
     Actor::Tick();
 }
 
-void Strevo::OnJumpReleased()
+/*void Strevo::OnJump(ButtonEvent e)
 {
+    if(e.pressed
     relative_velocity.y = 0;
-}
+}*/
 
-void Strevo::OnJumpPressed()
+/*void Strevo::JumpBegin(EButtonInput* e)
 {
     //Vector3 position_velocity = GetPositionVelocity();
     //position_velocity.y = 0.1f * Delay();
     //SetPositionVelocity(position_velocity);
+    Log("Jump Ended\n");
 }
 
-void Strevo::OnForwards(StickYEvent e)
+void Strevo::JumpEnd(EButtonInput* e)
 {
-    if(e.value == 0)
-    {
-        relative_velocity.direct = 0;
-    }
-    else
-    {
-        relative_velocity.direct = 0.1 * ((float)e.value / (float)SHRT_MAX) * Delay();
-    }
+    Log("Jump Ended\n");
+}*/
+
+void Strevo::OnForwards(EAnalogInput* e)
+{
+    relative_velocity.direct = 10 * e->value * Delay();
 }
 
-void Strevo::OnRight(StickXEvent e)
+void Strevo::OnRight(EAnalogInput* e)
 {
-    if(e.value == 0)
-    {
-        relative_velocity.side = 0;
-    }
-    else
-    {
-        relative_velocity.side = 0.1 * ((float)e.value / (float)SHRT_MAX) * Delay();
-    }
+    relative_velocity.side = 10 * e->value * Delay();
+}
+
+void Strevo::OnKeyForward(EButtonInput* e)
+{
+    relative_velocity.direct = 10 * e->pressed * Delay();
+}
+
+void Strevo::OnKeyBack(EButtonInput* e)
+{
+    relative_velocity.direct = -10 * e->pressed * Delay();
+}
+
+void Strevo::OnKeyLeft(EButtonInput* e)
+{
+    relative_velocity.side = -10 * e->pressed * Delay();
+}
+
+void Strevo::OnKeyRight(EButtonInput* e)
+{
+    relative_velocity.side = 10 * e->pressed * Delay();
 }

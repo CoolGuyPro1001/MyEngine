@@ -7,10 +7,17 @@ struct Level;
 struct Component;
 
 /*
-Model: The Geometry In Model Space
-Object: Geometry In World Space With Transformations And Velocities
-Actor: A Child Of Object. Has The Power Of TICK
-Component: Also A Child Of Object. Can Be Attached To Actor
+ * Actor Is A Container For Components That Give It Properties
+ * The Only Properties All Actors Have Are
+ * Position, Rotation, Scale (These Might Be Combined Into One Model Matrix In The Future)
+ * Their Velocities; And Their Accelerations
+ * And Also [model_matrix], Which Is Used For 3D Rendering
+*/
+
+/*
+ * There Can Only Be One Component Of Each Type
+ * Use AddComponent<Type>() To Add A Component Of [Type]
+ * Use GetComponent<Type>() To Retrieve A Component Of [Type]
 */
 
 typedef std::unordered_map<std::type_index, Shared<Component>> ComponentMap;
@@ -28,14 +35,8 @@ public:
     template<class T> void AddComponent(Shared<T> component);
     template<class C> Shared<C> GetComponent();
 
-    //void AddModel(Shared<Model> model);
-    //void AddModel(Shared<Model> model, Vector3 relative_position, Vector3 relative_rotation, Vector3 relative_scale);
-
-
     Level* current_level;
     ComponentMap components;
-
-    glm::mat4 model_matrix;
 
     Vector3 position;
     Vector3 rotation;
@@ -45,10 +46,13 @@ public:
     Vector3 rotation_velocity;
     Vector3 scale_velocity;
 
+    //Not Implemented Yet
     Vector3 position_acceleration;
     Vector3 rotation_acceleration;
     Vector3 scale_acceleration;
 
+    bool enable_tick;
+    bool can_fall;
 };
 
 template<class C> void Actor::AddComponent(Shared<C> component)

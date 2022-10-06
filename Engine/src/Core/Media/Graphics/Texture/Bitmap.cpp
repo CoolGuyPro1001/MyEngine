@@ -18,7 +18,7 @@ bool ReadBitmapFile(std::string image_path, std::vector<Color>& colors, uint& wi
 bool BMPToTexture(std::string bmp_path, std::vector<Color>& colors, uint& width, uint& height)
 {
     FILE* file;
-    file = fopen(bmp_path.c_str(), "r");
+    file = fopen(bmp_path.c_str(), "rb");
 
     if(file == NULL)
     {

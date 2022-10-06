@@ -11,7 +11,6 @@ struct CModel;
 struct ModelTexture;
 
 //Shape and shape_index are for setting triangles of different vertices
-//ColTex Color + TextureCoord
 
 std::vector<Vertex> Triangle(Vector3 p0, Vector3 p1, Vector3 p2, Color color, std::vector<Vertex>& shape, size_t shape_index);
 std::vector<Vertex> Triangle(Vector3 p0, Vector3 p1, Vector3 p2, TextureCoord uv0, TextureCoord uv1,

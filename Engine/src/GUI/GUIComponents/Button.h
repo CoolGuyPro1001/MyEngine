@@ -1,9 +1,9 @@
-#ifndef BUTTON_H
-#define BUTTON_H
+#ifndef BUTTONCOMPONENT_H
+#define BUTTONCOMPONENT_H
 
-#include "GUI/Widget.h"
+#include "GUI/GUIComponent.h"
 
-class Button : public Widget
+class GButton : public GUIComponent
 {
     virtual void OnPress() = 0;
     virtual void OnRelease() = 0;

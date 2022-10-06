@@ -2,32 +2,33 @@
 
 #include "Time.h"
 
-#include "Graphics/Graphics.h"
-#include "Graphics/Buffers/VertexBuffer.h"
-#include "Graphics/Buffers/UniformBuffer.h"
-#include "Graphics/Texture.h"
+#include "Media/GraphicsMedia.h"
+#include "Media/Graphics/GraphicsBuffer.h"
+#include "Media/Graphics/Texture.h"
 
 #include "Common/Error.h"
-#include "Common/Console.h"
+#include "Common/Log.h"
 
 #include "Level.h"
 #include "Systems.h"
+#include "Events.h"
 
-#include <SDL2/SDL.h>
+static Level& CurrentLevel()
+{
+    static Level default_level = Level();
+    return default_level;
+}
 
-void Start(int window_width, int window_height, const char* window_name)
+void Start(Unique<MWindow> window, Unique<MRenderer> renderer, Unique<MInput> input, Level& lvl)
 {
     bool b = InitLog();
 
-    //SDL_ShowCursor(SDL_DISABLE);
-    //SDL_SetRelativeMouseMode(SDL_TRUE);
-
-    SDL_GameControllerEventState(SDL_ENABLE);
-
-    if(!Graphics::InitWindow(window_width, window_height, window_name))
+    if(!window->Create())
         FatalError(SDL_ERROR, "Could Not Create Window");
     
-    Graphics::Initialize();
+    renderer->Init();
+    renderer->vb_instance->Init();
+    renderer->ub_mvp->Init(1024);
 
     /*if(FT_Init_FreeType(&ft))
         FatalError(FREETYPE_ERROR, "Could Not Init FreeType Library");
@@ -37,39 +38,42 @@ void Start(int window_width, int window_height, const char* window_name)
     */
 
     //Add Shaders
-    Graphics::AddShader("../../res/GameVertex.vshader", "../../res/GameFrag.fshader");
-    Graphics::AddShader("../../res/SkyVertex.vshader", "../../res/GameFrag.fshader");
+    renderer->AddShader("../../res/GameVertex.vshader", "../../res/GameFrag.fshader");
     //Graphics::AddShader("../../res/TextVertex.vshader", "../../res/TextFrag.fshader");
 
+    renderer->SetMVPBlock();
+
     //Create Batch Buffer Vector
-    Graphics::CreateBatchBuffers();
-    
-    //Init OpenGL Buffers
-    Graphics::InitVertexBuffers();
-    Graphics::InitUniformBuffers();
+    //renderer->VBManager->CreateBatchBuffers();
 
     //Load GUI
     //GUI::Load();
-}
 
-void Run(Level& lvl)
-{
-    lvl.Init();
-    VertexSystem(lvl.model_components, lvl.model_textures);
+    LoadLevel(*renderer, lvl);
     while(true)
     {
-        InputSystem(lvl.controllers);
+        EventSystem(*window, *input);
+        ProcessEvents();
         ActorSystem(lvl.actors);
         CollisionSystem(lvl.collision_components);
-        ViewProjectionSystem(lvl.camera_components, lvl.model_components);
-        RenderSystem(lvl.model_components);
+        ViewProjectionSystem(*renderer, *window, lvl.camera_components, lvl.model_components);
+        RenderSystem(*renderer, lvl.model_components);
+        window->UpdateGraphics();
         UpdateTime();
+        //Log("FPS: %f\n", FramesPerSecond());
     }
 }
 
-void Close()
+void LoadLevel(MRenderer& renderer, Level& lvl)
 {
-    Graphics::CloseWindow();
+    CurrentLevel() = lvl;
+    lvl.Init();
+    VertexSystem(renderer, lvl.model_components, lvl.model_textures);
+}
+
+void Close(MWindow& window)
+{
+    window.Close();
     CloseLog();
     CloseConsole();
 }

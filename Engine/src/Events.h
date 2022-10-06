@@ -1,39 +1,27 @@
 #ifndef EVENTS_H
 #define EVENTS_H
 
-class Controller;
+#define TIME std::chrono::high_resolution_clock::time_point
+#define TIME_NOW std::chrono::high_resolution_clock::now()
+
+template<typename RetValue, typename... Args>
+struct Delegate;
 
 struct Event
 {
-    bool handled;
+    Event();
+    virtual void Announce();
+    virtual void Process() = 0;
 
-    virtual std::string ToString() = 0;
+    TIME time;
+
+    //virtual std::string ToString() = 0;
 };
 
-struct EventArgs
-{
+static auto compare = [](Event* left, Event* right) { return left->time > right->time; };
+static std::priority_queue<Event*, std::vector<Event*>, decltype(compare)>& EventQueue();
+void ProcessEvents();
 
-};
-
-struct ButtonEvent
-{
-    ushort value;
-    ButtonEvent();
-    ButtonEvent(ushort val);
-};
-
-struct StickXEvent
-{
-    short value;
-    StickXEvent(short val);
-};
-
-struct StickYEvent
-{
-    short value;
-    StickYEvent(short val);
-};
-
-void PollEvents(std::vector<Shared<Controller>>& controllers);
+void AddToEventQueue(Event* event);
 
 #endif

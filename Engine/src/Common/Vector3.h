@@ -3,6 +3,12 @@
 
 struct Vector2;
 
+/*
+ * This Engine Follows A Left Hand Coordinate System
+ * Index Finger Is X, Thumb Is Y, Middle Is Z
+ * [direct], [side], And [vertical] Are Relative Directions
+ */
+
 struct Vector3
 {
     //Coordinates, Rotation, Relative Direction

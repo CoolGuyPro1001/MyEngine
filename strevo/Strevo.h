@@ -3,7 +3,7 @@
 
 #include <Actor.h>
 #include <Components/CameraComponent.h>
-#include <Events.h>
+#include <Events/InputEvents.h>
 
 class Strevo : public Actor
 {
@@ -11,12 +11,19 @@ public:
     Vector3 relative_velocity;
 
     Strevo();
+    Strevo(Vector3 position);
 
-    void Tick() override;
-    void OnForwards(StickYEvent e);
-    void OnRight(StickXEvent e);
-    void OnJumpReleased();
-    void OnJumpPressed();
+    void Tick();
+    void OnForwards(EAnalogInput* e);
+    void OnRight(EAnalogInput* e);
+
+    void OnKeyForward(EButtonInput* e);
+    void OnKeyBack(EButtonInput* e);
+    void OnKeyLeft(EButtonInput* e);
+    void OnKeyRight(EButtonInput* e);
+    //void OnJumpReleased();
+    //void JumpBegin(EButtonInput* e);
+    //void JumpEnd(EButtonInput* e);
 };
 
 #endif

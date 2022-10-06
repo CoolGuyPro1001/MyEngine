@@ -1,7 +1,5 @@
 set(CMAKE_STATIC_LIBRARY_PREFIX "")
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(FREETYPE_PKG REQUIRED IMPORTED_TARGET freetype2)
 
 #OS Stuff
 if(WIN32)
@@ -67,21 +65,9 @@ export(
     FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/Engine64Config.cmake"
 )
 
-
-target_link_libraries(
-    ${ENGINE_NAME}
-    PUBLIC
-    OpenGL::GL
-    GLEW::GLEW
-    SDL2::SDL2
-    PkgConfig::FREETYPE_PKG
-)
-
 target_include_directories(
     ${ENGINE_NAME}
     PUBLIC
-    ${GLM_INCLUDE_DIRS}
-    ${SDL2_INCLUDE_DIRS}
     ${CMAKE_SOURCE_DIR}/Engine/src/
 )
 
@@ -90,5 +76,23 @@ target_precompile_headers(
     PUBLIC
     pch.h
 )
+
+
+#Module Flags
+set(ENABLE_GUI          OFF CACHE BOOL "Enable GUI Support")
+set(ENABLE_RENDERING    OFF CACHE BOOL "Enable 3D Rendering Support")
+set(ENABLE_EVENTS       OFF CACHE BOOL "Enable Event Support")
+set(ENABLE_INPUT        OFF CACHE BOOL "Enable Device Input Support")
+set(ENABLE_TEXTURES     OFF CACHE BOOL "Enable Texture Support")
+set(ENABLE_COLLISION    OFF CACHE BOOL "Enable Collision Support")
+set(ENABLE_FONT         OFF CACHE BOOL "Enable Font Support")
+
+if(ENABLE_INPUT)
+    set(ENABLE_EVENTS ON)
+endif()
+
+if(ENABLE_TEXTURES OR ENABLE_GUI OR ENABLE_COLLISION)
+    set(ENABLE_RENDERING ON)
+endif()
 
 add_subdirectory(src)

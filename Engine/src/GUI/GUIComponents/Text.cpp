@@ -1,20 +1,9 @@
-/*#include "Text.h"
+#include "Text.h"
 #include "Common/Color.h"
 #include "Core/Graphics.h"
 #include "Core/Graphics/GLDebug.h"
 #include "Common/Error.h"
 #include "Common/Shapes.h"
-
-FT_Library ft;
-static std::map<std::string, Font> fonts;
-
-static std::vector<std::string> ttf_files;
-static std::vector<std::string> ttf_bold_files;
-static std::vector<std::string> ttf_italic_files;
-static std::vector<std::string> ttf_both_files;
-
-static std::vector<uint> font_widths;
-static std::vector<uint> font_heights;
 
 std::vector<Vertex> RenderText(std::string& text, Font* font, TextStyle s, Vector2 position, 
     float scale, float z_depth, Color color)
@@ -168,4 +157,4 @@ bool LoadFonts()
 Font* GetFont(std::string name)
 {
     return &fonts[name];
-}*/
+}

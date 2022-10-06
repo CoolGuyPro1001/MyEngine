@@ -1,8 +1,8 @@
 #ifndef ERROR_H
 #define ERROR_H
 
-#include "Common/Log.h"
 #include "Common/Console.h"
+#include "Common/Log.h"
 
 /*
 Fatal Errors Will Stop The Program Log() To log.txt
@@ -16,6 +16,9 @@ Critical Errors Will Let Program Continue And Use printf();
 #define GUI_ERROR 3
 #define FREETYPE_ERROR 4
 #define SDL_ERROR 5
+#define WINDOW_ERROR 6
+#define RENDER_ERROR 7
+#define INPUT_ERROR 8
 
 //Macros
 #define FatalError(t, msg) Error::Fatal(t, msg, __FILE__, __LINE__);

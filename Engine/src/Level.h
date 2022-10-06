@@ -1,27 +1,21 @@
 #ifndef LEVEL_H
 #define LEVEL_H
 
-
 class Actor;
-struct CModel;
-class Controller;
 struct Component;
-struct CCamera;
 struct ModelTexture;
+
+struct CModel;
+struct CCamera;
 struct CCollision;
 
-//void AddWidgetToCurrentLevel(Widget widget);
-
 //std::vector<CollisionTri> ReadCollisionFile(std::string file);
-//void StartLevel(Level& level);
-//void Run();
 
 struct Level
 {
+    Level();
     Level(Shared<ModelTexture> sky);
     
-    //Level();
-    std::vector<Shared<Controller>> controllers;
     std::vector<Shared<Actor>> actors;
 
     template<class C, typename... Args> Shared<C> CreateComponent(Args&&... args);
@@ -32,7 +26,6 @@ struct Level
     std::vector<Shared<CModel>> model_components;
     std::vector<Shared<CCamera>> camera_components;
     std::vector<Shared<CCollision>> collision_components;
-    /*std::vector<Shared<CollisionComponent>> model_components;*/
 
     void AddActor(Shared<Actor> actor);
     void Init();
@@ -41,10 +34,11 @@ struct Level
     //std::vector<CollisionTri> flat_collisions;
     //std::vector<Widget> widgets;
 
-    //float gravity;
+    float gravity;
 };
 
-template<class C, typename... Args> Shared<C> Level::CreateComponent(Args&&... args)
+template<class C, typename... Args>
+Shared<C> Level::CreateComponent(Args&&... args)
 {
     Shared<C> component = CreateShared<C>(std::forward<Args>(args)...);
     component->AttachToLevel(*this);

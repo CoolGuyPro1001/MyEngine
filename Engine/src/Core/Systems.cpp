@@ -1,42 +1,49 @@
 #include "Systems.h"
+#include "Actor.h"
 
 #include "Components/ModelComponent.h"
 #include "Components/CameraComponent.h"
 #include "Components/CollisionComponent.h"
-#include "Actor.h"
-
-#include "Graphics/Graphics.h"
-#include "Graphics/Buffers/VertexBuffer.h"
-#include "Graphics/Buffers/UniformBuffer.h"
-#include "Graphics/Texture.h"
 
 #include "Common/Vertex.h"
-#include "Events.h"
+
+#include "Media/InputMedia.h"
+#include "Media/WindowMedia.h"
+#include "Media/GraphicsMedia.h"
+#include "Media/Graphics/Texture.h"
+#include "Media/Graphics/GraphicsBuffer.h"
 
 //Call This Function BEFORE The Game Loop
-void VertexSystem(std::vector<Shared<CModel>>& models, std::vector<Shared<ModelTexture>>& textures)
+void VertexSystem(MRenderer& renderer, std::vector<Shared<CModel>>& models, std::vector<Shared<ModelTexture>>& textures)
 {
     uint texture_size;
     if(textures.size() > 0)
         texture_size = textures[0]->size;
 
-    Texture::InitModelTextureArray(textures, texture_size);
-    Graphics::ClearUniformBuffers();
+    renderer.TextureManager->InitModelTextureArray(textures, texture_size);
+
+    std::vector<Vertex> vertex_data;
+    std::vector<u8>& mvp_data = renderer.ub_mvp->Data();
+    mvp_data = std::vector<u8>(16 * sizeof(float));
 
     for(Shared<CModel> m : models)
     {
-        Graphics::buffer3d.AddData((u8*) &(m->vertices[0]), m->vertices.size(), sizeof(Vertex));
+        vertex_data.insert(vertex_data.end(), m->vertices.begin(), m->vertices.end());
         m->buffer_size = m->vertices.size() * sizeof(Vertex);
+
+        uint total_actor_mvp_bytesize = m->actors.size() * 16 * sizeof(float);
+        mvp_data.resize(mvp_data.size() + total_actor_mvp_bytesize);
     }
 
-    Graphics::FormatVertexBuffers();
+    renderer.vb_instance->Fill((u8*) &vertex_data[0], vertex_data.size() * sizeof(Vertex));
 }
 
 void ActorSystem(std::vector<Shared<Actor>>& actors)
 {
     for(Shared<Actor>& actor : actors)
     {
-        actor->Tick();
+        if(actor->enable_tick)
+            actor->Tick();
     }
 }
 
@@ -84,9 +91,11 @@ void CollisionSystem(std::vector<Shared<CCollision>> collisions)
 }
 
 //For Cameras and MVPs
-void ViewProjectionSystem(std::vector<Shared<CCamera>>& cameras, std::vector<Shared<CModel>>& models)
+void ViewProjectionSystem(MRenderer& renderer, MWindow& window, std::vector<Shared<CCamera>>& cameras, std::vector<Shared<CModel>>& models)
 {
-    std::vector<glm::mat4> object_mvps;
+    Shared<GraphicsBuffer> mvp_buffer = renderer.ub_mvp;
+    Shared<GraphicsMath> graphics_math = renderer.Math;
+    std::vector<u8>& mvp_data = mvp_buffer->Data();
 
     for(const Shared<CCamera>& camera : cameras)
         camera->Tick();
@@ -94,50 +103,68 @@ void ViewProjectionSystem(std::vector<Shared<CCamera>>& cameras, std::vector<Sha
     //For now have cameras[0] be default
     Shared<CCamera> world_camera = cameras[0];
 
-    glm::mat4 view = Graphics::GenerateViewMatrix(world_camera->position, world_camera->looking_at, world_camera->up);
-    glm::mat4 projection = Graphics::GeneratePerspectiveMatrix(world_camera->fov);
+    Mat4 view = graphics_math->GenerateViewMatrix(world_camera->position, world_camera->looking_at, world_camera->up);
+    Mat4 projection = graphics_math->GeneratePerspectiveMatrix(world_camera->fov, window.Width(), window.Height());
 
-    //Only have the rotation part of view matrix be in mvp for sky box
-    //This is done by taking the top left glm::mat3(view) then setting it to a glm::mat4
+    uint index = 0;
 
-    //Put MVP Of Sky Box Inside Model_matrix of actor of sky box
-    models[models.size() - 1]->actors[0]->model_matrix = projection * glm::mat4(glm::mat3(view));
-
+    //Ignore The Last Model, For That Is The Skybox
     for(int i = 0; i < models.size() - 1; i++)
     {
         for(Shared<Actor> a : models[i]->actors)
         {
-            object_mvps.push_back(projection * view * a->model_matrix);
+            Mat4 model_matrix = graphics_math->GenerateModelMatrix(a->position, a->rotation, a->scale);
+            Mat4 mvp = graphics_math->GenerateMVP(model_matrix, view, projection);
+
+            memcpy(&mvp_data[index], mvp.data, 16 * sizeof(float));
+            index += 16 * sizeof(float);
         }
     }
 
-    object_mvps.push_back(Graphics::GetIdentityMatrix());
-    Graphics::mvp_buffer.AddData((u8*) &object_mvps[0], object_mvps.size(), sizeof(glm::mat4));
+    //Only have the rotation part of view matrix be in mvp for sky box
+    //This is done by taking the top left glm::mat3(view) then setting it to a glm::mat4
+    //IdentityMatrix() Represents A 1x1x1 Cube
+    Mat3 view_rotation(view);
+    Mat4 skybox_view(view_rotation);
+    Mat4 skybox_mvp = graphics_math->GenerateMVP(graphics_math->IdentityMatrix(), skybox_view, projection);
+    graphics_math->MVPToSkyBoxMVP(skybox_mvp);
+
+    //Put MVP Of Skybox Last
+    memcpy(&mvp_data[index], skybox_mvp.data, 16 * sizeof(float));
+
+    //Send MVP Data To Renderer's Uniform Buffer Manager
+    //all_mvp_data.push_back(Renderer::IdentityMatrix());
+
+    size_t all_mvp_bytesize = mvp_data.size();
+    mvp_buffer->Remove(0, all_mvp_bytesize);
+    mvp_buffer->Mirror();
 }
 
-void RenderSystem(std::vector<Shared<CModel>>& models)
+void RenderSystem(MRenderer& renderer, std::vector<Shared<CModel>>& models)
 {
     uint buffer_offset = 0;
     uint mvp_index = 0;
 
-    Graphics::ClearDrawBuffers();
+    renderer.ClearDrawBuffers();
 
-    if(!Graphics::PrepareDraw())
+    if(!renderer.PrepareDraw())
         return;
 
     for(int i = 0; i < models.size() - 1; i++)
     {
         Shared<CModel> m = models[i];
-        Graphics::Draw(m->buffer_size, m->actors.size(), buffer_offset, mvp_index);
+        renderer.Draw(m->buffer_size, m->actors.size(), buffer_offset, mvp_index); //Draw All Actor Instances Of Model [m]
         mvp_index += m->actors.size();
         buffer_offset += m->buffer_size;
     }
 
-    Graphics::DrawSkyBox(buffer_offset, models[models.size() - 1]->actors[0]->model_matrix);
-    Graphics::UpdateGraphics();
+    //Shared<Actor> skybox = models[models.size() - 1]->actors[0];
+    renderer.DrawSkyBox(buffer_offset, mvp_index);
 }
 
-void InputSystem(std::vector<Shared<Controller>>& controllers)
+void EventSystem(MWindow& window, MInput& input)
 {
-    PollEvents(controllers);
+    window.ProcessEvents();
+    input.CollectEvents();
+    input.HandleEvents();
 }

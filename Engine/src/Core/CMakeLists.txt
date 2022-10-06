@@ -11,4 +11,6 @@ target_sources(
     Systems.cpp
 )
 
-add_subdirectory(Graphics)
+add_subdirectory(Media)
+add_subdirectory(MediaBackends)
+add_subdirectory(MediaDevices)

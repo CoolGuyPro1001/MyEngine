@@ -1,10 +1,5 @@
 #include "CollisionComponent.h"
 
-/*#include "Common/Mathematics.h"
-#include "Common/Log.h"
-#include "Common/Error.h"
-#include "Geometry.h"*/
-
 #include "Level.h"
 
 CCollision::CCollision()

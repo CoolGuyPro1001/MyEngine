@@ -6,8 +6,8 @@ add_executable(
     Main.cpp
     Strevo.cpp
     Strevo.h
-    Sword.h
-    Sword.cpp
+    #Sword.h
+    #Sword.cpp
 )
 
 target_link_libraries(
