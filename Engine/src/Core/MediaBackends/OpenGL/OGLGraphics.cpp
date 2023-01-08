@@ -18,6 +18,8 @@
 OGLRenderer::OGLRenderer(MWindow& window)
 {
     vb_instance = CreateShared<OGLVertexBuffer>(m_instance_id_ptr, m_instance_vao_ptr, false);
+    ib_instance = CreateShared<OGLIndexBuffer>(m_index_id_ptr, false);
+    ub_model = CreateShared<OGLUniformBuffer>(m_model_id_ptr, true);
     ub_mvp = CreateShared<OGLUniformBuffer>(m_mvp_id_ptr, true);
 
     Shared<Delegate<void, EWindowResized*>> resize_delegate = CreateShared<Delegate<void, EWindowResized*>>();
@@ -33,7 +35,6 @@ OGLRenderer::OGLRenderer(MWindow& window)
 
 void OGLRenderer::Init()
 {
-
     GLenum error = glewInit();
     const char* c;
     if(GLEW_OK != error)
@@ -45,6 +46,13 @@ void OGLRenderer::Init()
 
     GLCall(glEnable(GL_DEPTH_TEST));
     GLCall(glDepthFunc(GL_LESS));
+    GLCall(glPrimitiveRestartIndex(PRIMITIVE_RESTART));
+
+    vb_instance->Init();
+    ib_instance->Init();
+
+    ub_model->Init(1024);
+    ub_mvp->Init(1024);
 }
 
 
@@ -58,11 +66,16 @@ void OGLRenderer::AddShader(const std::string vertex_path, const std::string fra
         m_shader_programs.push_back(program_id);
 }
 
-void OGLRenderer::SetMVPBlock()
+void OGLRenderer::SetUniforms()
 {
+    m_model_block_index = glGetUniformBlockIndex(m_shader_programs[0], "ModelBlock");
     m_mvp_block_index = glGetUniformBlockIndex(m_shader_programs[0], "MVPBlock");
-    GLCall(glUniformBlockBinding(m_shader_programs[0], m_mvp_block_index, 0));
-    GLCall(glBindBufferBase(GL_UNIFORM_BUFFER, 0, *m_mvp_id_ptr));
+
+    GLCall(glUniformBlockBinding(m_shader_programs[0], m_model_block_index, 0));
+    GLCall(glBindBufferBase(GL_UNIFORM_BUFFER, 0, *m_model_id_ptr));
+
+    GLCall(glUniformBlockBinding(m_shader_programs[0], m_mvp_block_index, 1));
+    GLCall(glBindBufferBase(GL_UNIFORM_BUFFER, 1, *m_mvp_id_ptr));
 
     m_mvp_index_uniform = glGetUniformLocation(m_shader_programs[0], "mvp_index");
 }
@@ -70,6 +83,48 @@ void OGLRenderer::SetMVPBlock()
 void OGLRenderer::UpdateViewPort(EWindowResized* e)
 {
     glViewport(0, 0, (uint) e->new_size.x, (uint) e->new_size.y);
+}
+
+void OGLRenderer::SetAmbientFactor(float factor)
+{
+    GLCall(glUseProgram(m_shader_programs[0]));
+
+    int ambient_uniform = glGetUniformLocation(m_shader_programs[0], "ambient_factor");
+    GLCall(glUniform1f(ambient_uniform, factor));
+}
+
+void OGLRenderer::SetLightSourcePosition(Vector3 position)
+{
+    GLCall(glUseProgram(m_shader_programs[0]));
+
+    int light_source_uniform = glGetUniformLocation(m_shader_programs[0], "light_source_position");
+    GLCall(glUniform3f(light_source_uniform, position.x, position.y, position.z));
+}
+
+void OGLRenderer::SetLightColor(Color color)
+{
+    GLCall(glUseProgram(m_shader_programs[0]));
+
+    int light_color_uniform = glGetUniformLocation(m_shader_programs[0], "light_color");
+
+    std::array<float, 4> normalized_color = color.Normalized();
+    GLCall(glUniform3f(light_color_uniform, normalized_color[0], normalized_color[1], normalized_color[2]));
+}
+
+void OGLRenderer::SetCameraPosition(Vector3 position)
+{
+    GLCall(glUseProgram(m_shader_programs[0]));
+
+    int camera_position_uniform = glGetUniformLocation(m_shader_programs[0], "camera_position");
+    GLCall(glUniform3f(camera_position_uniform, position.x, position.y, position.z));
+}
+
+void OGLRenderer::SetSpecularFactor(float factor)
+{
+    GLCall(glUseProgram(m_shader_programs[0]));
+
+    int specular_uniform = glGetUniformLocation(m_shader_programs[0], "specular_factor");
+    GLCall(glUniform1f(specular_uniform, factor));
 }
 
 void OGLRenderer::ClearDrawBuffers()
@@ -127,6 +182,8 @@ bool OGLRenderer::PrepareDraw()
         return false;
 
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, *m_instance_id_ptr));
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *m_index_id_ptr));
+
     GLCall(glBindVertexArray(*m_instance_vao_ptr));
 
     GLCall(glUseProgram(m_shader_programs[0]));
@@ -135,11 +192,11 @@ bool OGLRenderer::PrepareDraw()
     return true;
 }
 
-void OGLRenderer::Draw(uint model_buffer_size, uint model_instance_amount, uint buffer_offset, uint mvp_index)
+void OGLRenderer::Draw(uint indices_count, uint model_instance_amount, uint index_offset, uint mvp_index)
 {
     //Draw Objects
     GLCall(glUniform1i(m_mvp_index_uniform, mvp_index));
-    GLCall(glDrawArraysInstanced(GL_TRIANGLES, buffer_offset / sizeof(Vertex), model_buffer_size / sizeof(Vertex), model_instance_amount));
+    GLCall(glDrawElementsInstanced(GL_TRIANGLE_STRIP, indices_count, GL_UNSIGNED_SHORT, BUFFER_OFFSET(index_offset * sizeof(ushort)), model_instance_amount));
 
     //Draw Widgets
     //sprite_buffer.Bind();
@@ -154,7 +211,7 @@ void OGLRenderer::DrawSkyBox(uint skybox_offset, uint skybox_mvp_index)
     int mvp_index_uniform = glGetUniformLocation(m_shader_programs[0], "mvp_index");
 
     GLCall(glUniform1i(mvp_index_uniform, skybox_mvp_index));
-    GLCall(glDrawArraysInstanced(GL_TRIANGLES, skybox_offset / sizeof(Vertex), 36, 1));
+    GLCall(glDrawElementsInstanced(GL_TRIANGLE_STRIP, 30, GL_UNSIGNED_SHORT, BUFFER_OFFSET(skybox_offset * sizeof(ushort)), skybox_mvp_index));
 
     GLCall(glDepthFunc(GL_LESS));
 }

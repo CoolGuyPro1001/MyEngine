@@ -11,7 +11,7 @@ void CCollision::AttachToLevel(Level& lvl)
     lvl.collision_components.push_back(shared_from_this());
 }
 
-CCollision::CCollision(float depth, float height, float width) : depth(depth), height(height), width(width)
+CCollision::CCollision(float width, float height, float depth) : width(width), height(height), depth(depth)
 {
 }
 

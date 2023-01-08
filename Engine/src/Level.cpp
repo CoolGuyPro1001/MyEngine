@@ -24,8 +24,12 @@ void Level::AddActor(Shared<Actor> actor)
 void Level::Init()
 {
     Shared<ModelTexture> sky = model_textures[0];
-    Shared<CModel> sky_box = Cube(2, sky, sky, sky, sky, sky, sky, Vector3(-1.0, -1.0, -1.0));
+    Shared<CModel> sky_box = CubeTextured(1, sky, sky, sky, sky, sky, sky);
     model_components.push_back(sky_box);
+    ambient_factor = 0.1f;
+    specular_factor = 0.5f;
+    light_source_position = Vector3(0, 10, 0);
+    light_color = Color(0xff, 0xff, 0xff, 0xff);
 }
 
 /*void AddWidget(Widget widget)

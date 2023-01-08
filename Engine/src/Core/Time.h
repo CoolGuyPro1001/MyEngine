@@ -9,7 +9,9 @@ double Delay();
 double FramesPerSecond(); //The FPS For That Exact Frame Called
 void UpdateTime();
 
-//Used For Timing Performance
+/**
+ * Functions For Performance Benchmarking. Records The Time In Nano Seconds, Prints The Result To Console
+ */
 void StartTimer();
 void StopTimer();
 

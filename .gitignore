@@ -2,3 +2,6 @@
 build/
 obj/
 .kdev4/
+doc/html
+doc/latex
+doc/man

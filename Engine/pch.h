@@ -13,6 +13,7 @@
 #include <unordered_map>
 #include <typeindex>
 #include <queue>
+#include <set>
 
 #include <math.h>
 #include <stdio.h>
@@ -56,6 +57,7 @@ constexpr Shared<T> CreateShared(Args&& ... args)
 
 constexpr float PI = 3.14159250;
 constexpr double EPSILON = 1.0e-323;
+constexpr ushort PRIMITIVE_RESTART = 0xffff;
 #endif
 
 

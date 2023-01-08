@@ -3,9 +3,9 @@
 
 struct TextureCoord
 {
-    float u, v;
+    float u, v, w;
 
-    TextureCoord(float u, float v);
+    TextureCoord(float u, float v, float w = 0);
     TextureCoord();
     TextureCoord(const TextureCoord& t);
 

@@ -3,6 +3,8 @@
 
 #include "../OGLBuffer.h"
 
+#define BUFFER_OFFSET(x) (static_cast<u8*>(0) + (x))
+
 struct OGLVertexBuffer : public OGLBuffer
 {
 public:

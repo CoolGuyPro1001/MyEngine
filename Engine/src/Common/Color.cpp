@@ -1,6 +1,7 @@
 #include "Color.h"
 
 #include "Common/Error.h"
+#include "Common/Mathematics.h"
 
 Color::Color()
 {
@@ -110,30 +111,29 @@ Color Color::operator/(const Color& c) const
     return Color(r / c.r, g / c.g, b / c.b, a / c.a);
 }
 
-std::vector<Color> Color::FromMonoBuffer(const u8* bytes, Color color)
+std::vector<Color> Color::FromMonoBuffer(const u8* buffer, size_t buffer_size, Color color)
 {
-    if(bytes == NULL)
+    if(buffer == NULL)
     {
         FatalError(ENGINE_ERROR, "Bytes Value Is Null")
     }
 
-    size_t bytes_size = sizeof(bytes) / sizeof(u8);
-    size_t colors_size = 4 * bytes_size;
+    size_t colors_size = 4 * buffer_size;
 
     std::vector<Color> colors(colors_size);
 
-    for(int i = 0; i < bytes_size; i++)
+    for(int i = 0; i < buffer_size; i++)
     {
         if(color == Color(0, 0, 0, 0))
         {
-            colors.emplace_back(bytes[i], bytes[i], bytes[i], bytes[i]);
+            colors.emplace_back(buffer[i], buffer[i], buffer[i], buffer[i]);
         }
         else
         {
-            u8 red = (bytes[i] * color.r) / 255;
-            u8 green = (bytes[i] * color.g) / 255;
-            u8 blue = (bytes[i] * color.b) / 255;
-            u8 alpha = (bytes[i] * color.a) / 255;
+            u8 red = (buffer[i] * color.r) / 255;
+            u8 green = (buffer[i] * color.g) / 255;
+            u8 blue = (buffer[i] * color.b) / 255;
+            u8 alpha = (buffer[i] * color.a) / 255;
             colors.emplace_back(red, green, blue, alpha);
         }
     }
@@ -197,4 +197,15 @@ void Color::MonoToRGBA(u8 mono_color, Color& base_color)
     base_color.g = (mono_color * base_color.g) / 255;
     base_color.b = (mono_color * base_color.b) / 255;
     base_color.a = (mono_color * base_color.a) / 255;
+}
+
+std::array<float, 4> Color::Normalized()
+{
+    return
+    {
+        Normalize(r, 0x00, 0xff),
+        Normalize(g, 0x00, 0xff),
+        Normalize(b, 0x00, 0xff),
+        Normalize(a, 0x00, 0xff)
+    };
 }

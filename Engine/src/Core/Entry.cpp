@@ -19,16 +19,23 @@ static Level& CurrentLevel()
     return default_level;
 }
 
-void Start(Unique<MWindow> window, Unique<MRenderer> renderer, Unique<MInput> input, Level& lvl)
+void Start(Level& lvl, Unique<MWindow> window, Unique<MRenderer> renderer, Unique<MInput> input)
 {
     bool b = InitLog();
 
-    if(!window->Create())
+    if(window && !window->Create())
         FatalError(SDL_ERROR, "Could Not Create Window");
     
-    renderer->Init();
-    renderer->vb_instance->Init();
-    renderer->ub_mvp->Init(1024);
+    if(renderer)
+    {
+        renderer->Init();
+
+        //Add Shaders
+        renderer->AddShader("../../res/GameVertex.vshader", "../../res/GameFrag.fshader");
+        //Graphics::AddShader("../../res/TextVertex.vshader", "../../res/TextFrag.fshader");
+
+        renderer->SetUniforms();
+    }
 
     /*if(FT_Init_FreeType(&ft))
         FatalError(FREETYPE_ERROR, "Could Not Init FreeType Library");
@@ -37,37 +44,34 @@ void Start(Unique<MWindow> window, Unique<MRenderer> renderer, Unique<MInput> in
         FatalError(FREETYPE_ERROR, "At Least One Font Couldn't Be Loaded. Perhaps There's A Typo In The File Name");
     */
 
-    //Add Shaders
-    renderer->AddShader("../../res/GameVertex.vshader", "../../res/GameFrag.fshader");
-    //Graphics::AddShader("../../res/TextVertex.vshader", "../../res/TextFrag.fshader");
-
-    renderer->SetMVPBlock();
-
     //Create Batch Buffer Vector
     //renderer->VBManager->CreateBatchBuffers();
 
     //Load GUI
     //GUI::Load();
 
-    LoadLevel(*renderer, lvl);
+    LoadLevel(lvl, renderer.get());
     while(true)
     {
-        EventSystem(*window, *input);
+        EventSystem(window.get(), input.get());
         ProcessEvents();
         ActorSystem(lvl.actors);
         CollisionSystem(lvl.collision_components);
-        ViewProjectionSystem(*renderer, *window, lvl.camera_components, lvl.model_components);
-        RenderSystem(*renderer, lvl.model_components);
-        window->UpdateGraphics();
+        ModelSystem(renderer.get(), lvl.model_components);
+        LightingSystem(renderer.get(), lvl.camera_components[0], lvl.ambient_factor, lvl.specular_factor, lvl.light_source_position, lvl.light_color);
+        ViewProjectionSystem(renderer.get(), window.get(), lvl.camera_components);
+        RenderSystem(renderer.get(), lvl.model_components);
+        if (window) window->UpdateGraphics();
         UpdateTime();
         //Log("FPS: %f\n", FramesPerSecond());
     }
 }
 
-void LoadLevel(MRenderer& renderer, Level& lvl)
+void LoadLevel(Level& lvl, MRenderer* renderer)
 {
     CurrentLevel() = lvl;
     lvl.Init();
+
     VertexSystem(renderer, lvl.model_components, lvl.model_textures);
 }
 

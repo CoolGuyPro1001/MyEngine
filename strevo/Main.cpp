@@ -29,12 +29,15 @@
 
 #include <Core/Media/Graphics/Texture.h>
 
+#include <Common/Shapes.h>
+#include <Common/Color.h>
+
 /*
  * This File Is A Demo Game Used For Debugging And Performance Testing
  * Some Disabled Features Are Commented Out
  */
 
-void SpawnActors(int amount, Level& lvl, Shared<CModel> model)
+/*void SpawnActors(int amount, Level& lvl, Shared<CModel> model)
 {
     std::vector<Shared<Strevo>> army(amount);
     int i = 0;
@@ -65,7 +68,7 @@ void SpawnActors(int amount, Level& lvl, Shared<CModel> model)
     }
 }
 
-int main()
+/*int main()
 {
     //AddFont("../../res/comic.ttf", "../../res/comicbd.ttf", "../../res/comici.ttf", "../../res/comicz.ttf", 0, 48);
 
@@ -131,7 +134,7 @@ int main()
     /*device->BindButton(KEY_ARROW_UP,    camera, &CCamera::RodPitchUp);
     device->BindButton(KEY_ARROW_DOWN,  camera, &CCamera::RodPitchDown);
     device->BindButton(KEY_ARROW_LEFT,  camera, &CCamera::RodYawLeft);
-    device->BindButton(KEY_ARROW_RIGHT, camera, &CCamera::RodYawRight);*/
+    device->BindButton(KEY_ARROW_RIGHT, camera, &CCamera::RodYawRight);
 
     Shared<InputDevice> mouse = input->GetInputDevice(MOUSE_DEVICE);
     mouse->BindAnalog(MOUSE_X, camera, &CCamera::RodYaw);
@@ -155,7 +158,7 @@ int main()
     text->horizontal_alignment = TextAlignHorizontal::LEFT
     text->vertical_alignment = TextAlignVertical::BOTTOM;
     text->word_wrap = false;
-    text->text_style = TextStyle::REGULAR;*/
+    text->text_style = TextStyle::REGULAR;
 
     //lvl.gravity = -0.05f;
 
@@ -168,4 +171,78 @@ int main()
     Unique<MRenderer> renderer = CreateUnique<OGLRenderer>(*window);
 
     Start(std::move(window), std::move(renderer), std::move(input), lvl);
+}*/
+
+int main()
+{
+    Unique<MWindow> window = CreateUnique<SDLWindow>(500, 500, "Strevo", false);
+    Unique<MRenderer> renderer = CreateUnique<OGLRenderer>(*window);
+    Unique<MInput> input = CreateUnique<SDLInput>();
+
+    std::vector<Shared<ModelTexture>> textures = LoadTextureFile("../../res/textures.bmp", 512);
+
+    Level lvl = Level();
+
+    Shared<CModel> box = lvl.CreateComponent<CModel>( CubeColored
+    (
+        5.0f,
+        Color(0xff, 0x00, 0x00, 0xff),
+        Color(0x00, 0xff, 0x00, 0xff),
+        Color(0x00, 0x00, 0xff, 0xff),
+        Color(0xff, 0xff, 0x00, 0xff),
+        Color(0xff, 0x00, 0xff, 0xff),
+        Color(0x00, 0xff, 0xff, 0xff)
+    ));
+
+    Shared<CModel> grass = lvl.CreateComponent<CModel>( PrismTextured(
+        100.0f, 1.0f, 100.0f,
+        textures[1], textures[1],
+        textures[1], textures[1],
+        textures[1], textures[1]
+    ));
+
+
+    Shared<CCamera> camera = lvl.CreateComponent<CCamera>(100, true, 1000);
+
+    //Shared<CCollision> collision = lvl.CreateComponent<CCollision>(2, 2, 2);
+
+    camera->yaw_throttle = -60.0f;
+    camera->pitch_throttle = 60.0f;
+    camera->forward_throttle = 50.0f;
+    camera->sideways_throttle = 50.0f;
+    camera->fov = 70.0f;
+
+    Shared<Strevo> strevo = CreateShared<Strevo>();
+    strevo->AddComponent<CCamera>(camera);
+    strevo->AddComponent<CModel>(box);
+    //strevo->AddComponent<CCollision>(collision);
+    //strevo->rotation = Vector3(0, 90, 0);
+
+    Shared<Actor> terrain = CreateShared<Actor>();
+    terrain->AddComponent<CModel>(grass);
+    terrain->enable_tick = false;
+
+    //camera->AttachRod(strevo, 10.0f, Vector3(0, 0, 0), true);
+
+
+    Shared<InputDevice> keyboard = input->GetInputDevice(KEYBOARD_DEVICE);
+
+    keyboard->BindButton(KEY_W, camera, &CCamera::MoveForwards);
+    keyboard->BindButton(KEY_S, camera, &CCamera::MoveBackwards);
+    keyboard->BindButton(KEY_A, camera, &CCamera::MoveLeft);
+    keyboard->BindButton(KEY_D, camera, &CCamera::MoveRight);
+
+
+    Shared<InputDevice> mouse = input->GetInputDevice(MOUSE_DEVICE);
+
+    mouse->BindAnalog(MOUSE_X, camera, &CCamera::Yaw);
+    mouse->BindAnalog(MOUSE_Y, camera, &CCamera::Pitch);
+
+    lvl.gravity = -0.05f;
+
+    lvl.AddActor(strevo);
+    lvl.AddActor(terrain);
+    lvl.model_textures = textures;
+
+    Start(lvl, std::move(window), std::move(renderer), std::move(input));
 }

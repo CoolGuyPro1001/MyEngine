@@ -8,6 +8,7 @@ target_sources(
     OGLVertexBuffer.h
 
     OGLBuffer.cpp
+    OGLIndexBuffer.cpp
     OGLFrameBuffer.cpp
     OGLUniformBuffer.cpp
     OGLVertexBuffer.cpp

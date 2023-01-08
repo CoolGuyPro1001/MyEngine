@@ -10,6 +10,7 @@ template<typename T, std::size_t R, std::size_t C>
 struct Matrix
 {
     Matrix();
+    Matrix(const u8* data, const size_t data_size);
 
     template<std::size_t R0, std::size_t C0>
     Matrix(const Matrix<T, R0, C0>& other);
@@ -33,6 +34,21 @@ Matrix<T, R, C>::Matrix()
     columns = C;
 
     memset(data, 0, R * C * sizeof(T));
+}
+
+template<typename T, std::size_t R, std::size_t C>
+Matrix<T, R, C>::Matrix(const u8* data, const size_t size)
+{
+    rows = R;
+    columns = C;
+
+    if(size != R * C * sizeof(T))
+    {
+        CriticalError(ENGINE_ERROR, "Byte Size Not Equal To Row * Column * Sizeof(Type), Filling Matrix With 0's\n");
+        memset(this->data, 0, R * C * sizeof(T));
+    }
+
+    memcpy(this->data, data, size);
 }
 
 template<typename T, std::size_t R, std::size_t C>

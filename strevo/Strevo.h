@@ -21,9 +21,9 @@ public:
     void OnKeyBack(EButtonInput* e);
     void OnKeyLeft(EButtonInput* e);
     void OnKeyRight(EButtonInput* e);
-    //void OnJumpReleased();
-    //void JumpBegin(EButtonInput* e);
-    //void JumpEnd(EButtonInput* e);
+    void OnJumpReleased();
+    void JumpBegin(EButtonInput* e);
+    void JumpEnd(EButtonInput* e);
 };
 
 #endif

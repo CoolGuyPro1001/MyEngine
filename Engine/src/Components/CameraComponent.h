@@ -10,22 +10,19 @@ struct Level;
 struct EAnalogInput;
 struct EButtonInput;
 
-/*
+/**
  * The Power Of Sight
+ *
  * Velocity Is Measured In Units/Frame
  * Velocity Is Converted To Units/Frame Every Tick
  * Throttle is the maximum (positive) and minimum velocity (negative)
  * See Common/Vector.h For More Details On Coordinates And Rotation
- */
-
-/*
+ *
  * AttachRod() Will Attach An Imaginary Rod To An Actor
  * The Camera's Position Will Be Based On The Rod's Angle
  * Toggle [rod_lock] To Lock The Camera's Angle Towards The Actor's Position
  * Toggle [free_cam] To Free The Camera Even When Connected To Actor
- */
-
-/*
+ *
  * [zoom_velocity] Affects [focal_distance]
  * [view_velocity] Affects [fov]
  */
@@ -39,9 +36,25 @@ public:
 
     void AttachToLevel(Level& lvl);
 
+    /**
+    * \brief Moves The Camera Directly Towards Where It's Looking At
+    * \param e A Pointer To An Analog Event
+    */
     void MoveDirectly(EAnalogInput* e);
+
+    /**
+    * \brief Moves The Camera Sideways Relative To Where It's Looking At
+    * \param e A Pointer To An Analog Event
+    */
     void MoveSideways(EAnalogInput* e);
+
+    /**
+    * \brief Moves The Camera Vertical Relative To Where It's Looking At
+    * \param e A Pointer To An Analog Event.
+    */
     void MoveVertical(EAnalogInput* e);
+
+
     void MoveUpwards(EButtonInput* e);
     void MoveDownwards(EButtonInput* e);
     void MoveRight(EButtonInput* e);

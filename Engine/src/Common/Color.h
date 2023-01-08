@@ -25,11 +25,13 @@ struct Color
     Color operator*(const Color& c) const;
     Color operator/(const Color& c) const;
 
-    static std::vector<Color> FromMonoBuffer(const u8* bytes, Color color = Color(0, 0, 0, 0));
+    static std::vector<Color> FromMonoBuffer(const u8* buffer, size_t buffer_size, Color color = Color(0, 0, 0, 0));
     static std::vector<Color> FromRGBBuffer(const u8* bytes);
     static std::vector<Color> FromRGBABuffer(const u8* bytes);
 
     static bool MonoToRGBA(Color mono_color, Color& base_color);
     static void MonoToRGBA(u8 mono_color, Color& base_color);
+
+    std::array<float, 4> Normalized();
 };
 #endif

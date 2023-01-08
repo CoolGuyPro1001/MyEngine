@@ -18,9 +18,14 @@ size_t GraphicsBuffer::GetSize()
     return m_size;
 }
 
-std::vector<u8>& GraphicsBuffer::Data()
+std::vector<u8> GraphicsBuffer::GetData()
 {
     return m_data;
+}
+
+void GraphicsBuffer::SetData(std::vector<u8> data)
+{
+    m_data = data;
 }
 
 void GraphicsBuffer::Remove(size_t offset, size_t size)

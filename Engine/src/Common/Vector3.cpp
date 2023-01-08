@@ -1,6 +1,8 @@
 #include "Vector3.h"
 #include "Vector2.h"
 
+#include "Common/Error.h"
+
 Vector3::Vector3()
 {
     x = 0;
@@ -83,9 +85,15 @@ void Vector3::operator*=(const Vector3& v)
 
 void Vector3::operator/=(const Vector3& v)
 {
-    x /= v.x;
-    y /= v.y;
-    z /= v.z;
+    auto divide_by_zero_error = [=](char c)
+    {
+        CriticalErrorArgs(ENGINE_ERROR, "Can't Divide Texture Coordinate %c By 0. Setting %c To 0\n", c);
+        return 1;
+    };
+
+    x /= (x != 0) ? v.x : divide_by_zero_error('X');
+    y /= (y != 0) ? v.y : divide_by_zero_error('Y');
+    z /= (z != 0) ? v.z : divide_by_zero_error('Z');
 }
 
 Vector3 Vector3::operator+(const Vector3& v) const
@@ -96,6 +104,11 @@ Vector3 Vector3::operator+(const Vector3& v) const
 Vector3 Vector3::operator-(const Vector3& v) const
 {
     return Vector3(x - v.x, y - v.y, z - v.z);
+}
+
+Vector3 Vector3::operator-() const
+{
+    return Vector3(-x, -y, -z);
 }
 
 Vector3 Vector3::operator*(const Vector3& v) const
@@ -110,7 +123,21 @@ Vector3 Vector3::operator*(const float f) const
 
 Vector3 Vector3::operator/(const Vector3& v) const
 {
-    return Vector3(x / v.x, y / v.y, z / v.z);
+    float temp_x = x;
+    float temp_y = y;
+    float temp_z = z;
+
+    auto divide_by_zero_error = [=](char c)
+    {
+        CriticalErrorArgs(ENGINE_ERROR, "Can't Divide Vector3 Coordinate %c By 0. Returning Original Value\n", c);
+        return 1;
+    };
+
+    temp_x /= (v.x != 0) ? v.x : divide_by_zero_error('X');
+    temp_y /= (v.y != 0) ? v.y : divide_by_zero_error('Y');
+    temp_z /= (v.z != 0) ? v.z : divide_by_zero_error('Z');
+
+    return Vector3(temp_x, temp_y, temp_z);
 }
 
 Vector2 Vector3::ToVector2()

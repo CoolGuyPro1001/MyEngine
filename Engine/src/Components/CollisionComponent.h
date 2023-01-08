@@ -7,21 +7,18 @@ struct Level;
 
 /*
  * AABB Collision Between Actors
- * [depth] Is Size Along X Direction
- * [height] Is Size Along Y Direction
- * [width] Is Size Along Z Direction
  * See Common/Vector3.h For More Details About Coordinates
  */
 
 struct CCollision : public Component, public std::enable_shared_from_this<CCollision>
 {
     CCollision();
-    CCollision(float depth, float height, float width);
+    CCollision(float width, float height, float depth);
     void AttachToLevel(Level& lvl);
 
-    float depth;
-    float height;
     float width;
+    float height;
+    float depth;
     //virtual void Print();
 };
 

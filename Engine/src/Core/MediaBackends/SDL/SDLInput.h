@@ -4,14 +4,6 @@
 #include "Core/Media/InputMedia.h"
 #include "Core/Media/InputCodes.h"
 
-struct AnalogFlag
-{
-    uint device_type;
-    uint port;
-    uint analog;
-    bool event_happened;
-};
-
 class SDLInput : public MInput
 {
 public:

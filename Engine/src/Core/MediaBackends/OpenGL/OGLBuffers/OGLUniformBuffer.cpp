@@ -12,3 +12,4 @@ OGLUniformBuffer& OGLUniformBuffer::operator=(OGLUniformBuffer&& other)
     GraphicsBuffer::operator=(std::move(other));
     return *this;
 }
+

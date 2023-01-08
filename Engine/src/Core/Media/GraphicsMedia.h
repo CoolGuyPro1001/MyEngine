@@ -32,19 +32,26 @@ public:
 
     virtual void ClearDrawBuffers() = 0;
     virtual bool PrepareDraw() = 0;
-    virtual void Draw(uint model_buffer_size, uint model_instance_amount, uint buffer_offset, uint mvp_index) = 0;
+    virtual void Draw(uint indices_count, uint model_instance_amount, uint index_offset, uint mvp_index) = 0;
     virtual void DrawSkyBox(uint skybox_offset, uint skybox_mvp_index) = 0;
     virtual void SwapBuffers() = 0;
 
     virtual void AddShader(const std::string vertex_path, const std::string fragment_path) = 0;
-    virtual void SetMVPBlock() = 0;
+    virtual void SetUniforms() = 0;
     virtual void UpdateViewPort(EWindowResized* e) = 0;
+    virtual void SetAmbientFactor(float factor) = 0;
+    virtual void SetLightSourcePosition(Vector3 position) = 0;
+    virtual void SetLightColor(Color color) = 0;
+    virtual void SetCameraPosition(Vector3 position) = 0;
+    virtual void SetSpecularFactor(float factor) = 0;
 
     //Public Variables Because FREEEEEEEEEEEEEEEEEEEEEDOM!!!!!!!!!!!!!!!!!
     Shared<GraphicsMath> Math;
     Shared<GraphicsTextureManager> TextureManager;
 
     Shared<GraphicsBuffer> vb_instance;
+    Shared<GraphicsBuffer> ib_instance;
+    Shared<GraphicsBuffer> ub_model;
     Shared<GraphicsBuffer> ub_mvp;
 
 protected:

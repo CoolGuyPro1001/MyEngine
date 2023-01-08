@@ -53,7 +53,7 @@ void OGLBuffer::Fill(u8* data, size_t size)
     GLCall(glBindBuffer(m_target, m_id));
     GLCall(glBufferData(m_target, size, data, m_usage));
 
-    if(m_mirror_data && data != (u8*) &m_data[0])
+    if(m_mirror_data)
     {
         m_data.resize(size);
         memcpy(&m_data[0], data, size);
@@ -77,7 +77,7 @@ void OGLBuffer::Insert(u8* data, size_t size)
     {
         GLCall(glBufferSubData(m_target, ms->offset, size, data));
 
-        if(m_mirror_data && data != (u8*) &m_data[0])
+        if(m_mirror_data)
             memcpy(&m_data[ms->offset], data, size);
 
         ms->size -= size;

@@ -10,9 +10,8 @@ class InputDevice;
 template<typename RetValue, typename... Args>
 struct Delegate;
 
-/*
+/**
  * An Interface For Managing Input
- * Set(Device Name)StateIndexes Are For Setting An State Index Array
  * Where Each Index Corresponds To A Key Code, Mouse Code, Etc. From The Backend
  */
 
@@ -26,7 +25,16 @@ public:
     virtual void HandleEvents() = 0;
     virtual std::vector<Shared<InputDevice>> CurrentDevices() = 0;
 
+    /**
+     *\brief Binds m_device_connect_event to a Delegate
+     * \param func A Delegate with EDeviceDetected* parameter
+     */
     void BindDeviceConnect(Shared<Delegate<void, EDeviceDetected*>> func);
+
+    /**
+     *\brief Binds m_device_disconnect_event to a Delegate
+     * \param func A Delegate with EDeviceDetected* parameter
+     */
     void BindDeviceDisconnect(Shared<Delegate<void, EDeviceDetected*>> func);
 
     Shared<InputDevice> GetInputDevice(uint type, uint port = 0);

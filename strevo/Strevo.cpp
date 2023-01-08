@@ -27,10 +27,10 @@ void Strevo::Tick()
         float sin_yaw = sin(yaw);
         float cos_yaw = cos(yaw);
 
-        position_velocity.x = sin_yaw * direct + -cos_yaw * side;
-        position_velocity.z = cos_yaw * direct + sin_yaw * side;
+        //position_velocity.x = sin_yaw * direct + -cos_yaw * side;
+        //position_velocity.z = cos_yaw * direct + sin_yaw * side;
 
-        rotation_velocity.yaw = camera->rod_rotation_velocity.yaw * Delay();
+        //rotation_velocity.yaw = camera->rod_rotation_velocity.yaw * Delay();
     }
     
     Actor::Tick();

@@ -10,9 +10,6 @@
 struct MWindow;
 struct EWindowResized;
 
-template<typename T, std::size_t R, std::size_t C>
-struct Matrix;
-
 class OGLRenderer : public MRenderer
 {
 public:
@@ -25,13 +22,19 @@ public:
     void ClearDrawBuffers();
     bool PrepareDraw();
     void DrawText(std::vector<uint> current_text_textures);
-    void Draw(uint model_buffer_size, uint model_instance_amount, uint buffer_offset, uint mvp_index);
+    void Draw(uint indices_count, uint model_instance_amount, uint index_offset, uint mvp_index);
     void DrawSkyBox(uint skybox_offset, uint skybox_mvp_index);
     void SwapBuffers();
 
     void AddShader(const std::string vertex_path, const std::string fragment_path);
-    void SetMVPBlock();
+    void SetUniforms();
     void UpdateViewPort(EWindowResized* e);
+
+    void SetAmbientFactor(float factor);
+    void SetLightSourcePosition(Vector3 position);
+    void SetLightColor(Color color);
+    void SetCameraPosition(Vector3 position);
+    void SetSpecularFactor(float factor);
 
 private:
     Delegate<void> m_swapbuffers_func;
@@ -41,9 +44,12 @@ private:
     std::vector<uint> m_shader_programs;
 
     uint* m_instance_id_ptr;
+    uint* m_index_id_ptr;
     uint* m_instance_vao_ptr;
+    uint* m_model_id_ptr;
     uint* m_mvp_id_ptr;
 
+    uint m_model_block_index;
     uint m_mvp_block_index;
     uint m_mvp_index_uniform;
 };

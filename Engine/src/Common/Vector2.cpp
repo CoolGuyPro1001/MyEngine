@@ -1,5 +1,7 @@
 #include "Vector2.h"
 
+#include "Common/Error.h"
+
 Vector2::Vector2()
 {
     x, y = 0;
@@ -71,8 +73,14 @@ void Vector2::operator*=(const Vector2& v)
 
 void Vector2::operator/=(const Vector2& v)
 {
-    x /= v.x;
-    y /= v.y;
+    auto divide_by_zero_error = [=](char c)
+    {
+        CriticalErrorArgs(ENGINE_ERROR, "Can't Divide Texture Coordinate %c By 0. Setting %c To 0\n", c);
+        return 1;
+    };
+
+    x /= (x != 0) ? v.x : divide_by_zero_error('X');
+    y /= (y != 0) ? v.y : divide_by_zero_error('Y');
 }
 
 Vector2 Vector2::operator+(const Vector2& v) const
@@ -97,7 +105,19 @@ Vector2 Vector2::operator*(const float& f) const
 
 Vector2 Vector2::operator/(const Vector2& v) const
 {
-    return Vector2(x / v.x, y / v.y);
+    float temp_x = x;
+    float temp_y = y;
+
+    auto divide_by_zero_error = [=](char c)
+    {
+        CriticalErrorArgs(ENGINE_ERROR, "Can't Divide Vector2 Coordinate %c By 0. Returning Original Value\n", c);
+        return 1;
+    };
+
+    temp_x /= (v.x != 0) ? v.x : divide_by_zero_error('X');
+    temp_y /= (v.y != 0) ? v.y : divide_by_zero_error('Y');
+
+    return Vector2(temp_x, temp_y);
 }
 
 std::vector<Vector2> Vector2::ToVectorArray(const float* points)

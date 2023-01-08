@@ -53,6 +53,11 @@ Vector3 NormalizeVector3(Vector3 a)
     return Vector3(a.x / mag, a.y / mag, a.z / mag);
 }
 
+Vector3 TriangleNormal(Vector3 a, Vector3 b, Vector3 c)
+{
+    return CrossProduct(a - b, c - b);
+}
+
 bool InSegment(Vector2 p, Vector2 s0, Vector2 s1)
 {
     if (s0.x != s1.x) 

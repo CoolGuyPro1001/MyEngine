@@ -9,8 +9,8 @@ struct Level;
 
 static Level& CurrentLevel();
 
-void Start(Unique<MWindow> window, Unique<MRenderer> renderer, Unique<MInput> input, Level& lvl);
-void LoadLevel(MRenderer& renderer, Level& lvl);
+void Start(Level& lvl, Unique<MWindow> window, Unique<MRenderer> renderer, Unique<MInput> input);
+void LoadLevel(Level& lvl, MRenderer* renderer);
 void Close(MWindow& window);
 void Test();
 

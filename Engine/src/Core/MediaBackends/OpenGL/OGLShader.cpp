@@ -67,6 +67,7 @@ bool OGLCreateProgram(uint vs, uint fs, uint& program_id)
     GLCall(glAttachShader(program_id, fs));
 
     GLCall(glLinkProgram(program_id));
+
     int linked;
     GLCall(glGetProgramiv(program_id, GL_LINK_STATUS, &linked));
 

@@ -92,9 +92,9 @@ void CCamera::Tick()
         float rod_cos_pitch = cos(rod_pitch_radians);
 
         //Move Camera With Rod
-        position.x = rod_sin_yaw * rod_cos_pitch * rod_length + actor_pos.x;
+        position.x = rod_cos_yaw * rod_cos_pitch * rod_length + actor_pos.x;
+        position.z = rod_sin_yaw * rod_cos_pitch * rod_length + actor_pos.z;
         position.y = rod_sin_pitch * rod_length + actor_pos.y;
-        position.z = rod_cos_yaw * rod_cos_pitch * rod_length + actor_pos.z;
     }
 
     //Update Camera's Rotation
@@ -142,9 +142,9 @@ void CCamera::Tick()
         float cos_roll = cos(rotation.roll);
 
         //Calculate The Point Camera Is Looking At Based On Rotation And Focal Distance
-        looking_at.x = sin_yaw * (cos_pitch * focal_distance) + position.x;
+        looking_at.x = cos_yaw * (cos_pitch * focal_distance) + position.x;
         looking_at.y = sin_pitch * focal_distance + position.y;
-        looking_at.z = cos_yaw * (cos_pitch * focal_distance) + position.z;
+        looking_at.z = sin_yaw * (cos_pitch * focal_distance) + position.z;
 
         up.x = sin_yaw * sin_roll;
         up.y = cos_roll;
@@ -158,9 +158,9 @@ void CCamera::Tick()
         float vertical = relative_position_velocity.vertical * Delay();
         float side = relative_position_velocity.side * Delay();
 
-        position_velocity.x = sin_yaw * cos_pitch * direct + sin_yaw_half * side;
+        position_velocity.x = cos_yaw * cos_pitch * direct + cos_yaw_half * side;
         position_velocity.y = sin_pitch * direct + vertical;
-        position_velocity.z = cos_yaw * cos_pitch * direct + cos_yaw_half * side;
+        position_velocity.z = sin_yaw * cos_pitch * direct + sin_yaw_half * side;
 
         position += position_velocity;
         looking_at += position_velocity;

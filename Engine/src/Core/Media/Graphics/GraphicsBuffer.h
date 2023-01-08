@@ -17,7 +17,9 @@ struct GraphicsBuffer
     size_t GetSize();
     void Mirror(); //Copies Data From RAM To VRAM
     void Remove(size_t offset, size_t size);
-    std::vector<u8>& Data();
+
+    std::vector<u8> GetData();
+    void SetData(std::vector<u8>);
 
     virtual void Init(size_t size = 0) = 0;
     virtual void Destroy() = 0;

@@ -10,17 +10,17 @@ struct Vector2;
 struct Vertex
 {
     Vector3 vector;
+    Vector3 normal;
     Color color;
     TextureCoord texture_coord;
-    float texture_id;
 
     Vertex();
-    Vertex(Vector3 vector, Color color);
-    Vertex(Vector2 vector, Color color);
-    Vertex(Vector3 vector, TextureCoord texture_coord, float texture_id = 0);
-    Vertex(Vector2 vector, TextureCoord texture_coord, float texture_id = 0);
-    Vertex(Vector3 vector, Color color, TextureCoord texture_coord, float texture_id = 0);
-    Vertex(Vector2 vector, Color color, TextureCoord texture_coord, float texture_id = 0);
+    Vertex(Vector3 vector, Vector3 normal, Color color);
+    Vertex(Vector2 vector, Vector3 normal, Color color);
+    Vertex(Vector3 vector, Vector3 normal, TextureCoord texture_coord);
+    Vertex(Vector2 vector, Vector3 normal, TextureCoord texture_coord);
+    Vertex(Vector3 vector, Vector3 normal, Color color, TextureCoord texture_coord);
+    Vertex(Vector2 vector, Vector3 normal, Color color, TextureCoord texture_coord);
     Vertex(const Vertex& v);
     
     bool operator==(const Vertex& v) const;

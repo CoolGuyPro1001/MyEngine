@@ -13,6 +13,7 @@ float Vector2Magnitude(Vector2 a);
 float Vector3Magnitude(Vector3 a);
 Vector2 NormalizeVector2(Vector2 a);
 Vector3 NormalizeVector3(Vector3 a);
+Vector3 TriangleNormal(Vector3 a, Vector3 b, Vector3 c);
 
 Vector3 Intersect3DSegments(const Vector3 a0, const Vector3 a1, const Vector3 b0, const Vector3 b1, bool& intersected);
 bool InSegment(Vector2 p, Vector2 s0, Vector2 s1);

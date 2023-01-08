@@ -1,6 +1,9 @@
 #ifndef LEVEL_H
 #define LEVEL_H
 
+#include "Common/Vector3.h"
+#include "Common/Color.h"
+
 class Actor;
 struct Component;
 struct ModelTexture;
@@ -35,6 +38,10 @@ struct Level
     //std::vector<Widget> widgets;
 
     float gravity;
+    float ambient_factor;
+    Vector3 light_source_position;
+    float specular_factor;
+    Color light_color;
 };
 
 template<class C, typename... Args>
