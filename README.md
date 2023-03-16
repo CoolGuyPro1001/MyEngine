@@ -2,21 +2,16 @@
 
 I am changing the name of the engine and editor in the future.
 
-Edit 64 is a simplistic game engine and editor.
-It was originally going to be a tool used to create *Super Mario 64 PC* mods, but I decided to just make it a game engine as well.
-Hence why there is "64" at the end of each name. (Please don't sue me).
-
 It's designed to be lightweight. You can run games on a potato. This doesn't mean games will look awful, it just allows complete customization of the memory layout.
 
-
 It has two main parts:
-1. Editor64
-2. Engine64
+1. Editor
+2. Engine
 
 
 **Strevo Is A Testing Game. Have Fun Playing It! :)**
 
-## Engine64
+## Engine
 A library to help in game development. It has everything already with it. Just link the library, nothing else.
 
 Current Version: v0.5.5 (Media Update)
@@ -40,7 +35,7 @@ Current Features:
 * Audio
 * Skeletal Animation
 
-## Editor64
+## Editor
 A visual game editor that uses the Engine64 Library
 
 Current Version: v0.0.1
